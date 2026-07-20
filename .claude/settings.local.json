@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(node --version)",
+      "PowerShell(npm --version)",
+      "PowerShell(npx -v)",
+      "PowerShell(npm view @angular/cli version)",
+      "PowerShell(npm view @angular/cli engines --json)",
+      "PowerShell(npm view @angular/cli@20 version)",
+      "PowerShell(npm view @angular/cli@20 engines --json)",
+      "PowerShell(npm view @angular/cli@21 version)",
+      "PowerShell(npm view @angular/cli@21 engines --json)",
+      "PowerShell(npx -y -p @angular/cli@21 ng new auza-front --directory=. --style=scss --routing --ssr=false --skip-git --defaults)",
+      "Bash(node -e \"const p=require\\('./package.json'\\);console.log\\('name:',p.name\\);console.log\\('@angular/core:',p.dependencies['@angular/core']\\);console.log\\('@angular/cli:',p.devDependencies['@angular/cli']\\);\")",
+      "PowerShell(npm run build 2>&1)",
+      "Read(//c/Users/User/E9SOLUCOES/Clientes/Auza//**)",
+      "Read(//c/Users/User/E9SOLUCOES/Clientes/Auza/**)",
+      "PowerShell(npm run build 2>$null)",
+      "PowerShell(gh auth status 2>&1)",
+      "PowerShell(git config user.name)",
+      "PowerShell(git config user.email)",
+      "PowerShell(git init -b main)",
+      "PowerShell(git add -A)"
+    ]
+  }
+}

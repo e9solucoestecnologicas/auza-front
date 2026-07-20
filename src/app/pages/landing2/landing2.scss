@@ -1,0 +1,175 @@
+:host {
+  display: block;
+}
+
+.fullpage {
+  position: fixed;
+  inset: 0;
+  height: 100dvh;
+  width: 100vw;
+  overflow: hidden;
+  background: var(--wf-page);
+}
+
+.track {
+  height: 100%;
+  transition: transform 0.75s cubic-bezier(0.7, 0, 0.2, 1);
+  will-change: transform;
+}
+
+.slide {
+  height: 100dvh;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* garante que a seção interna preencha toda a altura do slide */
+.slide > * {
+  display: block;
+  height: 100%;
+}
+
+/* ---------- Barra superior ---------- */
+.fp-top {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem clamp(1rem, 4vw, 2.5rem);
+  pointer-events: none;
+}
+
+.fp-brand {
+  pointer-events: auto;
+  width: 90px;
+  height: 24px;
+  border-radius: 4px;
+  background: var(--wf-fill-2);
+}
+
+.fp-switch-group {
+  pointer-events: auto;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.fp-switch {
+  pointer-events: auto;
+  font-size: 0.82rem;
+  color: var(--wf-text-strong);
+  border: 1px solid var(--wf-line);
+  border-radius: 999px;
+  padding: 0.45rem 1rem;
+  background: var(--wf-surface);
+}
+
+/* ---------- Dots laterais ---------- */
+.dots {
+  position: fixed;
+  right: clamp(0.75rem, 2vw, 1.75rem);
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.dot {
+  position: relative;
+  width: 12px;
+  height: 12px;
+  padding: 0;
+  border: 1px solid var(--wf-line);
+  border-radius: 50%;
+  cursor: pointer;
+  background: var(--wf-surface);
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.dot--active {
+  background: var(--wf-text);
+  transform: scale(1.35);
+}
+
+.dot__label {
+  position: absolute;
+  right: 22px;
+  top: 50%;
+  transform: translateY(-50%);
+  white-space: nowrap;
+  font-size: 0.72rem;
+  color: var(--wf-text-strong);
+  background: var(--wf-surface);
+  border: 1px solid var(--wf-line);
+  padding: 0.2rem 0.6rem;
+  border-radius: 6px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.dot:hover .dot__label {
+  opacity: 1;
+}
+
+/* ---------- Setas ---------- */
+.fp-arrows {
+  position: fixed;
+  left: clamp(0.75rem, 2vw, 1.75rem);
+  bottom: clamp(1rem, 3vw, 2rem);
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.arrow {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  font-size: 1.1rem;
+  color: var(--wf-text-strong);
+  background: var(--wf-surface);
+  border: 1px solid var(--wf-line);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: border-color 0.2s ease, opacity 0.2s ease;
+
+  &:hover:not(:disabled) {
+    border-color: var(--wf-text);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+}
+
+/* ---------- Contador ---------- */
+.fp-counter {
+  position: fixed;
+  right: clamp(1rem, 3vw, 2rem);
+  bottom: clamp(1rem, 3vw, 2rem);
+  z-index: 30;
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--wf-text-strong);
+}
+
+.fp-counter__total {
+  color: var(--wf-text);
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 720px) {
+  .dot__label {
+    display: none;
+  }
+}

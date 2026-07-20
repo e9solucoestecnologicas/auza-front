@@ -1,0 +1,35 @@
+<div class="shell">
+  <aside class="sidebar">
+    <span class="sidebar__brand" aria-label="Logo"  style="text-align: center;"><b>Sua Logo</b></span>
+
+    <nav class="sidebar__nav" aria-label="Seções">
+      @for (item of sections; track item.id; let i = $index) {
+        <button
+          type="button"
+          class="navitem"
+          [class.navitem--active]="current() === i"
+          [attr.aria-current]="current() === i"
+          (click)="scrollTo(item.id, i)"
+        >
+          <span class="navitem__dot"></span>
+          {{ item.label }}
+        </button>
+      }
+    </nav>
+
+    <div class="sidebar__switch">
+      <span class="wf-tag">Outras versões</span>
+      <a routerLink="/landing">Versão 1</a>
+      <a routerLink="/landing2">Versão 2</a>
+    </div>
+  </aside>
+
+  <div class="content" #content>
+    <div class="content__section" data-section="hero"><app-hero /></div>
+    <div class="content__section" data-section="sobre"><app-sobre /></div>
+    <div class="content__section" data-section="abatedouro"><app-abatedouro /></div>
+    <div class="content__section" data-section="impressoras"><app-impressoras3d /></div>
+    <div class="content__section" data-section="vitrine"><app-vitrine /></div>
+    <div class="content__section" data-section="contato"><app-contato /></div>
+  </div>
+</div>

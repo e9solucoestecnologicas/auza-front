@@ -1,0 +1,21 @@
+<div class="sec vitrine">
+  <span class="wf-section-name">Vitrine de Produtos</span>
+
+  <div class="wrap">
+    <header class="vitrine__head">
+      <span class="wf-tag">Eyebrow</span>
+      <div class="wf-bar wf-bar--title"></div>
+      <div class="wf-bar wf-bar--60"></div>
+    </header>
+
+    <div class="vitrine__grid">
+      @for (produto of produtos; track produto) {
+        <article class="wf-card vitrine__card">
+          <div class="wf-box vitrine__thumb">Imagem</div>
+          <div class="wf-bar wf-bar--40"></div>
+          <div class="wf-bar wf-bar--80"></div>
+        </article>
+      }
+    </div>
+  </div>
+</div>

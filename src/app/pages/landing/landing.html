@@ -1,0 +1,47 @@
+<header class="topbar">
+  <a
+    class="topbar__brand"
+    href="#hero"
+    aria-label="Logo"
+    style="text-align: center;"
+    (click)="scrollToSection('hero', $event)"
+    ><b>Sua Logo</b></a
+  >
+
+  <nav class="topbar__nav">
+    @for (item of nav; track item.anchor) {
+      <a [href]="'#' + item.anchor" (click)="scrollToSection(item.anchor, $event)">{{
+        item.label
+      }}</a>
+    }
+  </nav>
+
+  <span class="topbar__switch-group">
+    <a class="topbar__switch" routerLink="/landing2">Versão 2</a>
+    <a class="topbar__switch" routerLink="/landing3">Versão 3</a>
+  </span>
+</header>
+
+<main class="landing">
+  <span id="hero"></span>
+  <app-hero />
+
+  <span id="sobre"></span>
+  <app-sobre />
+
+  <span id="abatedouro"></span>
+  <app-abatedouro />
+
+  <span id="impressoras"></span>
+  <app-impressoras3d />
+
+  <span id="vitrine"></span>
+  <app-vitrine />
+
+  <span id="contato"></span>
+  <app-contato />
+</main>
+
+<footer class="footer">
+  <div class="wf-bar"></div>
+</footer>

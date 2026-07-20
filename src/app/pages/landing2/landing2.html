@@ -1,0 +1,46 @@
+<div class="fullpage">
+  <header class="fp-top">
+    <span aria-label="Logo"></span>
+    <span class="fp-switch-group">
+      <a class="fp-switch" routerLink="/landing">Versão 1</a>
+      <a class="fp-switch" routerLink="/landing3">Versão 3</a>
+    </span>
+  </header>
+
+  <div class="track" [style.transform]="'translateY(-' + current() * 100 + 'dvh)'">
+    <section class="slide"><app-hero /></section>
+    <section class="slide"><app-sobre /></section>
+    <section class="slide"><app-abatedouro /></section>
+    <section class="slide"><app-impressoras3d /></section>
+    <section class="slide"><app-vitrine /></section>
+    <section class="slide"><app-contato /></section>
+  </div>
+
+  <nav class="dots" aria-label="Navegação de seções">
+    @for (slide of slides; track slide.id; let i = $index) {
+      <button
+        type="button"
+        class="dot"
+        [class.dot--active]="current() === i"
+        [attr.aria-label]="slide.label"
+        [attr.aria-current]="current() === i"
+        (click)="goTo(i)"
+      >
+        <span class="dot__label">{{ slide.label }}</span>
+      </button>
+    }
+  </nav>
+
+  <div class="fp-arrows">
+    <button type="button" class="arrow" (click)="prev()" [disabled]="isFirst" aria-label="Anterior">
+      &uarr;
+    </button>
+    <button type="button" class="arrow" (click)="next()" [disabled]="isLast" aria-label="Próxima">
+      &darr;
+    </button>
+  </div>
+
+  <span class="fp-counter">
+    {{ current() + 1 }} <span class="fp-counter__total">/ {{ slides.length }}</span>
+  </span>
+</div>
