@@ -14,5 +14,9 @@ export const routes: Routes = [
     path: 'landing3',
     loadComponent: () => import('./pages/landing3/landing3').then((m) => m.Landing3),
   },
+  {
+    path: 'design-system',
+    loadComponent: () => import('./pages/design-system/design-system').then((m) => m.DesignSystem),
+  },
   { path: '**', redirectTo: 'landing' },
 ];
