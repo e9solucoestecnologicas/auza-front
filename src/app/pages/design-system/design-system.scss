@@ -1,0 +1,161 @@
+/* ============================================================
+   AUZA Design System — estilos portados do protótipo.
+   ViewEncapsulation.None: tudo escopado sob .ds-root para não
+   vazar para as outras páginas do app.
+   ============================================================ */
+
+/* ---- Base (equivalente ao CSS inline original) ---- */
+.ds-root {
+  --font-sans: 'Geist', Inter, ui-sans-serif, system-ui, -apple-system, sans-serif;
+  font-family: var(--font-sans);
+  background-color: #feebca; /* secundária = fundo da página */
+  min-height: 100vh;
+}
+
+.ds-root .font-geist-mono {
+  font-family: 'Geist Mono', monospace !important;
+}
+
+.ds-root #canvas-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* ============================================================
+   BRAND OVERRIDE — Paleta AUZA (primária #4a1d06 / secundária #feebca)
+   Remapeia a escala neutra + preto/branco. Sem redesenhar.
+   ============================================================ */
+
+/* ---- Superfícies ---- */
+.ds-root .bg-white { background-color: #fff8ea !important; }
+.ds-root .bg-neutral-50 { background-color: #f6dcae !important; }
+.ds-root .bg-neutral-100 { background-color: #efd3a0 !important; }
+.ds-root .bg-neutral-200 { background-color: #e7cfa4 !important; }
+.ds-root .bg-neutral-300 { background-color: #d8c09a !important; }
+.ds-root .bg-neutral-400 { background-color: #b0906f !important; }
+.ds-root .bg-neutral-900 { background-color: #4a1d06 !important; }
+.ds-root .bg-neutral-900\/50 { background-color: rgb(74 29 6 / 0.5) !important; }
+
+/* ---- Texto ---- */
+.ds-root .text-black,
+.ds-root .text-neutral-900 { color: #4a1d06 !important; }
+.ds-root .text-neutral-600 { color: #6f4a2f !important; }
+.ds-root .text-neutral-500 { color: #8a6647 !important; }
+.ds-root .text-neutral-400 { color: #b0906f !important; }
+.ds-root .text-white { color: #feebca !important; }
+
+/* ---- Bordas ---- */
+.ds-root .border-neutral-100 { border-color: rgba(74, 29, 6, 0.1) !important; }
+.ds-root .border-neutral-200 { border-color: rgba(74, 29, 6, 0.18) !important; }
+.ds-root .border-neutral-800 { border-color: rgba(254, 235, 202, 0.15) !important; }
+.ds-root .h-px.bg-neutral-200 { background-color: rgba(74, 29, 6, 0.18) !important; }
+
+/* ---- Hover (mesmos timings) ---- */
+.ds-root .hover\:bg-neutral-800:hover { background-color: #3a1604 !important; }
+.ds-root .hover\:bg-neutral-50:hover { background-color: #f0d29a !important; }
+.ds-root .hover\:bg-neutral-100:hover { background-color: #ecd0a0 !important; }
+.ds-root .hover\:text-black:hover { color: #4a1d06 !important; }
+.ds-root .hover\:text-neutral-600:hover { color: #6f4a2f !important; }
+.ds-root .hover\:border-neutral-400:hover { border-color: rgba(74, 29, 6, 0.45) !important; }
+.ds-root .hover\:text-blue-600:hover { color: #4a1d06 !important; }
+.ds-root .hover\:border-blue-600:hover { border-color: #4a1d06 !important; }
+
+/* ---- Seleção ---- */
+.ds-root ::selection { background-color: #4a1d06; color: #feebca; }
+
+/* ---- Gradiente da marca ---- */
+.ds-root .from-neutral-900 {
+  --tw-gradient-from: #4a1d06 var(--tw-gradient-from-position) !important;
+  --tw-gradient-to: rgb(74 29 6 / 0) var(--tw-gradient-to-position) !important;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
+}
+.ds-root .via-neutral-500 {
+  --tw-gradient-to: rgb(161 122 88 / 0) var(--tw-gradient-to-position) !important;
+  --tw-gradient-stops: var(--tw-gradient-from), #a17a58 var(--tw-gradient-via-position),
+    var(--tw-gradient-to) !important;
+}
+.ds-root .to-neutral-200 {
+  --tw-gradient-to: #feebca var(--tw-gradient-to-position) !important;
+}
+
+/* ============================================================
+   Helpers de documentação (não redesenham a UI)
+   ============================================================ */
+.ds-root .ds-nav {
+  background: rgba(255, 248, 234, 0.88) !important;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  will-change: transform;
+}
+.ds-root .ds-nav--hidden {
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
+}
+.ds-root .bg-brand-primary { background-color: #4a1d06 !important; }
+.ds-root .bg-brand-secondary { background-color: #feebca !important; }
+.ds-root .bg-brand-700 { background-color: #6f3d20 !important; }
+.ds-root .bg-brand-500 { background-color: #a17a58 !important; }
+.ds-root .is-hover-btn { background-color: #3a1604 !important; }
+.ds-root .is-hover-shadow {
+  box-shadow: 0 20px 25px -5px rgba(74, 29, 6, 0.2), 0 8px 10px -6px rgba(74, 29, 6, 0.15) !important;
+}
+
+/* ============================================================
+   Inputs / campos de formulário — tokens do DS AUZA
+   ============================================================ */
+.ds-root .ds-input {
+  width: 100%;
+  background: #fff8ea;
+  border: 1px solid rgba(74, 29, 6, 0.18);
+  border-radius: 0.5rem;
+  padding: 0.7rem 0.9rem;
+  font-family: 'Geist Mono', monospace;
+  font-size: 0.875rem;
+  color: #4a1d06;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.ds-root .ds-input::placeholder { color: #b0906f; }
+.ds-root .ds-input:focus,
+.ds-root .ds-input.is-focus {
+  outline: none;
+  border-color: #4a1d06;
+  box-shadow: 0 0 0 3px rgba(74, 29, 6, 0.12);
+}
+.ds-root .ds-input:disabled,
+.ds-root .ds-input[disabled] {
+  background: #f2e2c0;
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.ds-root .ds-input--error {
+  border-color: #b3402a;
+}
+.ds-root .ds-input--error:focus,
+.ds-root .ds-input--error.is-focus {
+  border-color: #b3402a;
+  box-shadow: 0 0 0 3px rgba(179, 64, 42, 0.15);
+}
+.ds-root select.ds-input {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%234a1d06' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  padding-right: 2.25rem;
+}
+.ds-root input[type='checkbox'].ds-check,
+.ds-root input[type='radio'].ds-check {
+  width: 1.05rem;
+  height: 1.05rem;
+  accent-color: #4a1d06;
+  cursor: pointer;
+}
+.ds-root .ds-error-text { color: #b3402a; }

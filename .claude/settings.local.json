@@ -20,7 +20,19 @@
       "PowerShell(git config user.name)",
       "PowerShell(git config user.email)",
       "PowerShell(git init -b main)",
-      "PowerShell(git add -A)"
+      "PowerShell(git add -A)",
+      "PowerShell(git remote remove origin 2>$null)",
+      "PowerShell(git remote add origin https://github.com/e9solucoestecnologicas/auza-front.git)",
+      "PowerShell(git push -u origin main 2>&1)",
+      "PowerShell(git ls-remote --heads origin 2>&1)",
+      "PowerShell(git add .gitattributes)",
+      "PowerShell(git push origin main 2>&1)",
+      "Bash(cd \"/c/Users/User/PROJETOS/Fundamentos de Vibe Design/Fundamentos de Vibe Design/Banco de Referências/Sites para referência/2_temas_claros/jonathanfernandes.aura.build\" 2>&1 && echo \"=== conteúdo da pasta ===\" && ls -la)",
+      "Read(//c/Users/User/PROJETOS/Fundamentos de Vibe Design/Fundamentos de Vibe Design/Banco de Referências/Sites para referência/2_temas_claros/jonathanfernandes.aura.build/**)",
+      "Bash(cd \"/c/Users/User/PROJETOS/Fundamentos de Vibe Design/Fundamentos de Vibe Design/Banco de Referências/Sites para referência/2_temas_claros/jonathanfernandes.aura.build\" && echo \"=== assets ===\" && ls -laR assets)",
+      "PowerShell(Start-Process \"http://localhost:4200/design-system\")",
+      "PowerShell(Start-Process \"http://localhost:4200/landing\")",
+      "PowerShell(Start-Process \"http://localhost:4200/design-system#components\")"
     ]
   }
 }
