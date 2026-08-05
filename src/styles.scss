@@ -1,3 +1,16 @@
+/* Tokens do Design System AUZA — tudo escopado sob `.ds-root`,
+   então não interfere nos wireframes abaixo.
+   O Sass emite estes módulos no topo do arquivo; os utilitários do Tailwind
+   vêm depois e os overrides da marca vencem por `!important`/especificidade. */
+@use 'styles/ds-fonts';
+@use 'styles/ds-brand';
+@use 'styles/ds-surfaces';
+
+/* Tailwind (build-time, via tailwind.config.js) */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* ============================================================
    AUZA — Wireframe estrutural (sem cores de marca / sem conteúdo)
    Blocos placeholder neutros apenas para mostrar a estrutura.
@@ -14,7 +27,7 @@
 
   --wf-radius: 8px;
   --wf-max: 1200px;
-  --wf-font: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --wf-font: system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
 }
 
 * {

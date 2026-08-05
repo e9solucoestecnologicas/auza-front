@@ -1,0 +1,107 @@
+<!--
+  Duas formas do mesmo menu:
+  · mobile  → barra fixa no rodapé, largura total, sem cantos arredondados
+              (só a borda de cima separa do conteúdo).
+  · ≥1336px → rail flutuante a 20px da borda esquerda. Esse é o ponto em que a
+              coluna de texto (max-w-6xl) já começa depois da pílula, então o
+              rail não cobre o início dos títulos.
+-->
+<aside
+  class="fixed bottom-0 left-0 right-0 z-40 min-[1336px]:bottom-auto min-[1336px]:right-auto min-[1336px]:left-5 min-[1336px]:top-1/2 min-[1336px]:-translate-y-1/2"
+  aria-label="Navegação da página"
+>
+  <div
+    class="flex w-full items-stretch justify-around gap-1 border-t border-neutral-200 bg-white p-2 shadow-lg min-[1336px]:w-auto min-[1336px]:flex-col min-[1336px]:items-center min-[1336px]:justify-start min-[1336px]:gap-2 min-[1336px]:rounded-full min-[1336px]:border"
+  >
+    @for (item of itens; track item.rotulo) {
+      @if (item.href) {
+        <a
+          class="group relative flex flex-col items-center justify-center gap-1 rounded-lg px-3 py-1.5 text-neutral-400 transition hover:bg-neutral-100 hover:text-black min-[1336px]:h-10 min-[1336px]:w-10 min-[1336px]:gap-0 min-[1336px]:rounded-full min-[1336px]:p-0"
+          [attr.href]="item.href"
+        >
+          <app-icon [name]="item.icone" class="h-4 w-4" />
+          <!-- Rótulo: só na barra do rodapé -->
+          <span class="font-geist-mono text-[10px] leading-none min-[1336px]:hidden">{{
+            item.rotulo
+          }}</span>
+          <!-- Tooltip: só no rail -->
+          <span
+            class="pointer-events-none absolute left-12 hidden whitespace-nowrap rounded bg-neutral-900 px-2 py-1 font-geist-mono text-xs text-white opacity-0 transition-opacity group-hover:opacity-100 min-[1336px]:block"
+            >{{ item.rotulo }}</span
+          >
+        </a>
+      } @else {
+        <!-- Produtos: um ícone só, com as opções no submenu -->
+        <div
+          class="relative flex"
+          (mouseenter)="abrir()"
+          (mouseleave)="fechar()"
+          (focusin)="abrir()"
+          (focusout)="onFocusOut($event)"
+          (keydown.escape)="fechar()"
+        >
+          <button
+            type="button"
+            class="flex flex-1 flex-col items-center justify-center gap-1 rounded-lg px-3 py-1.5 transition min-[1336px]:h-10 min-[1336px]:w-10 min-[1336px]:flex-none min-[1336px]:gap-0 min-[1336px]:rounded-full min-[1336px]:p-0"
+            [class]="
+              produtosAberto()
+                ? 'bg-neutral-100 text-neutral-900'
+                : 'text-neutral-400 hover:bg-neutral-100 hover:text-black'
+            "
+            [attr.aria-expanded]="produtosAberto()"
+            aria-haspopup="true"
+            (click)="alternar()"
+          >
+            <app-icon [name]="item.icone" class="h-4 w-4" />
+            <span class="font-geist-mono text-[10px] leading-none min-[1336px]:hidden">{{
+              item.rotulo
+            }}</span>
+          </button>
+
+          <!--
+            Mobile: abre para cima, ancorado na janela (a barra tem ~56px).
+            Rail: abre ao lado; o `pl-3` é a ponte de hover entre botão e cartão.
+          -->
+          <div
+            class="fixed bottom-[4.5rem] left-4 right-4 transition-opacity duration-200 min-[1336px]:absolute min-[1336px]:bottom-auto min-[1336px]:left-full min-[1336px]:right-auto min-[1336px]:top-1/2 min-[1336px]:-translate-y-1/2 min-[1336px]:pl-3"
+            [class]="produtosAberto() ? 'opacity-100' : 'pointer-events-none opacity-0'"
+          >
+            <div
+              class="rounded-2xl border border-neutral-200 bg-white p-2 shadow-xl min-[1336px]:w-64"
+            >
+              <div
+                class="px-3 pb-2 pt-1 font-geist-mono text-xs font-bold uppercase tracking-widest text-neutral-400"
+              >
+                Produtos
+              </div>
+
+              @for (cat of categorias; track cat.id) {
+                <a
+                  class="flex items-center gap-3 rounded-lg px-3 py-2 text-neutral-600 transition-colors hover:bg-neutral-100 hover:text-black"
+                  [href]="'#solucao-' + cat.id"
+                  [tabIndex]="produtosAberto() ? 0 : -1"
+                  (click)="fechar()"
+                >
+                  <app-icon [name]="cat.icone" class="h-4 w-4 shrink-0 text-neutral-400" />
+                  <span class="font-geist-mono text-sm">{{ cat.nome }}</span>
+                </a>
+              }
+
+              <div class="my-1 h-px bg-neutral-200"></div>
+
+              <a
+                class="flex items-center gap-3 rounded-lg px-3 py-2 text-neutral-900 transition-colors hover:bg-neutral-100"
+                href="#produtos"
+                [tabIndex]="produtosAberto() ? 0 : -1"
+                (click)="fechar()"
+              >
+                <app-icon name="plus" class="h-4 w-4 shrink-0 text-neutral-400" />
+                <span class="font-geist-mono text-sm font-semibold">Vitrine completa</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      }
+    }
+  </div>
+</aside>

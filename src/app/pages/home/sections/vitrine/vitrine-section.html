@@ -1,0 +1,119 @@
+<!-- Seção CLARA (areia #f6dcae) -->
+<section id="produtos" class="scroll-mt-16 border-t border-neutral-200 bg-neutral-50 px-6 sm:px-8">
+  <div class="mx-auto max-w-6xl py-24">
+    <div class="mb-6 flex items-center gap-3">
+      <span class="font-geist-mono text-xs font-bold uppercase tracking-widest text-neutral-400"
+        >Vitrine de produtos</span
+      >
+      <div class="h-px flex-1 bg-neutral-200"></div>
+    </div>
+
+    <div class="mb-10 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+      <div>
+        <h2 class="mb-3 text-3xl font-semibold tracking-tight text-neutral-900 md:text-4xl">
+          Linha completa
+        </h2>
+        <p class="max-w-xl font-geist-mono text-lg text-neutral-500">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.
+        </p>
+      </div>
+
+      <!-- Setas: a lista é longa, então navegação manual nos dois sentidos -->
+      <div class="flex shrink-0 gap-3">
+        <button
+          type="button"
+          class="grid h-11 w-11 place-items-center rounded-full border border-neutral-200 bg-white text-neutral-900 shadow-sm transition-all hover:bg-neutral-100 hover:shadow-md"
+          aria-label="Produtos anteriores"
+          (click)="voltar()"
+        >
+          <app-icon name="chevron-left" class="h-4 w-4" />
+        </button>
+        <button
+          type="button"
+          class="grid h-11 w-11 place-items-center rounded-full border border-neutral-200 bg-white text-neutral-900 shadow-sm transition-all hover:bg-neutral-100 hover:shadow-md"
+          aria-label="Próximos produtos"
+          (click)="avancar()"
+        >
+          <app-icon name="chevron-right" class="h-4 w-4" />
+        </button>
+      </div>
+    </div>
+
+    <!-- Tags de filtro -->
+    <div class="mb-10 flex flex-wrap gap-2" role="group" aria-label="Filtrar por categoria">
+      <button
+        type="button"
+        class="rounded-full border px-3 py-1 font-geist-mono text-xs transition-colors"
+        [class]="
+          filtro() === 'todos'
+            ? 'bg-neutral-900 text-white border-neutral-900'
+            : 'bg-neutral-100 text-neutral-600 border-neutral-200 hover:bg-neutral-200'
+        "
+        [attr.aria-pressed]="filtro() === 'todos'"
+        (click)="filtrar('todos')"
+      >
+        Todos
+      </button>
+      @for (cat of categorias; track cat.id) {
+        <button
+          type="button"
+          class="rounded-full border px-3 py-1 font-geist-mono text-xs transition-colors"
+          [class]="
+            filtro() === cat.id
+              ? 'bg-neutral-900 text-white border-neutral-900'
+              : 'bg-neutral-100 text-neutral-600 border-neutral-200 hover:bg-neutral-200'
+          "
+          [attr.aria-pressed]="filtro() === cat.id"
+          (click)="filtrar(cat.id)"
+        >
+          {{ cat.nome }}
+        </button>
+      }
+    </div>
+
+    <!-- Trilho -->
+    <div
+      #trilho
+      class="vitrine-trilho flex gap-6 pb-4"
+      (mouseenter)="pausar()"
+      (mouseleave)="retomar()"
+      (focusin)="pausar()"
+      (focusout)="retomar()"
+    >
+      @for (produto of produtos(); track produto.nome) {
+        <!-- Service Card do DS -->
+        <article
+          class="group w-[280px] shrink-0 snap-start rounded-2xl border border-neutral-200 bg-white p-6 transition-all duration-300 hover:shadow-xl sm:w-[320px]"
+        >
+          <div
+            class="mb-6 grid h-48 place-items-center overflow-hidden rounded-xl border border-neutral-100 bg-neutral-100"
+          >
+            <app-icon
+              [name]="iconeCategoria(produto.categoriaId)"
+              class="h-10 w-10 text-neutral-400"
+            />
+          </div>
+          <div
+            class="mb-4 inline-flex rounded-full border border-neutral-200 bg-neutral-100 px-3 py-1 font-geist-mono text-xs text-neutral-600"
+          >
+            {{ nomeCategoria(produto.categoriaId) }}
+          </div>
+          <h3 class="mb-3 text-xl font-semibold text-neutral-900">{{ produto.nome }}</h3>
+          <p class="font-geist-mono text-sm leading-relaxed text-neutral-500">
+            {{ produto.descricao }}
+          </p>
+        </article>
+      }
+    </div>
+
+    <div class="mt-10 flex justify-center">
+      <a
+        class="inline-flex items-center gap-2 rounded-full border border-neutral-200 bg-white px-8 py-4 font-geist-mono text-sm text-neutral-900 shadow-sm transition-all hover:bg-neutral-50 hover:shadow-md"
+        href="#contato"
+      >
+        Ver todos os produtos
+        <app-icon name="plus" class="h-4 w-4" />
+      </a>
+    </div>
+  </div>
+</section>

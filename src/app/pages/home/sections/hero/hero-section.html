@@ -1,0 +1,180 @@
+<!-- Seção ESCURA (ink #4a1d06) — abre a alternância claro/escuro da página -->
+<section
+  id="inicio"
+  class="on-dark relative overflow-hidden bg-neutral-900"
+  aria-roledescription="carrossel"
+  aria-label="Categorias de produtos AUZA"
+  (mouseenter)="pausar()"
+  (mouseleave)="retomar()"
+>
+  <div class="hero-textura" aria-hidden="true"></div>
+
+  <!--
+    Altura da janela: `min-h-screen` e não `h-screen` — em tela baixa (celular
+    deitado) o conteúdo passaria de 100vh e a seção, que é `overflow-hidden`,
+    cortaria o título. Com `min-`, 100vh é piso, e a centralização vale para a
+    altura que a seção tiver.
+  -->
+  <div
+    class="relative z-10 mx-auto flex min-h-screen max-w-6xl flex-col px-6 pb-24 pt-10 sm:px-8 min-[1336px]:pb-16"
+  >
+    <!-- Topo: a navbar fixa só entra ao rolar, então a marca vive aqui na abertura -->
+    <div class="flex items-center justify-between gap-6">
+      <a href="#inicio" aria-label="AUZA — ir para o início">
+        <app-logo variante="escuro" class="w-[150px] sm:w-[190px]" />
+      </a>
+      <nav
+        class="hidden gap-8 font-geist-mono text-xs font-medium uppercase tracking-wide text-muted sm:flex"
+      >
+        <a class="transition-colors hover:text-ink" href="#sobre">Sobre</a>
+        <a class="transition-colors hover:text-ink" href="#solucoes">Soluções</a>
+        <a class="transition-colors hover:text-ink" href="#produtos">Produtos</a>
+        <a class="transition-colors hover:text-ink" href="#contato">Contato</a>
+      </nav>
+    </div>
+
+    <!-- Ocupa toda a sobra entre o topo e as bolinhas: é essa altura que o
+         título centraliza e o resumo encosta por baixo. -->
+    <div class="flex min-h-0 flex-1 flex-col">
+      <div class="ds-stack min-h-0 flex-1">
+        @for (cat of categorias; track cat.id; let i = $index) {
+          <!--
+            `hero-slide--ativo` é o gatilho da entrada escalonada: os elementos
+            marcados com `hero-surge` sobem saindo do desfoque, cada um com seu
+            `--surge-atraso`. Ver src/styles/_ds-surfaces.scss.
+          -->
+          <!--
+            Três blocos numa grade de 12 colunas e 2 linhas: título (linha 1,
+            centrado na altura), resumo (linha 2, no rodapé) e a peça, que ocupa
+            as duas linhas na coluna ao lado.
+
+            `lg:grid-rows-[1fr_auto]` é o que sustenta o arranjo: a primeira
+            linha come toda a sobra de altura — e é dentro dela que
+            `self-center` centraliza o título —, enquanto a segunda tem a altura
+            do resumo e fica colada embaixo. No mobile são três linhas
+            empilhadas, e aí `content-center` agrupa o conjunto no meio.
+          -->
+          <div
+            class="hero-slide grid h-full grid-cols-1 content-center gap-10 transition-opacity duration-700 ease-out lg:grid-cols-12 lg:grid-rows-[1fr_auto] lg:gap-x-12 lg:gap-y-10"
+            [class.hero-slide--ativo]="i === atual()"
+            [class.opacity-0]="i !== atual()"
+            [class.pointer-events-none]="i !== atual()"
+            [attr.aria-hidden]="i !== atual()"
+          >
+            <!-- Título no centro da altura. O eyebrow viaja com ele: é o rótulo
+                 do título, e separá-los por meia tela quebraria a relação. -->
+            <div class="self-center lg:col-span-7 lg:row-start-1" [class]="colunaTexto(i)">
+              <!-- eyebrow: 12px bold mono tracking-widest (DS · Bold S) -->
+              <div class="hero-surge mb-6 flex items-center gap-3" style="--surge-atraso: 0.3s">
+                <span class="font-geist-mono text-xs font-bold uppercase tracking-widest text-white"
+                  >0{{ i + 1 }}</span
+                >
+                <span class="rule-soft h-px w-10"></span>
+                <span
+                  class="font-geist-mono text-xs font-bold uppercase tracking-widest text-muted"
+                  >{{ cat.nome }}</span
+                >
+              </div>
+
+              <!-- H1 do DS: 48 → 96px, semibold, tracking-tighter, leading 0.85 -->
+              <!-- O display é o protagonista: sobe mais alto e mais devagar
+                   que o resto, como as linhas de título da referência. -->
+              <h1
+                class="hero-surge text-5xl font-semibold leading-[0.85] tracking-tighter text-white md:text-7xl lg:text-8xl"
+                style="--surge-atraso: 0.6s; --surge-duracao: 1.6s; --surge-subida: 4.5rem"
+              >
+                {{ cat.nome }}
+              </h1>
+              <ul
+                class="hero-surge mt-6 flex flex-wrap gap-2"
+                [class]="alinhamentoTags(i)"
+                style="--surge-atraso: 1.1s"
+              >
+                @for (produto of cat.produtos; track produto) {
+                  <li
+                    class="surface border border-soft rounded-full px-3 py-1 font-geist-mono text-xs uppercase tracking-wide text-white"
+                  >
+                    {{ produto }}
+                  </li>
+                }
+              </ul>
+            </div>
+
+            <!-- Texto explicativo: mesma coluna do título, encostado no rodapé
+                 da altura. `ml-auto` no espelhado para o bloco acompanhar o
+                 alinhamento à direita, já que ele é mais estreito que a coluna. -->
+            <div
+              class="max-w-md space-y-8 lg:col-span-7 lg:row-start-2"
+              [class]="colunaTexto(i)"
+              [class.lg:ml-auto]="espelhado(i)"
+            >
+              <p
+                class="hero-surge font-geist-mono text-sm leading-relaxed text-muted"
+                style="--surge-atraso: 1.4s"
+              >
+                {{ cat.resumo }}
+              </p>
+              <!-- Botão primário invertido: superfície da marca sobre o ink -->
+              <a
+                class="hero-surge inline-flex items-center gap-2 rounded-lg bg-white px-6 py-3 font-geist-mono text-sm font-medium text-neutral-900 transition-colors hover:bg-neutral-50"
+                style="--surge-atraso: 1.7s"
+                [href]="'#solucao-' + cat.id"
+              >
+                Ver {{ cat.nome }}
+                <app-icon name="arrow-right" class="h-4 w-4" />
+              </a>
+            </div>
+
+            <!--
+              A peça, contida na coluna ao lado e ocupando as duas linhas. Antes
+              ela era absoluta e medida em vh, e era isso que estourava o
+              container. Agora a largura vem da coluna e a altura sai da
+              proporção do arquivo (na regra `.hero-peca--<id>`), então ela não
+              tem como transbordar.
+              Decorativa: quem lê a tela recebe a mesma informação pelo texto.
+            -->
+            @if (cat.imagem; as peca) {
+              <div
+                class="hidden self-end lg:col-span-5 lg:row-span-2 lg:row-start-1 lg:block"
+                [class]="colunaPeca(i)"
+                aria-hidden="true"
+              >
+                <div class="hero-peca" [class]="'hero-peca--' + cat.id">
+                  <span class="hero-peca__sombra"></span>
+                  <img class="hero-peca__img" [src]="peca" alt="" decoding="async" />
+
+                  <span
+                    class="hero-cota hero-cota--painel font-geist-mono text-[10px] uppercase tracking-widest text-subtle"
+                  >
+                    <span>65,0 °C · escaldagem</span>
+                    <span class="rule-soft h-px w-14"></span>
+                  </span>
+                  <span
+                    class="hero-cota hero-cota--tambor font-geist-mono text-[10px] uppercase tracking-widest text-subtle"
+                  >
+                    <span>depenagem</span>
+                    <span class="rule-soft h-px w-10"></span>
+                  </span>
+                </div>
+              </div>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- Bolinhas centralizadas -->
+      <div class="mt-14 flex items-center justify-center gap-3">
+        @for (cat of categorias; track cat.id; let i = $index) {
+          <button
+            type="button"
+            class="hero-dot"
+            [class.hero-dot--ativo]="i === atual()"
+            [attr.aria-current]="i === atual()"
+            [attr.aria-label]="'Ir para ' + cat.nome"
+            (click)="ir(i)"
+          ></button>
+        }
+      </div>
+    </div>
+  </div>
+</section>

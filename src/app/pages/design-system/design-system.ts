@@ -7,13 +7,14 @@ import {
   signal,
   ViewEncapsulation,
 } from '@angular/core';
+import { DsAssets } from '../../core/ds-assets';
 
 /**
  * Design System da AUZA — portado do protótipo HTML (base visual: faux.moni).
  * Mantém layout, cores e animações originais. Usa ViewEncapsulation.None com
  * todos os estilos escopados sob `.ds-root` para não vazar para o resto do app.
- * Os assets (runtime do Tailwind, fontes, three.js, Lucide) vivem em /ds-assets
- * e são injetados sob demanda apenas quando esta rota é aberta.
+ * three.js e Lucide vivem em /ds-assets e são carregados sob demanda só quando
+ * esta rota abre; Tailwind e fontes já vêm do build.
  */
 @Component({
   selector: 'app-design-system',
@@ -23,6 +24,7 @@ import {
 })
 export class DesignSystem implements AfterViewInit {
   private readonly host = inject(ElementRef) as ElementRef<HTMLElement>;
+  private readonly assets = inject(DsAssets);
 
   /** Controla a navbar fixa do topo: escondida no início, aparece ao rolar. */
   readonly showTopNav = signal(false);
@@ -33,22 +35,11 @@ export class DesignSystem implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    // Fontes (Geist / Geist Mono / Inter)
-    this.injectCss('/ds-assets/css2_19fd9cc6b396.css', 'ds-font-1');
-    this.injectCss('/ds-assets/css2_62759cd015bd.css', 'ds-font-2');
-    this.injectCss('/ds-assets/css2_86e10c4bcbd4.css', 'ds-font-3');
-
-    // Runtime do Tailwind (gera as classes utilitárias em runtime)
-    this.injectScript('/ds-assets/tailwind-runtime.js', 'ds-tailwind');
-
     // three.js -> inicializa o fundo 3D do hero
-    this.injectScript('/ds-assets/three.lib.js', 'ds-three').then(() => this.initThree());
+    this.assets.loadThree().then(() => this.initThree());
 
     // Lucide -> renderiza os ícones
-    this.injectScript('/ds-assets/lucide.lib.js', 'ds-lucide').then(() => {
-      const lucide = (window as unknown as { lucide?: { createIcons: () => void } }).lucide;
-      lucide?.createIcons();
-    });
+    this.assets.loadLucide();
   }
 
   scrollToId(id: string): void {
@@ -75,40 +66,6 @@ export class DesignSystem implements AfterViewInit {
 
   scrollTop(): void {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  private injectCss(href: string, id: string): void {
-    if (document.getElementById(id)) {
-      return;
-    }
-    const link = document.createElement('link');
-    link.id = id;
-    link.rel = 'stylesheet';
-    link.href = href;
-    document.head.appendChild(link);
-  }
-
-  private injectScript(src: string, id: string): Promise<void> {
-    return new Promise((resolve) => {
-      const existing = document.getElementById(id) as (HTMLScriptElement & { dataset: DOMStringMap }) | null;
-      if (existing) {
-        if (existing.dataset['loaded']) {
-          resolve();
-        } else {
-          existing.addEventListener('load', () => resolve());
-        }
-        return;
-      }
-      const script = document.createElement('script');
-      script.id = id;
-      script.src = src;
-      script.addEventListener('load', () => {
-        script.dataset['loaded'] = '1';
-        resolve();
-      });
-      script.addEventListener('error', () => resolve());
-      document.body.appendChild(script);
-    });
   }
 
   /** Fundo 3D do hero — mesmo comportamento do protótipo original. */

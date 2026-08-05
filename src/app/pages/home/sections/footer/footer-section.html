@@ -1,0 +1,56 @@
+<!-- Seção ESCURA (ink #4a1d06) -->
+<footer class="on-dark border-t border-soft bg-neutral-900 px-6 sm:px-8">
+  <!-- pb extra no mobile: a barra de navegação fica fixa sobre o rodapé -->
+  <div class="mx-auto max-w-6xl pb-28 pt-16 md:pt-20 min-[1336px]:pb-20">
+    <div class="grid grid-cols-1 gap-12 md:grid-cols-12">
+      <div class="md:col-span-5">
+        <app-logo variante="escuro" [lazy]="true" class="mb-5 w-[170px]" />
+        <p class="max-w-sm font-geist-mono text-sm leading-relaxed text-muted">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
+          ut labore.
+        </p>
+      </div>
+
+      <div class="md:col-span-4">
+        <div class="mb-4 font-geist-mono text-xs font-bold uppercase tracking-widest text-subtle">
+          Segmentos
+        </div>
+        <ul class="space-y-2">
+          @for (cat of categorias; track cat.id) {
+            <li>
+              <a
+                class="font-geist-mono text-sm text-muted transition-colors hover:text-ink"
+                [href]="'#solucao-' + cat.id"
+                >{{ cat.nome }}</a
+              >
+            </li>
+          }
+        </ul>
+      </div>
+
+      <div class="md:col-span-3">
+        <div class="mb-4 font-geist-mono text-xs font-bold uppercase tracking-widest text-subtle">
+          Navegação
+        </div>
+        <ul class="space-y-2">
+          @for (item of institucional; track item.href) {
+            <li>
+              <a
+                class="font-geist-mono text-sm text-muted transition-colors hover:text-ink"
+                [href]="item.href"
+                >{{ item.rotulo }}</a
+              >
+            </li>
+          }
+        </ul>
+      </div>
+    </div>
+
+    <div
+      class="mt-14 flex flex-col gap-4 border-t border-soft pt-8 font-geist-mono text-xs text-subtle sm:flex-row sm:items-center sm:justify-between"
+    >
+      <span>© {{ ano }} AUZA. Todos os direitos reservados.</span>
+      <span>Lorem ipsum · CNPJ 00.000.000/0000-00</span>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,173 @@
+<!-- Seção CLARA (marfim #fff8ea) -->
+<section id="contato" class="scroll-mt-16 border-t border-neutral-200 bg-white px-6 sm:px-8">
+  <div class="mx-auto max-w-6xl py-24">
+    <div class="mb-6 flex items-center gap-3">
+      <span class="font-geist-mono text-xs font-bold uppercase tracking-widest text-neutral-400"
+        >Contato</span
+      >
+      <div class="h-px flex-1 bg-neutral-200"></div>
+    </div>
+
+    <div class="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
+      <div class="lg:col-span-5">
+        <h2 class="mb-4 text-3xl font-semibold tracking-tight text-neutral-900 md:text-4xl">
+          Vamos falar do seu processo
+        </h2>
+        <p class="mb-10 max-w-md font-geist-mono text-lg leading-relaxed text-neutral-600">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
+          ut labore et dolore magna aliqua.
+        </p>
+
+        <ul class="space-y-5">
+          <li class="flex items-center gap-4">
+            <span
+              class="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-neutral-200 bg-neutral-50 text-neutral-900"
+            >
+              <app-icon name="mail" class="h-4 w-4" />
+            </span>
+            <span class="font-geist-mono text-sm text-neutral-600">contato&#64;auza.com.br</span>
+          </li>
+          <li class="flex items-center gap-4">
+            <span
+              class="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-neutral-200 bg-neutral-50 text-neutral-900"
+            >
+              <app-icon name="phone" class="h-4 w-4" />
+            </span>
+            <span class="font-geist-mono text-sm text-neutral-600">(00) 0000-0000</span>
+          </li>
+          <li class="flex items-center gap-4">
+            <span
+              class="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-neutral-200 bg-neutral-50 text-neutral-900"
+            >
+              <app-icon name="map-pin" class="h-4 w-4" />
+            </span>
+            <span class="font-geist-mono text-sm text-neutral-600">Lorem ipsum, 000 — Brasil</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="lg:col-span-7">
+        <form
+          class="rounded-2xl border border-neutral-200 bg-neutral-50 p-6 sm:p-8"
+          [formGroup]="form"
+          (ngSubmit)="enviar()"
+          novalidate
+        >
+          @if (enviado()) {
+            <div
+              class="mb-6 flex items-center gap-3 rounded-lg border border-green-200 bg-green-50 px-4 py-3 font-geist-mono text-xs text-green-700"
+            >
+              <app-icon name="check" class="h-4 w-4" />
+              Mensagem registrada. Em breve entramos em contato.
+            </div>
+          }
+
+          <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+            <label class="block">
+              <span
+                class="mb-2 block font-geist-mono text-xs uppercase tracking-wide text-neutral-500"
+                >Nome</span
+              >
+              <input
+                type="text"
+                class="ds-input"
+                [class.ds-input--error]="invalido('nome')"
+                formControlName="nome"
+                placeholder="Seu nome"
+              />
+              @if (invalido('nome')) {
+                <span class="ds-error-text mt-2 block font-geist-mono text-xs"
+                  >Informe seu nome completo.</span
+                >
+              }
+            </label>
+
+            <label class="block">
+              <span
+                class="mb-2 block font-geist-mono text-xs uppercase tracking-wide text-neutral-500"
+                >E-mail</span
+              >
+              <input
+                type="email"
+                class="ds-input"
+                [class.ds-input--error]="invalido('email')"
+                formControlName="email"
+                placeholder="voce@empresa.com"
+              />
+              @if (invalido('email')) {
+                <span class="ds-error-text mt-2 block font-geist-mono text-xs"
+                  >Informe um e-mail válido.</span
+                >
+              }
+            </label>
+
+            <label class="block">
+              <span
+                class="mb-2 block font-geist-mono text-xs uppercase tracking-wide text-neutral-500"
+                >Telefone</span
+              >
+              <input
+                type="tel"
+                class="ds-input"
+                formControlName="telefone"
+                placeholder="(00) 00000-0000"
+              />
+            </label>
+
+            <label class="block">
+              <span
+                class="mb-2 block font-geist-mono text-xs uppercase tracking-wide text-neutral-500"
+                >Categoria de interesse</span
+              >
+              <select class="ds-input" formControlName="categoria">
+                <option value="">Selecione</option>
+                @for (cat of categorias; track cat.id) {
+                  <option [value]="cat.id">{{ cat.nome }}</option>
+                }
+              </select>
+            </label>
+
+            <label class="block sm:col-span-2">
+              <span
+                class="mb-2 block font-geist-mono text-xs uppercase tracking-wide text-neutral-500"
+                >Mensagem</span
+              >
+              <textarea
+                rows="4"
+                class="ds-input"
+                [class.ds-input--error]="invalido('mensagem')"
+                formControlName="mensagem"
+                placeholder="Conte qual processo você quer resolver."
+              ></textarea>
+              @if (invalido('mensagem')) {
+                <span class="ds-error-text mt-2 block font-geist-mono text-xs"
+                  >Descreva sua necessidade em pelo menos 10 caracteres.</span
+                >
+              }
+            </label>
+          </div>
+
+          <label class="mt-6 flex cursor-pointer items-center gap-2">
+            <input type="checkbox" class="ds-check" formControlName="aceite" />
+            <span class="font-geist-mono text-sm text-neutral-600"
+              >Aceito ser contatado sobre esta solicitação.</span
+            >
+          </label>
+          @if (invalido('aceite')) {
+            <span class="ds-error-text mt-2 block font-geist-mono text-xs"
+              >É necessário aceitar para enviar.</span
+            >
+          }
+
+          <button
+            type="submit"
+            class="mt-8 inline-flex items-center gap-2 rounded-lg bg-neutral-900 px-6 py-3 font-geist-mono text-sm font-medium text-white transition-colors hover:bg-neutral-800"
+          >
+            Enviar mensagem
+            <app-icon name="send" class="h-4 w-4" />
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>

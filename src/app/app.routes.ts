@@ -1,7 +1,11 @@
 import { Routes } from '@angular/router';
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'landing', pathMatch: 'full' },
+  { path: '', redirectTo: 'home', pathMatch: 'full' },
+  {
+    path: 'home',
+    loadComponent: () => import('./pages/home/home').then((m) => m.Home),
+  },
   {
     path: 'landing',
     loadComponent: () => import('./pages/landing/landing').then((m) => m.Landing),
@@ -18,5 +22,5 @@ export const routes: Routes = [
     path: 'design-system',
     loadComponent: () => import('./pages/design-system/design-system').then((m) => m.DesignSystem),
   },
-  { path: '**', redirectTo: 'landing' },
+  { path: '**', redirectTo: 'home' },
 ];
