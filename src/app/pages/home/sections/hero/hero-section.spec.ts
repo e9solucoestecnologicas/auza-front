@@ -76,26 +76,52 @@ describe('HeroSection', () => {
     expect(ativo(raiz)).toBe(1);
   });
 
-  it('plota a peça só na categoria que tem render, e casa a máscara com ela', () => {
+  it('mostra a peça da categoria ativa e só dela, com a classe do asset', () => {
     const fixture = TestBed.createComponent(HeroSection);
     fixture.detectChanges();
     const raiz = fixture.nativeElement as HTMLElement;
-    const slides = raiz.querySelectorAll('.hero-slide');
+    // A peça é camada de fundo da seção (não item do banner), então segue a
+    // categoria ativa: uma por vez, no máximo.
+    const peca = () => raiz.querySelector('.hero-peca');
+    const veu = () => raiz.querySelector('.hero-veu') as HTMLElement;
 
-    expect(slides.length).toBe(CATEGORIAS.length);
-    // Todos os banners vivem no DOM ao mesmo tempo (empilhados), então a peça é
-    // conferida dentro do banner dela — não na página.
     CATEGORIAS.forEach((cat, i) => {
-      const peca = slides[i].querySelector('.hero-peca');
-      expect(!!peca, cat.nome).toBe(!!cat.imagem);
-      if (!cat.imagem) {
-        return;
+      if (i > 0) {
+        vi.advanceTimersByTime(5000);
+        fixture.detectChanges();
       }
-      expect(peca!.querySelector('img')?.getAttribute('src')).toBe(cat.imagem);
-      // A máscara da grade vem de uma classe por peça: sem a regra
-      // correspondente em _ds-surfaces.scss, a grade apareceria por cima do ink.
-      expect(peca!.classList.contains(`hero-peca--${cat.id}`), cat.nome).toBe(true);
+      expect(!!peca(), cat.nome).toBe(!!cat.imagem);
+      if (cat.imagem) {
+        expect(peca()!.querySelector('img')?.getAttribute('src')).toBe(cat.imagem);
+        // A classe do asset carrega a proporção e a máscara da varredura: sem a
+        // regra correspondente em _ds-surfaces.scss a peça não tem altura útil.
+        expect(peca()!.classList.contains(`hero-peca--${cat.id}`), cat.nome).toBe(true);
+        expect(peca()!.querySelector('.hero-peca__varredura'), cat.nome).toBeTruthy();
+      }
+
+      // Peça e véu precisam apontar para o mesmo lado, senão o gradiente
+      // escureceria justamente o lado do aço em vez do lado do texto.
+      const espelhado = i % 2 === 1;
+      expect(veu().classList.contains('hero-veu--espelhado'), cat.nome).toBe(espelhado);
+      if (cat.imagem) {
+        expect(peca()!.classList.contains('hero-peca--espelhada'), cat.nome).toBe(espelhado);
+
+        // Dois tratamentos: recorte (silhueta) e foto emoldurada, para as fotos
+        // em que o fundo não é separável. `--moldura` é o que decide, e sem ele
+        // a foto entraria como se fosse recorte — com o fundo branco à mostra.
+        expect(peca()!.classList.contains('hero-peca--moldura'), cat.nome).toBe(
+          !!cat.fotoEmoldurada,
+        );
+      }
     });
+  });
+
+  it('dá imagem a todas as categorias, num dos dois tratamentos', () => {
+    // Guarda a cobertura: se uma categoria perder a imagem, o banner dela fica
+    // com metade da tela vazia, que é o estado que estávamos resolvendo.
+    for (const cat of CATEGORIAS) {
+      expect(cat.imagem, cat.nome).toBeTruthy();
+    }
   });
 
   it('espelha o lado do texto e mantém título e resumo na mesma coluna', () => {
@@ -130,14 +156,9 @@ describe('HeroSection', () => {
       // E o alinhamento das tags não pode custar a animação de entrada delas.
       expect(tags.classList.contains('hero-surge'), `tags ${i}`).toBe(true);
 
-      // A peça cai na coluna que sobra, sem colidir com o texto.
-      if (cat.imagem) {
-        const peca = slides[i].querySelector('.hero-peca')!.parentElement as HTMLElement;
-        expect(peca.classList.contains(par ? 'lg:col-start-8' : 'lg:col-start-1'), cat.nome).toBe(
-          true,
-        );
-        expect(peca.classList.contains('lg:col-span-5'), cat.nome).toBe(true);
-      }
+      // O banner não hospeda mais a peça: ela é camada de fundo da seção, e é
+      // isso que a deixa sangrar e cruzar o título.
+      expect(slides[i].querySelector('.hero-peca'), cat.nome).toBeNull();
     });
   });
 });

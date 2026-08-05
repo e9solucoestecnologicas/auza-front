@@ -36,6 +36,19 @@ export class HeroSection implements OnInit {
   protected readonly atual = signal(0);
 
   protected readonly categoriaAtual = computed(() => this.categorias[this.atual()]);
+  protected readonly espelhadoAtual = computed(() => this.espelhado(this.atual()));
+
+  /**
+   * Modificadores da peça: o `--<id>` liga a proporção e a máscara da varredura
+   * ao arquivo certo, e o `--espelhada` a joga para o outro lado quando o texto
+   * troca de lado.
+   */
+  protected readonly modificadoresPeca = computed(() => {
+    const cat = this.categoriaAtual();
+    const lado = this.espelhadoAtual() ? ' hero-peca--espelhada' : '';
+    const moldura = cat.fotoEmoldurada ? ' hero-peca--moldura' : '';
+    return `hero-peca--${cat.id}${lado}${moldura}`;
+  });
 
   private timer: ReturnType<typeof setInterval> | undefined;
   private pausado = false;
@@ -77,17 +90,14 @@ export class HeroSection implements OnInit {
    * A posição vem de `col-start` e não de `order`: título e resumo são dois
    * itens de grade em linhas diferentes que precisam cair na MESMA coluna, e
    * `order` só reordena a sequência de colocação automática — não garante
-   * coluna. Com `col-start` os dois são explícitos e a peça vai no que sobra.
+   * coluna. A peça não participa desta grade: é camada de fundo, posicionada em
+   * `%` da seção para poder sangrar e cruzar o título.
    *
    * No mobile é uma coluna só e tudo fica à esquerda: coluna e alinhamento só
    * entram a partir de `lg`.
    */
   protected colunaTexto(indice: number): string {
     return this.espelhado(indice) ? 'lg:col-start-6 lg:text-right' : 'lg:col-start-1';
-  }
-
-  protected colunaPeca(indice: number): string {
-    return this.espelhado(indice) ? 'lg:col-start-1' : 'lg:col-start-8';
   }
 
   /** As tags são um flex, então não seguem o `text-align` da coluna. */

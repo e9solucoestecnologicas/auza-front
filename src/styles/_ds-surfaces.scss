@@ -223,45 +223,76 @@
 }
 
 /* ----------------------------------------------------------
-   A peça na folha.
+   A PEÇA — camada de fundo em escala, não item de coluna.
 
-   A ideia é não tratar o render como foto — foto quer sangrar e virar
-   atmosfera, e come o conceito de grade e marrom. Ele entra como espécime
-   plotado na prancheta: apoiado numa linha da grade, com régua de base, cotas
-   em mono e a grade atravessando o aço.
+   Quatro decisões que produzem o impacto, e cada uma resolve uma falta:
+
+   1. ESCALA E SANGRAMENTO. 84vh de altura, ancorada na base, atravessando a
+      borda do container. Na coluna ela tinha ~425px: tamanho de ilustração de
+      apoio, não de protagonista. É o que a referência faz com o painel dela
+      (`w-[115%]` + `translate-x-[3%]`): o texto fica no container, a imagem é
+      camada de sangria.
+
+   2. ANCORAGEM NA BORDA DO CONTAINER, calculada, e não numa porcentagem da
+      janela. Em tela larga o `max-w-6xl` centralizado ocupa uma fração pequena
+      da largura — a 2543px são 1152px —, então `left: 40%` da janela cai DENTRO
+      dele e a peça perde o sangramento. `--borda-container` reproduz a conta do
+      `mx-auto` e a peça se alinha à borda direita real, com `--peca-sangria`
+      de folga para atravessá-la.
+
+   3. FOCO DE LUZ mais duro que o brilho ambiente anterior, para a peça ser a
+      única coisa iluminada da página (ver `.hero-veu` para a vinheta que fecha
+      as bordas).
+
+   4. VARREDURA DE LUZ no aço, recortada pela silhueta. É o substituto honesto
+      do 3D que não temos: brilho que corre pela superfície é a pista que o olho
+      usa para ler metal sólido, e é a única forma de movimento que funciona num
+      recorte plano.
 
    O aço fica frio de propósito. Tingir de marrom mata o metal; ele ser a única
    coisa fria da página é o que o torna o foco, e os acentos quentes da ponte
    (placa AUZA e displays) já vêm dentro do render.
    ---------------------------------------------------------- */
-/* A largura vem da coluna e a altura sai da proporção declarada na regra da
-   peça, então ela é contida por construção — antes era absoluta e medida em vh,
-   e era isso que estourava o container. `position: relative` porque a sombra, a
-   grade e as cotas se posicionam contra esta caixa. */
 .ds-root .hero-peca {
-  position: relative;
-  width: 100%;
-  pointer-events: none;
-}
+  /* Mesma conta do `mx-auto max-w-6xl` do conteúdo: distância da borda da seção
+     até a borda do container. */
+  --borda-container: calc((100% - min(100%, 72rem)) / 2);
+  --peca-sangria: 4rem;
+  /* Teto de largura: sem ele uma peça deitada (a dobradeira é 2:1) puxaria
+     ~1500px de largura a partir dos 80vh de altura e cobriria o texto. Com
+     `aspect-ratio`, o limite de largura reduz a altura junto. */
+  --peca-largura-max: 56%;
 
-/* A entrada é presa ao slide ativo para reiniciar a cada volta à categoria:
-   todos os banners existem no DOM ao mesmo tempo, então uma animação solta na
-   `.hero-peca` rodaria uma única vez, na carga. */
-.ds-root .hero-slide--ativo .hero-peca {
+  position: absolute;
+  max-width: var(--peca-largura-max);
+  /* 3vh de folga: com a base encostada em `bottom: 0` ela lê como cortada pela
+     borda da janela, e não como apoiada. */
+  bottom: 3vh;
+  right: calc(var(--borda-container) - var(--peca-sangria));
+  height: 80vh;
+  pointer-events: none;
   animation: hero-peca-entra 1.8s ease-out 0.2s backwards;
 }
 
-/* `width: 100%` sobre a proporção declarada na regra da peça, e não
-   `width: auto`: com largura automática o box dependeria de shrink-to-fit, que
-   pode resolver pela largura intrínseca do arquivo em vez da escalada.
-   `contain` é rede de segurança: proporção errada vira barra preta, não estica.
+/* Do outro lado quando o texto troca de lado (ver `espelhado` no componente) */
+.ds-root .hero-peca--espelhada {
+  right: auto;
+  left: calc(var(--borda-container) - var(--peca-sangria));
+}
+
+/* A largura sai da proporção do arquivo (regra `.hero-peca--<id>`) sobre a
+   altura em vh. `contain` é rede de segurança: proporção errada vira barra
+   preta, não estica.
 
    A peça é estática. Tentamos seguir o ponteiro — translação, rotação no plano e
    depois `perspective` + `rotateY` — e nenhuma versão convenceu, por um motivo
    que nenhum CSS resolve: a silhueta de um recorte plano não muda de forma e os
-   brilhos do aço não correm pela superfície. É exatamente disso que o olho se
-   serve para saber que um objeto é sólido. Girar de verdade exige geometria
-   (.glb) ou um render por ângulo (turntable). */
+   brilhos do aço não correm pela superfície. Girar de verdade exige geometria
+   (.glb) ou um render por ângulo (turntable).
+
+   A máscara recorta a imagem na silhueta. Nas fotos ela é obrigatória: a cor vem
+   em JPEG, que não tem alpha. No render do Agro, cuja PNG já tem alpha, a
+   máscara é a própria imagem e não muda nada. */
 .ds-root .hero-peca__img {
   position: relative;
   z-index: 1;
@@ -269,81 +300,156 @@
   height: 100%;
   width: 100%;
   object-fit: contain;
+  -webkit-mask-image: var(--peca-mascara);
+  mask-image: var(--peca-mascara);
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
 }
 
-/* Foco de luz atrás da peça: um núcleo mais fechado sobre um halo largo, os dois
-   em areia. É o que destaca o aço do ink e faz a peça parecer iluminada pela
-   página em vez de colada nela.
-
-   Deslocado para cima (`at 50% 38%`), como luz vinda de cima. */
+/* Foco de luz atrás da peça: núcleo fechado sobre halo largo, deslocado para
+   cima como luz vinda de cima. */
 .ds-root .hero-peca::before {
   content: '';
   position: absolute;
-  inset: -26% -20% -8%;
+  inset: -14% -16% -4%;
   background:
-    radial-gradient(44% 40% at 50% 38%, rgba(254, 235, 202, 0.26), transparent 68%),
-    radial-gradient(74% 68% at 50% 46%, rgba(254, 235, 202, 0.11), transparent 72%);
+    radial-gradient(42% 38% at 50% 36%, rgba(254, 235, 202, 0.3), transparent 66%),
+    radial-gradient(72% 66% at 50% 46%, rgba(254, 235, 202, 0.12), transparent 72%);
 }
 
-/* Régua da base: substitui a sombra de estúdio do render por uma linha
-   desenhada. Ela sangra só para dentro do vão entre as colunas (à esquerda) e
-   pára na borda da coluna à direita — sangrar para os dois lados voltaria a
-   passar por cima do limite do container. */
-.ds-root .hero-peca::after {
+/* Varredura: uma faixa clara inclinada atravessa a peça uma única vez, no início
+   do banner. `overflow: hidden` + máscara da silhueta mantêm a luz sobre o metal
+   e fora do ink em volta. Anima só `transform`, então é composta na GPU.
+
+   Sem `fill-mode`: ao terminar, a faixa volta para fora do recorte e desaparece
+   — não fica um brilho parado por cima do aço. Roda de novo a cada volta à
+   categoria, porque o elemento é recriado. */
+.ds-root .hero-peca__varredura {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  overflow: hidden;
+  -webkit-mask-image: var(--peca-mascara);
+  mask-image: var(--peca-mascara);
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+.ds-root .hero-peca__varredura::before {
   content: '';
   position: absolute;
-  right: 0;
-  bottom: 0;
-  left: -18%;
-  height: 1px;
+  top: -25%;
+  bottom: -25%;
+  left: 0;
+  width: 36%;
   background: linear-gradient(
-    to right,
+    100deg,
     transparent,
-    rgba(254, 235, 202, 0.4) 28%,
-    rgba(254, 235, 202, 0.4)
+    rgba(255, 248, 234, 0.42) 44%,
+    rgba(255, 255, 255, 0.6) 52%,
+    rgba(255, 248, 234, 0.32) 60%,
+    transparent
   );
+  transform: translateX(-170%) skewX(-14deg);
+  animation: hero-varredura 2.1s cubic-bezier(0.36, 0, 0.2, 1) 1s;
 }
 
-/* Sombra de contato: sem ela o aço claro flutua sobre o ink. */
-.ds-root .hero-peca__sombra {
-  position: absolute;
-  right: -4%;
-  bottom: -3%;
-  left: -4%;
-  height: 14%;
-  background: radial-gradient(50% 50% at 50% 50%, rgba(18, 7, 2, 0.7), transparent 72%);
+@keyframes hero-varredura {
+  to {
+    transform: translateX(340%) skewX(-14deg);
+  }
 }
 
-/* Uma regra por peça, com a proporção do recorte — é ela que define a altura da
-   caixa a partir da largura da coluna. Trocar o asset é trocar esta linha.
+/* Uma regra por peça: a proporção do recorte (que define a largura a partir da
+   altura em vh) e a máscara da silhueta, usada tanto para recortar a imagem
+   quanto a varredura de luz. Trocar o asset é trocar estas linhas.
 
-   Aqui havia também uma grade em tinta desenhada POR CIMA do aço, recortada na
-   silhueta por máscara. Saiu: a peça agora passa por cima da grade da folha,
-   inteira. */
+   O Agro é render em PNG com alpha, então imagem e máscara são o mesmo arquivo.
+   As fotos vêm em par: `.jpg` para a cor, `.png` só para o alpha. */
 .ds-root .hero-peca--agro {
+  --peca-mascara: url('/img/agro-escaldeira.png');
   aspect-ratio: 1166 / 1200;
 }
+.ds-root .hero-peca--caldeiras {
+  --peca-mascara: url('/img/pecas/caldeiras.png');
+  aspect-ratio: 1100 / 1383;
+}
+.ds-root .hero-peca--comunicacao-visual {
+  --peca-mascara: url('/img/pecas/comunicacao-visual.png');
+  aspect-ratio: 1400 / 682;
+}
 
-/* Cotas: mesma linguagem do eyebrow (mono + `rule-soft`), agora apontando para
-   a peça. O texto sai do próprio painel do render. */
-.ds-root .hero-cota {
+/* ----------------------------------------------------------
+   FOTO EMOLDURADA — o outro tratamento.
+
+   Duas fotos não têm fundo separável: no cortador de cintas o objeto sai pelas
+   bordas do quadro (19% da borda da imagem é produto) e no da estufa o gabinete
+   é branco sobre mesa branca, com o fundo alcançável em só 7% da imagem.
+   Recorte ali produz buraco, não silhueta.
+
+   Então elas entram como o que são: fotografia sobre a folha. Moldura fina na
+   linguagem do DS, `cover` para preencher, e véu por cima — sem ele o branco da
+   foto estoura no ink e rouba o foco do título.
+
+   Nenhuma delas define `--peca-mascara`. Isso não é esquecimento: `mask-image:
+   var(--peca-mascara)` sem fallback fica inválido e cai para `none`, então a
+   imagem e a varredura de luz deixam de ser recortadas sozinhas — e a varredura
+   passa a correr dentro da moldura, que é o que se quer numa foto.
+   ---------------------------------------------------------- */
+.ds-root .hero-peca--moldura {
+  overflow: hidden;
+  border: 1px solid rgba(254, 235, 202, 0.18);
+}
+.ds-root .hero-peca--moldura .hero-peca__img {
+  object-fit: cover;
+}
+.ds-root .hero-peca--moldura::after {
+  content: '';
   position: absolute;
+  inset: 0;
   z-index: 3;
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  white-space: nowrap;
+  background: linear-gradient(to top, rgba(46, 17, 3, 0.62), rgba(46, 17, 3, 0.14));
 }
-/* As duas ficam DENTRO da caixa, sobre região transparente: no arranjo antigo a
-   de baixo saía pela esquerda da peça, e ali agora é o vão entre as colunas — ela
-   cairia sobre o texto. */
-.ds-root .hero-cota--painel {
-  top: 3%;
-  left: 1%;
+
+.ds-root .hero-peca--textil {
+  aspect-ratio: 4 / 5;
 }
-.ds-root .hero-cota--tambor {
-  bottom: 3%;
-  left: 1%;
+.ds-root .hero-peca--impressao-3d {
+  aspect-ratio: 16 / 9;
+}
+
+/* ----------------------------------------------------------
+   Véu do hero: fica ENTRE a peça e o conteúdo, e faz dois trabalhos.
+
+   1. Escurece o lado do texto, o que sustenta a sobreposição: sem ele o título
+      em branco cruzando o aço claro ficaria ilegível — e é justamente o
+      cruzamento que dá profundidade à composição.
+   2. Vinheta radial fechando as bordas da seção, para o olho ir ao centro em vez
+      de se espalhar por uma superfície de brilho uniforme.
+
+   A direção do primeiro gradiente vem de `--veu-dir` para acompanhar o
+   espelhamento do texto, em vez de duplicar a regra inteira.
+   ---------------------------------------------------------- */
+.ds-root .hero-veu {
+  --veu-dir: to right;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      var(--veu-dir),
+      rgba(46, 17, 3, 0.94) 0%,
+      rgba(46, 17, 3, 0.74) 28%,
+      rgba(46, 17, 3, 0.16) 56%,
+      transparent 70%
+    ),
+    radial-gradient(118% 96% at 50% 54%, transparent 38%, rgba(20, 7, 1, 0.62) 100%);
+}
+.ds-root .hero-veu--espelhado {
+  --veu-dir: to left;
 }
 
 @keyframes hero-peca-entra {

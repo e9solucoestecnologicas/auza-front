@@ -17,14 +17,24 @@ export interface Categoria {
   /** nome do ícone no set do DS (ver src/app/ui/icon/icon.ts) */
   readonly icone: string;
   /**
-   * Render da máquina, recortado em PNG com alpha, para o hero plotar a peça
-   * sobre a folha. Opcional de propósito: só o Agro tem render por enquanto, e
-   * quem não tem simplesmente não ganha a camada — o banner continua de pé.
+   * Imagem da máquina, já recortada, para o hero usar como camada de fundo.
+   * Opcional de propósito: quem não tem não ganha a camada, e o banner continua
+   * de pé.
    *
-   * Cada peça precisa também de uma regra `.hero-peca--<id>` em
-   * _ds-surfaces.scss, que aponta a máscara da grade para o mesmo arquivo.
+   * Cada peça precisa de uma regra `.hero-peca--<id>` em _ds-surfaces.scss, com
+   * a proporção do recorte e a máscara da silhueta. Nas fotos, a máscara é um
+   * PNG separado (só alpha) e a cor vem em JPEG — foto em PNG de 24 bits custa
+   * dez vezes mais bytes.
    */
   readonly imagem?: string;
+  /**
+   * Marca a imagem como FOTO, não recorte. Serve para as fotos em que o fundo
+   * não é separável — produto branco sobre superfície branca, ou objeto saindo
+   * pelas bordas do quadro. Em vez de forçar um recorte ruim, o hero as trata
+   * como fotografia sobre a folha: emolduradas, com véu para o branco não
+   * estourar o ink. Ver `.hero-peca--moldura`.
+   */
+  readonly fotoEmoldurada?: boolean;
 }
 
 export interface Produto {
@@ -54,6 +64,7 @@ export const CATEGORIAS: readonly Categoria[] = [
     descricao:
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae. Nulla facilisi morbi tempus iaculis urna id volutpat lacus laoreet non curabitur gravida. Arcu ac tortor dignissim convallis aenean et tortor.',
     icone: 'scissors',
+    imagem: '/img/pecas/comunicacao-visual.jpg',
   },
   {
     id: 'impressao-3d',
@@ -64,6 +75,8 @@ export const CATEGORIAS: readonly Categoria[] = [
     descricao:
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent commodo cursus magna vel scelerisque nisl consectetur et. Cras mattis consectetur purus sit amet fermentum. Donec ullamcorper nulla non metus auctor fringilla, vestibulum id ligula porta felis euismod semper.',
     icone: 'box',
+    imagem: '/img/pecas/impressao-3d.jpg',
+    fotoEmoldurada: true,
   },
   {
     id: 'textil',
@@ -74,6 +87,8 @@ export const CATEGORIAS: readonly Categoria[] = [
     descricao:
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Maecenas sed diam eget risus varius blandit sit amet non magna. Aenean lacinia bibendum nulla sed consectetur, etiam porta sem malesuada magna mollis.',
     icone: 'shirt',
+    imagem: '/img/pecas/textil.jpg',
+    fotoEmoldurada: true,
   },
   {
     id: 'caldeiras',
@@ -84,6 +99,7 @@ export const CATEGORIAS: readonly Categoria[] = [
     descricao:
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur blandit tempus porttitor. Nullam quis risus eget urna mollis ornare vel eu leo. Fusce dapibus tellus ac cursus commodo, tortor mauris condimentum nibh ut fermentum massa justo sit amet risus.',
     icone: 'flame',
+    imagem: '/img/pecas/caldeiras.jpg',
   },
 ];
 

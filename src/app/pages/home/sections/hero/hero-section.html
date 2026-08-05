@@ -10,6 +10,24 @@
   <div class="hero-textura" aria-hidden="true"></div>
 
   <!--
+    A peça da categoria ativa, quando existe. Camada de fundo em escala: vem
+    depois da grade (passa por cima dela) e antes do véu e do conteúdo, que é o
+    que permite o título cruzá-la. Recriada a cada troca de categoria, e é isso
+    que faz a varredura de luz rodar de novo.
+    Decorativa: quem lê a tela recebe a mesma informação pelo texto do banner.
+  -->
+  @if (categoriaAtual().imagem; as peca) {
+    <div class="hero-peca hidden lg:block" [class]="modificadoresPeca()" aria-hidden="true">
+      <img class="hero-peca__img" [src]="peca" alt="" decoding="async" />
+      <span class="hero-peca__varredura"></span>
+    </div>
+  }
+
+  <!-- Véu: escurece o lado do texto (é o que sustenta a sobreposição) e fecha as
+       bordas com vinheta. Acompanha o espelhamento do texto. -->
+  <div class="hero-veu" [class.hero-veu--espelhado]="espelhadoAtual()" aria-hidden="true"></div>
+
+  <!--
     Altura da janela: `min-h-screen` e não `h-screen` — em tela baixa (celular
     deitado) o conteúdo passaria de 100vh e a seção, que é `overflow-hidden`,
     cortaria o título. Com `min-`, 100vh é piso, e a centralização vale para a
@@ -44,18 +62,19 @@
             `--surge-atraso`. Ver src/styles/_ds-surfaces.scss.
           -->
           <!--
-            Três blocos numa grade de 12 colunas e 2 linhas: título (linha 1,
-            centrado na altura), resumo (linha 2, no rodapé) e a peça, que ocupa
-            as duas linhas na coluna ao lado.
+            Dois blocos numa grade de 12 colunas e 2 linhas: título (linha 1,
+            centrado na altura) e resumo (linha 2, no rodapé), os dois na mesma
+            coluna. As outras cinco colunas ficam livres para a peça, que é
+            camada de fundo e não item desta grade.
 
             `lg:grid-rows-[1fr_auto]` é o que sustenta o arranjo: a primeira
             linha come toda a sobra de altura — e é dentro dela que
             `self-center` centraliza o título —, enquanto a segunda tem a altura
-            do resumo e fica colada embaixo. No mobile são três linhas
+            do resumo e fica colada embaixo. No mobile são duas linhas
             empilhadas, e aí `content-center` agrupa o conjunto no meio.
           -->
           <div
-            class="hero-slide grid h-full grid-cols-1 content-center gap-10 transition-opacity duration-700 ease-out lg:grid-cols-12 lg:grid-rows-[1fr_auto] lg:gap-x-12 lg:gap-y-10"
+            class="hero-slide grid h-full grid-cols-1 content-center gap-10 transition-opacity duration-700 ease-out lg:grid-cols-12 lg:grid-rows-[1fr_auto] lg:gap-x-12 lg:gap-y-8"
             [class.hero-slide--ativo]="i === atual()"
             [class.opacity-0]="i !== atual()"
             [class.pointer-events-none]="i !== atual()"
@@ -76,11 +95,19 @@
                 >
               </div>
 
-              <!-- H1 do DS: 48 → 96px, semibold, tracking-tighter, leading 0.85 -->
-              <!-- O display é o protagonista: sobe mais alto e mais devagar
-                   que o resto, como as linhas de título da referência. -->
+              <!--
+                Escala de display da referência (que usa 152–168px) em vez dos
+                96px do `text-8xl`: é o que dá presença de hero.
+
+                O `min(10vw, 14vh)` é o que impede o hero de estourar 100vh: numa
+                janela larga e baixa, 10vw dá um título alto demais e o rodapé do
+                banner — resumo, botão e bolinhas — cai abaixo da dobra. Amarrar
+                também à ALTURA faz o título encolher junto com a janela.
+                O display é o protagonista: sobe mais alto e mais devagar que o
+                resto, como as linhas de título da referência.
+              -->
               <h1
-                class="hero-surge text-5xl font-semibold leading-[0.85] tracking-tighter text-white md:text-7xl lg:text-8xl"
+                class="hero-surge text-[clamp(3rem,min(10vw,14vh),9rem)] font-semibold leading-[0.82] tracking-tighter text-white"
                 style="--surge-atraso: 0.6s; --surge-duracao: 1.6s; --surge-subida: 4.5rem"
               >
                 {{ cat.nome }}
@@ -124,46 +151,17 @@
                 <app-icon name="arrow-right" class="h-4 w-4" />
               </a>
             </div>
-
-            <!--
-              A peça, contida na coluna ao lado e ocupando as duas linhas. Antes
-              ela era absoluta e medida em vh, e era isso que estourava o
-              container. Agora a largura vem da coluna e a altura sai da
-              proporção do arquivo (na regra `.hero-peca--<id>`), então ela não
-              tem como transbordar.
-              Decorativa: quem lê a tela recebe a mesma informação pelo texto.
-            -->
-            @if (cat.imagem; as peca) {
-              <div
-                class="hidden self-end lg:col-span-5 lg:row-span-2 lg:row-start-1 lg:block"
-                [class]="colunaPeca(i)"
-                aria-hidden="true"
-              >
-                <div class="hero-peca" [class]="'hero-peca--' + cat.id">
-                  <span class="hero-peca__sombra"></span>
-                  <img class="hero-peca__img" [src]="peca" alt="" decoding="async" />
-
-                  <span
-                    class="hero-cota hero-cota--painel font-geist-mono text-[10px] uppercase tracking-widest text-subtle"
-                  >
-                    <span>65,0 °C · escaldagem</span>
-                    <span class="rule-soft h-px w-14"></span>
-                  </span>
-                  <span
-                    class="hero-cota hero-cota--tambor font-geist-mono text-[10px] uppercase tracking-widest text-subtle"
-                  >
-                    <span>depenagem</span>
-                    <span class="rule-soft h-px w-10"></span>
-                  </span>
-                </div>
-              </div>
-            }
           </div>
         }
       </div>
 
-      <!-- Bolinhas centralizadas -->
-      <div class="mt-14 flex items-center justify-center gap-3">
+      <!--
+        Centralizadas e fixas. Cheguei a alinhá-las com a coluna de texto para
+        fugir do aço claro, mas aí elas trocavam de lado a cada categoria, junto
+        com o espelhamento — controle de navegação não pode mudar de lugar
+        sozinho. Posição estável vale mais que o contraste ideal.
+      -->
+      <div class="mt-10 flex items-center justify-center gap-3">
         @for (cat of categorias; track cat.id; let i = $index) {
           <button
             type="button"

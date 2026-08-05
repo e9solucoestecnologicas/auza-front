@@ -73,7 +73,23 @@
       "Bash(node __TRACKED_VAR__/classificar-com-xadrez.js __TRACKED_VAR__/recorte-anterior.png public/img/agro-escaldeira.png 864 180 __TRACKED_VAR__/recorte-final.png __TRACKED_VAR__/prova-final.png)",
       "Bash(cp __TRACKED_VAR__/recorte-final.png public/img/agro-escaldeira.png)",
       "Bash(node __TRACKED_VAR__/inspecionar-png.js public/img/agro-escaldeira.png)",
-      "Bash(python -)"
+      "Bash(python -)",
+      "Bash(awk 'NR<225 || NR>347' src/styles/_ds-surfaces.scss)",
+      "Read(//tmp/**)",
+      "Bash(node \"C:/Users/User/AppData/Local/Temp/claude/c--Users-User-E9SOLUCOES-Clientes-Auza-auza-front/ff5265f7-5b85-45a0-9f95-a68ae6c25cb2/scratchpad/altura-hero.js\")",
+      "Bash(grep -c \"lg\\\\\\\\\\\\\\\\:justify-start\" dist/auza-front/browser/styles.css)",
+      "Bash(node __TRACKED_VAR__/imgtools/recortar.js mapa public/img/caldeira.jpg __TRACKED_VAR__/caldeira-ilhas.png)",
+      "Bash(node __TRACKED_VAR__/imgtools/recortar.js mapa public/img/dobrador-acrilico.jpg __TRACKED_VAR__/dobrador-ilhas.png)",
+      "Bash(node __TRACKED_VAR__/imgtools/recortar.js corte public/img/caldeira.jpg __TRACKED_VAR__/caldeira-final.png 1100 9,13,15,16,17)",
+      "Bash(node __TRACKED_VAR__/imgtools/recortar.js corte public/img/dobrador-acrilico.jpg __TRACKED_VAR__/dobrador-final.png 1400)",
+      "Bash(node __TRACKED_VAR__/imgtools/exportar.js public/img/caldeira.jpg public/img/pecas/caldeiras 1100 9,13,15,16,17)",
+      "Bash(node __TRACKED_VAR__/imgtools/exportar.js public/img/dobrador-acrilico.jpg public/img/pecas/comunicacao-visual 1400)",
+      "Bash(awk '{s+=$5; print $5/1024\"KB\", $9} END {print \"---- total nao usado:\", s/1024/1024\"MB\"}')",
+      "Bash(node __TRACKED_VAR__/imgtools/exportar-foto.js public/img/cortador-cinta.jpg public/img/pecas/textil.jpg 900)",
+      "Bash(node __TRACKED_VAR__/imgtools/exportar-foto.js public/img/estufa.jpg public/img/pecas/impressao-3d.jpg 1200 0,0,5184,2916)"
+    ],
+    "additionalDirectories": [
+      "\\tmp"
     ]
   }
 }
