@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { inject } from '@angular/core';
-import { CATEGORIAS } from '../../home.data';
+import { CATEGORIAS, CONTATO, linkWhatsapp } from '../../home.data';
 import { Icon } from '../../../../ui/icon/icon';
 
 /**
@@ -16,6 +16,8 @@ import { Icon } from '../../../../ui/icon/icon';
 })
 export class ContatoSection {
   protected readonly categorias = CATEGORIAS;
+  protected readonly contato = CONTATO;
+  protected readonly linkWhatsapp = linkWhatsapp;
   protected readonly enviado = signal(false);
 
   protected readonly form = inject(FormBuilder).nonNullable.group({

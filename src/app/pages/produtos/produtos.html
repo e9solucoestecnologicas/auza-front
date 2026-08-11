@@ -1,0 +1,165 @@
+<div class="ds-root antialiased" (click)="onAnchorClick($event)">
+  <!-- Cabeçalho ESCURO (ink #4a1d06), como a abertura da home: chegar no catálogo
+       é continuar na marca, não entrar num anexo. -->
+  <header class="on-dark relative overflow-hidden bg-neutral-900 px-6 sm:px-8">
+    <div class="hero-textura" aria-hidden="true"></div>
+
+    <div class="relative z-10 mx-auto max-w-6xl pb-20 pt-10">
+      <div class="flex items-center justify-between gap-6">
+        <a routerLink="/home" aria-label="AUZA — ir para o início">
+          <app-logo variante="escuro" class="w-[150px] sm:w-[190px]" />
+        </a>
+        <a
+          class="btn-ghost inline-flex items-center gap-2 rounded-lg border border-soft px-4 py-2 font-geist-mono text-xs uppercase tracking-widest transition-colors"
+          routerLink="/home"
+        >
+          <app-icon name="chevron-left" class="h-4 w-4" />
+          Home
+        </a>
+      </div>
+
+      <div class="mt-20 flex items-center gap-3">
+        <span class="font-geist-mono text-xs font-bold uppercase tracking-widest text-white"
+          >Catálogo</span
+        >
+        <span class="rule-soft h-px w-10"></span>
+        <span class="font-geist-mono text-xs font-bold uppercase tracking-widest text-muted">
+          {{ total }} produtos · {{ categorias.length }} segmentos
+        </span>
+      </div>
+
+      <h1
+        class="mt-6 max-w-3xl text-[clamp(2.5rem,7vw,5rem)] font-semibold leading-[0.9] tracking-tighter text-white"
+      >
+        Todos os produtos
+      </h1>
+      <p class="mt-8 max-w-xl font-geist-mono text-sm leading-relaxed text-muted">
+        A linha completa de máquinas AUZA, com o descritivo de operação de cada equipamento e as
+        fotos de quem já saiu da fábrica. Filtre por segmento para chegar mais rápido.
+      </p>
+    </div>
+  </header>
+
+  <!-- Catálogo, superfície AREIA (#f6dcae) — a mesma da vitrine da home -->
+  <main class="border-t border-soft bg-neutral-50 px-6 sm:px-8">
+    <div class="mx-auto max-w-6xl py-16 sm:py-20">
+      <div class="mb-8 flex flex-wrap gap-2" role="group" aria-label="Filtrar por segmento">
+        <button
+          type="button"
+          class="rounded-full border px-3 py-1 font-geist-mono text-xs transition-colors"
+          [class]="
+            filtro() === 'todos'
+              ? 'bg-neutral-900 text-white border-neutral-900'
+              : 'bg-neutral-100 text-neutral-600 border-neutral-200 hover:bg-neutral-200'
+          "
+          [attr.aria-pressed]="filtro() === 'todos'"
+          (click)="filtrar('todos')"
+        >
+          Todos
+        </button>
+        @for (cat of categorias; track cat.id) {
+          <button
+            type="button"
+            class="rounded-full border px-3 py-1 font-geist-mono text-xs transition-colors"
+            [class]="
+              filtro() === cat.id
+                ? 'bg-neutral-900 text-white border-neutral-900'
+                : 'bg-neutral-100 text-neutral-600 border-neutral-200 hover:bg-neutral-200'
+            "
+            [attr.aria-pressed]="filtro() === cat.id"
+            (click)="filtrar(cat.id)"
+          >
+            {{ cat.nome }}
+          </button>
+        }
+      </div>
+
+      <!-- `aria-live`: quem filtra sem ver a tela precisa saber que a lista mudou
+           de tamanho — a mudança acontece longe do botão que a causou. -->
+      <p
+        class="mb-10 font-geist-mono text-xs uppercase tracking-widest text-subtle"
+        aria-live="polite"
+      >
+        {{ produtos().length }}
+        {{ produtos().length === 1 ? 'produto' : 'produtos' }}
+      </p>
+
+      <!--
+        Duas colunas no desktop, e não três: o cartão carrega a galeria e o
+        descritivo de operação: em três colunas a linha de texto fica curta
+        demais para um parágrafo desse tamanho.
+      -->
+      <div class="grid grid-cols-1 gap-8 lg:grid-cols-2">
+        @for (produto of produtos(); track produto.nome) {
+          <article
+            class="surface flex flex-col overflow-hidden rounded-2xl border border-soft transition-shadow duration-300 hover:shadow-xl"
+          >
+            <app-galeria-produto
+              [fotos]="produto.fotos ?? []"
+              [icone]="iconeCategoria(produto.categoriaId)"
+              [rotulo]="produto.nome"
+            />
+
+            <div class="flex flex-1 flex-col p-6 sm:p-8">
+              <div
+                class="mb-4 inline-flex self-start rounded-full border border-soft bg-neutral-100 px-3 py-1 font-geist-mono text-xs text-muted"
+              >
+                {{ nomeCategoria(produto.categoriaId) }}
+              </div>
+
+              <h2 class="mb-3 text-2xl font-semibold tracking-tight text-ink">
+                {{ produto.nome }}
+              </h2>
+              <p class="font-geist-mono text-sm leading-relaxed text-muted">
+                {{ produto.descricao }}
+              </p>
+
+              <!-- O bloco que motiva a página existir. -->
+              <div class="mt-8 border-t border-soft pt-8">
+                <div class="mb-4 flex items-center gap-3">
+                  <span
+                    class="font-geist-mono text-xs font-bold uppercase tracking-widest text-subtle"
+                    >Como funciona</span
+                  >
+                  <span class="rule-soft h-px flex-1"></span>
+                </div>
+                <p class="font-geist-mono text-sm leading-relaxed text-muted">
+                  {{ produto.comportamento }}
+                </p>
+              </div>
+
+              <!-- `mt-auto`: numa fila de duas colunas os cartões esticam para a
+                   mesma altura, e sem isso os botões flutuariam em alturas
+                   diferentes conforme o tamanho do descritivo. -->
+              <div class="mt-auto flex flex-wrap items-center gap-3 pt-8">
+                <a
+                  class="btn-primary inline-flex items-center gap-2 rounded-lg px-5 py-2.5 font-geist-mono text-sm font-medium transition-colors"
+                  href="#contato"
+                >
+                  Solicitar orçamento
+                  <app-icon name="arrow-right" class="h-4 w-4" />
+                </a>
+                <a
+                  class="btn-ghost inline-flex items-center gap-2 rounded-lg border border-soft px-5 py-2.5 font-geist-mono text-sm font-medium transition-colors"
+                  [href]="'#solucao-' + produto.categoriaId"
+                >
+                  Ver o segmento
+                </a>
+              </div>
+            </div>
+          </article>
+        } @empty {
+          <p class="font-geist-mono text-sm text-muted">
+            Nenhum produto neste segmento por enquanto.
+          </p>
+        }
+      </div>
+    </div>
+  </main>
+
+  <app-footer-section />
+
+  <!-- Mesmo atalho da home: o catálogo é onde a dúvida sobre um equipamento
+       aparece, então o canal de conversa precisa estar aqui também. -->
+  <app-whatsapp-flutuante />
+</div>

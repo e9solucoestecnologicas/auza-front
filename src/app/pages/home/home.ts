@@ -6,6 +6,7 @@ import { VitrineSection } from './sections/vitrine/vitrine-section';
 import { ContatoSection } from './sections/contato/contato-section';
 import { FooterSection } from './sections/footer/footer-section';
 import { MenuLateral } from './sections/menu-lateral/menu-lateral';
+import { WhatsappFlutuante } from '../../ui/whatsapp-flutuante/whatsapp-flutuante';
 
 /**
  * Landing page da AUZA — versão inicial.
@@ -24,6 +25,7 @@ import { MenuLateral } from './sections/menu-lateral/menu-lateral';
     VitrineSection,
     ContatoSection,
     FooterSection,
+    WhatsappFlutuante,
   ],
   templateUrl: './home.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

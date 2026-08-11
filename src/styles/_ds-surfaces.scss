@@ -106,6 +106,116 @@
 }
 
 /* ----------------------------------------------------------
+   ILHA CLARA dentro de uma seção escura.
+
+   O tema do DS era de mão única: o claro é o padrão e `.on-dark` reescreve as
+   classes semânticas para todos os descendentes. Um card marfim DENTRO de uma
+   seção ink — o formulário do login — não tinha como existir: `text-ink` ali
+   continuaria resolvendo para marfim, ou seja, texto marfim sobre card marfim.
+
+   `.on-light` desfaz isso na sua subárvore. Repete os valores do tema claro em
+   vez de "desligar" o `.on-dark`, porque CSS não cancela regra de ancestral —
+   só sobrescreve.
+
+   A POSIÇÃO NO ARQUIVO É A REGRA: `.ds-root .on-dark .x` e `.ds-root .on-light
+   .x` têm a mesma especificidade, então quem vem depois ganha. Este bloco fica
+   abaixo de TODAS as regras `.on-dark` (texto, bordas, superfície, botões e
+   placeholder) de propósito. Subir o bloco quebra o card, e sem erro nenhum.
+
+   Dentro de `.on-light` use `text-ink`, nunca `text-white`: essa última é
+   remapeada para o marfim da marca com `!important` na camada de brand e
+   continuaria marfim aqui.
+
+   CADA REGRA VEM EM DOIS SELETORES: `.on-light .x` (descendente) e `.on-light.x`
+   (mesmo elemento). O jeito natural de escrever o card é
+   `class="on-light surface border-soft"` — as duas classes no MESMO elemento —, e
+   aí o seletor descendente não casa. Quem casava era `.on-dark .surface`, do
+   ancestral: o card saía areia a 6%, translúcido, com borda clara. Sem o par
+   composto, o `.on-light` funciona nos filhos e falha exatamente no elemento em
+   que foi escrito. O mesmo vale para o `.on-dark` da camada de brand, e é o que
+   já tinha deixado o fundo do login em quase-preto.
+   ---------------------------------------------------------- */
+.ds-root .on-light {
+  color: #4a1d06;
+}
+.ds-root .on-light .text-ink,
+.ds-root .on-light.text-ink {
+  color: #4a1d06 !important;
+}
+.ds-root .on-light .text-muted,
+.ds-root .on-light.text-muted {
+  color: #6f4a2f !important;
+}
+.ds-root .on-light .text-subtle,
+.ds-root .on-light.text-subtle {
+  color: #8a6647 !important;
+}
+.ds-root .on-light .border-soft,
+.ds-root .on-light.border-soft {
+  border-color: rgba(74, 29, 6, 0.18) !important;
+}
+.ds-root .on-light .rule-soft,
+.ds-root .on-light.rule-soft {
+  background-color: rgba(74, 29, 6, 0.18);
+}
+.ds-root .on-light .surface,
+.ds-root .on-light.surface {
+  background-color: #fff8ea;
+}
+.ds-root .on-light .btn-primary,
+.ds-root .on-light.btn-primary {
+  background-color: #4a1d06;
+  color: #feebca;
+}
+.ds-root .on-light .btn-primary:hover,
+.ds-root .on-light.btn-primary:hover {
+  background-color: #3a1604;
+}
+.ds-root .on-light .btn-ghost,
+.ds-root .on-light.btn-ghost {
+  color: #4a1d06;
+}
+.ds-root .on-light .btn-ghost:hover,
+.ds-root .on-light.btn-ghost:hover {
+  background-color: rgba(74, 29, 6, 0.06);
+}
+.ds-root .on-light .media-ph,
+.ds-root .on-light.media-ph {
+  border-color: rgba(74, 29, 6, 0.18);
+  background-color: #efd3a0;
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(74, 29, 6, 0.05) 0 1px,
+    transparent 1px 12px
+  );
+}
+
+/* Placeholder usado como CAPA de cartão, na página de produtos: o cartão já tem
+   borda e raio próprios, e a moldura do placeholder viraria borda dupla com
+   canto sobrando por dentro do recorte. Sobra a régua de baixo, que separa a
+   capa do texto igual à foto faz.
+
+   Precisa ser classe, e não utilitário no template: `.media-ph` define `border`
+   e `border-radius` sob `.ds-root`, que ganha de `border-0`/`rounded-none`. */
+.ds-root .media-ph--capa {
+  border-radius: 0;
+  border-width: 0 0 1px 0;
+}
+
+/* ---------- Miniaturas da galeria de produto ---------- */
+.ds-root .galeria-miniatura {
+  /* Fundo enquanto a foto não chega: sem ele a miniatura é um vão transparente
+     no cartão, do tamanho exato do que vai aparecer. */
+  background-color: #efd3a0;
+}
+/* A ativa é marcada por ANEL, não por opacidade: as inativas já vivem a 70%, e
+   diferenciar duas opacidades próximas não se lê. */
+.ds-root .galeria-miniatura--ativa {
+  border-color: #4a1d06;
+  box-shadow: 0 0 0 1px #4a1d06;
+}
+
+/* ----------------------------------------------------------
    Fundo em parallax: a imagem é presa à janela e a diretiva
    `appParallax` a faz rolar a uma fração da velocidade do conteúdo.
    O travamento é só o ponto de partida — a diferença de velocidade
@@ -543,6 +653,45 @@
   animation: hero-slide-surge 1s ease-out;
 }
 
+/* ---------- Campos de formulário sobre a superfície ink ---------- */
+/* O DS não tinha input em superfície escura: o `surface` de `.on-dark` é areia a
+   6%, que sobre ink não separa o campo do fundo. Aqui o campo é um pouco mais
+   claro que a folha e ganha borda, para a caixa de digitação ser visível antes
+   do foco — sem isso o usuário não sabe onde clicar.
+
+   SEM USO HOJE: o formulário do login, único consumidor, passou a viver num card
+   marfim (`.on-light`) e usa o `ds-input` do tema claro. Fica de pé porque é a
+   única peça de formulário que o DS tem para digitar direto sobre o ink — se
+   nenhuma tela voltar a precisar, é remoção segura. */
+.ds-root .login-campo {
+  width: 100%;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(254, 235, 202, 0.22);
+  background-color: rgba(254, 235, 202, 0.07);
+  padding: 0.75rem 1rem;
+  font-family: 'Geist Mono', monospace;
+  font-size: 0.875rem;
+  color: #feebca;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease;
+}
+.ds-root .login-campo::placeholder {
+  color: rgba(254, 235, 202, 0.4);
+}
+.ds-root .login-campo:focus {
+  outline: 2px solid rgba(254, 235, 202, 0.55);
+  outline-offset: 2px;
+  border-color: rgba(254, 235, 202, 0.45);
+  background-color: rgba(254, 235, 202, 0.1);
+}
+.ds-root .login-campo:disabled {
+  opacity: 0.6;
+}
+.ds-root .login-campo--erro {
+  border-color: rgba(248, 113, 113, 0.6);
+}
+
 .ds-root .hero-dot {
   width: 0.6rem;
   height: 0.6rem;
@@ -566,9 +715,38 @@
 }
 
 /* ---------- Trilho da vitrine ---------- */
+/* Esmaece as duas bordas: os cards entram e saem da seção em vez de aparecerem
+   e desaparecerem num corte reto. A máscara vive no palco, que não rola, e não
+   no trilho — mascarar a camada que rola custa repintura a cada quadro, e a
+   deriva do trilho é contínua.
+
+   O `mask` horizontal é uniforme na vertical, então a sombra de hover dos cards
+   continua inteira em cima e embaixo. */
+.ds-root .vitrine-palco {
+  --vitrine-fade: 2.5rem;
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 var(--vitrine-fade),
+    #000 calc(100% - var(--vitrine-fade)),
+    transparent
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 var(--vitrine-fade),
+    #000 calc(100% - var(--vitrine-fade)),
+    transparent
+  );
+}
+
+/* Sem `scroll-snap`: a deriva escreve `scrollLeft` a cada quadro, e com snap
+   mandatório o browser puxa o trilho de volta para o card mais próximo a cada
+   parada — a deriva viraria um cabo de guerra. As setas andam um card exato,
+   então o alinhamento não dependia do snap. */
 .ds-root .vitrine-trilho {
   overflow-x: auto;
-  scroll-snap-type: x mandatory;
+  overscroll-behavior-x: contain;
   scrollbar-width: none;
   -ms-overflow-style: none;
 }

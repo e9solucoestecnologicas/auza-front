@@ -100,6 +100,37 @@ export class HeroSection implements OnInit {
     return this.espelhado(indice) ? 'lg:col-start-6 lg:text-right' : 'lg:col-start-1';
   }
 
+  /**
+   * Tamanho do display, em três passos, escolhido pelo comprimento do título.
+   *
+   * O `clamp` do título responde à JANELA, não ao texto: o mesmo tamanho que dá
+   * UMA linha em "Agro" dá QUATRO em "Caldeiras & Misturador Inox" — nesta
+   * largura de coluna cabe pouco mais de uma palavra de display por linha. E aí
+   * o título come a altura que era do resumo, do botão e das bolinhas, e o
+   * banner estoura a dobra.
+   *
+   * Como os cinco títulos são conteúdo fixo, o passo sai do número de palavras:
+   * é ele que prevê o número de linhas, que é o que de fato consome altura.
+   * Contar caracteres não serviria — "Comunicação Visual" tem quase o mesmo
+   * tanto de letras e quebra em duas linhas, não em quatro. O "&" conta como
+   * palavra de propósito: ele ganha uma linha inteira como qualquer outra.
+   *
+   * Dois passos abaixo do base seguram o título mais longo em três linhas. Só o
+   * tamanho muda — peso, entrelinha e tracking continuam os mesmos —, e os
+   * títulos de até duas palavras ficam exatamente como estavam.
+   */
+  protected tamanhoTitulo(nome: string): string {
+    const palavras = nome.trim().split(/\s+/).length;
+
+    if (palavras >= 4) {
+      return 'text-[clamp(2.5rem,min(6.5vw,9vh),5.75rem)]';
+    }
+    if (palavras === 3) {
+      return 'text-[clamp(2.75rem,min(8vw,11vh),7rem)]';
+    }
+    return 'text-[clamp(3rem,min(10vw,14vh),9rem)]';
+  }
+
   /** As tags são um flex, então não seguem o `text-align` da coluna. */
   protected alinhamentoTags(indice: number): string {
     return this.espelhado(indice) ? 'lg:justify-end' : '';

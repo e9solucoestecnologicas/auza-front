@@ -105,9 +105,14 @@
                 também à ALTURA faz o título encolher junto com a janela.
                 O display é o protagonista: sobe mais alto e mais devagar que o
                 resto, como as linhas de título da referência.
+
+                O tamanho em si vem de `tamanhoTitulo`: a janela não é a única
+                coisa que decide a altura do título — o número de linhas também
+                —, e só o texto sabe quantas linhas serão. Ver hero-section.ts.
               -->
               <h1
-                class="hero-surge text-[clamp(3rem,min(10vw,14vh),9rem)] font-semibold leading-[0.82] tracking-tighter text-white"
+                class="hero-surge font-semibold leading-[0.82] tracking-tighter text-white"
+                [class]="tamanhoTitulo(cat.nome)"
                 style="--surge-atraso: 0.6s; --surge-duracao: 1.6s; --surge-subida: 4.5rem"
               >
                 {{ cat.nome }}

@@ -1,7 +1,70 @@
 /**
- * Conteúdo da landing. Textos descritivos ainda são lorem ipsum — o copy
- * definitivo entra seção por seção depois.
+ * Conteúdo da landing e da página de produtos.
+ *
+ * O copy definitivo já entrou em `descricao` (as cinco categorias) e em `resumo`
+ * do Agro, Comunicação Visual e Caldeiras. Continuam com lorem, por falta de
+ * texto enviado:
+ *   - `resumo` de Impressão 3D e Têxtil (a frase curta do banner do hero);
+ *   - `descricao` de cada PRODUTO, em PRODUTOS (os cartões da vitrine);
+ *   - `comportamento` dos 11 produtos sem foto (ver LOREM_COMPORTAMENTO).
+ *
+ * ATENÇÃO ao `comportamento` dos quatro produtos que TÊM foto: ele foi escrito a
+ * partir do que a própria foto mostra (painel, comandos, guias, estrutura), e não
+ * de ficha técnica. É descrição do que se vê, não especificação — precisa ser
+ * confirmado com a AUZA antes de ir para produção.
  */
+
+/**
+ * Um telefone em três formas, porque cada destino exige a sua: o que se lê na
+ * tela, o `tel:` (E.164, com país) e o `wa.me` (só dígitos, sem `+`).
+ *
+ * Guardar as três juntas é o que impede o número de divergir entre a seção de
+ * contato, o link de discagem e o botão flutuante — três lugares que precisam
+ * apontar para o mesmo aparelho.
+ */
+export interface Telefone {
+  readonly exibicao: string;
+  readonly discagem: string;
+  readonly whatsapp: string;
+}
+
+/**
+ * Contato oficial da AUZA.
+ *
+ * FALTA DADO: o endereço da seção de contato e o CNPJ do rodapé continuam
+ * placeholder — não vieram no material de referência.
+ */
+export const CONTATO = {
+  /** Fixo do atendimento. É para cá que aponta o botão flutuante de WhatsApp. */
+  atendimento: {
+    exibicao: '(11) 2532-3679',
+    discagem: '+551125323679',
+    whatsapp: '551125323679',
+  } satisfies Telefone,
+  /** Celular — é o número que aparece com o selo do WhatsApp no material. */
+  celular: {
+    exibicao: '(11) 96124-4335',
+    discagem: '+5511961244335',
+    whatsapp: '5511961244335',
+  } satisfies Telefone,
+  email: 'contato@auza.com.br',
+} as const;
+
+/** Primeira frase da conversa, já preenchida para quem chega pelo site. */
+const MENSAGEM_WHATSAPP =
+  'Olá! Vim pelo site da AUZA e gostaria de falar com o atendimento sobre um equipamento.';
+
+/**
+ * Link de conversa do WhatsApp.
+ *
+ * `wa.me` e não `api.whatsapp.com`: é o encurtador oficial e o único que resolve
+ * igual no app do celular e no WhatsApp Web, sem os parâmetros extras que a URL
+ * de API exige. A mensagem vai codificada — acento e pontuação quebram a query
+ * se forem cru.
+ */
+export function linkWhatsapp(telefone: Telefone, mensagem: string = MENSAGEM_WHATSAPP): string {
+  return `https://wa.me/${telefone.whatsapp}?text=${encodeURIComponent(mensagem)}`;
+}
 
 export interface Categoria {
   /** slug usado nas âncoras (#solucao-agro) e no filtro da vitrine */
@@ -37,10 +100,44 @@ export interface Categoria {
   readonly fotoEmoldurada?: boolean;
 }
 
+/**
+ * Uma foto do equipamento.
+ *
+ * `alt` é obrigatório e descreve o que aparece — não é o nome do produto, que
+ * já está no título ao lado. Uma galeria de fotos sem alt é uma galeria vazia
+ * para quem usa leitor de tela.
+ */
+export interface Foto {
+  readonly src: string;
+  readonly alt: string;
+}
+
 export interface Produto {
   readonly nome: string;
   readonly categoriaId: string;
+  /** Frase curta do cartão da vitrine. */
   readonly descricao: string;
+  /**
+   * Como o equipamento se comporta em operação: comandos, ajustes, o que o
+   * operador faz. É o texto que a página /produtos abre em "Como funciona", e o
+   * motivo de ela existir — a vitrine da home só tem espaço para a frase curta.
+   */
+  readonly comportamento: string;
+  /**
+   * Fotos do produto, na ordem de exibição — a primeira é a capa do cartão.
+   * Ausente ou vazio cai no placeholder do DS (`media-ph`) com o ícone da
+   * categoria, que é o estado de 11 dos 15 produtos hoje.
+   *
+   * Para acrescentar fotos, basta pôr o arquivo em `public/img/` e somar uma
+   * entrada aqui — a galeria liga as miniaturas, as setas e o contador sozinha a
+   * partir de duas fotos. Não use `public/img/pecas/*`: são recortes das MESMAS
+   * fotos daqui, feitos para o hero, e entrariam na galeria como duplicata.
+   *
+   * As fotos originais são grandes (a da caldeira tem 2826x3150). Enquanto são
+   * quatro, passa; ao encher o catálogo, vale gerar versões reduzidas — a
+   * miniatura hoje baixa a foto inteira para exibir 80px.
+   */
+  readonly fotos?: readonly Foto[];
 }
 
 export const CATEGORIAS: readonly Categoria[] = [
@@ -49,9 +146,9 @@ export const CATEGORIAS: readonly Categoria[] = [
     nome: 'Agro',
     produtos: ['Mini Abatedouro', 'Pássaros', 'Frango'],
     resumo:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+      'Equipamentos e soluções sob medida para o agronegócio, de mini abatedouros a sistemas automatizados para criação de aves e pássaros.',
     descricao:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse.',
+      'Oferecemos soluções completas em engenharia para o agronegócio, atendendo desde pequenos produtores a estruturas de grande porte. Desenvolvemos mini abatedouros e sistemas inteligentes para a criação de frangos e pássaros, garantindo o padrão de qualidade e a segurança que sua operação precisa.',
     icone: 'leaf',
     imagem: '/img/agro-escaldeira.png',
   },
@@ -60,9 +157,9 @@ export const CATEGORIAS: readonly Categoria[] = [
     nome: 'Comunicação Visual',
     produtos: ['Dobradeira de Acrílico', 'Cortador XPS', 'EPS', 'EVA'],
     resumo:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere.',
+      'Dobradeiras de acrílico e cortadores para EPS, EVA e XPS voltados à alta performance na comunicação visual.',
     descricao:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae. Nulla facilisi morbi tempus iaculis urna id volutpat lacus laoreet non curabitur gravida. Arcu ac tortor dignissim convallis aenean et tortor.',
+      'Oferecemos tecnologia de ponta para elevar o patamar produtivo no setor de comunicação visual. Unindo engenharia e precisão, disponibilizamos cortadores de alta performance para EPS, EVA e XPS, além de dobradeiras de acrílico estruturadas para garantir agilidade, otimização de insumos e acabamentos superiores em múltiplos materiais.',
     icone: 'scissors',
     imagem: '/img/pecas/comunicacao-visual.jpg',
   },
@@ -73,7 +170,7 @@ export const CATEGORIAS: readonly Categoria[] = [
     resumo:
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent commodo cursus magna vel scelerisque nisl consectetur.',
     descricao:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent commodo cursus magna vel scelerisque nisl consectetur et. Cras mattis consectetur purus sit amet fermentum. Donec ullamcorper nulla non metus auctor fringilla, vestibulum id ligula porta felis euismod semper.',
+      'Oferecemos tecnologia de ponta para elevar o patamar produtivo no setor de fabricação digital. Unindo engenharia e precisão, disponibilizamos impressoras 3D estruturadas para garantir agilidade, otimização de insumos e acabamentos superiores em múltiplos materiais.',
     icone: 'box',
     imagem: '/img/pecas/impressao-3d.jpg',
     fotoEmoldurada: true,
@@ -85,7 +182,7 @@ export const CATEGORIAS: readonly Categoria[] = [
     resumo:
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante venenatis dapibus posuere velit aliquet.',
     descricao:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Maecenas sed diam eget risus varius blandit sit amet non magna. Aenean lacinia bibendum nulla sed consectetur, etiam porta sem malesuada magna mollis.',
+      'Unindo engenharia e precisão, disponibilizamos cortadores de cintas e equipamentos especializados para fuxico estruturados para garantir agilidade, otimização de insumos e acabamentos superiores em múltiplos tecidos e aviamentos.',
     icone: 'shirt',
     imagem: '/img/pecas/textil.jpg',
     fotoEmoldurada: true,
@@ -95,9 +192,9 @@ export const CATEGORIAS: readonly Categoria[] = [
     nome: 'Caldeiras & Misturador Inox',
     produtos: ['Misturadores', 'Caldeiras', 'Caldeira com Misturador Automático'],
     resumo:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur blandit tempus porttitor, nullam quis risus eget urna mollis.',
+      'Linha completa de caldeiras, misturadores em inox e equipamentos combinados com automação para processos industriais.',
     descricao:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur blandit tempus porttitor. Nullam quis risus eget urna mollis ornare vel eu leo. Fusce dapibus tellus ac cursus commodo, tortor mauris condimentum nibh ut fermentum massa justo sit amet risus.',
+      'Desenvolvida para atender às rigorosas exigências do mercado industrial, nossa engenharia entrega equipamentos robustos para transformações de alta precisão. Combinamos misturadores especializados com caldeiras e sistemas de mistura automática, assegurando velocidade de entrega e padrão de excelência em cada etapa.',
     icone: 'flame',
     imagem: '/img/pecas/caldeiras.jpg',
   },
@@ -106,28 +203,147 @@ export const CATEGORIAS: readonly Categoria[] = [
 const LOREM_CURTO =
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore.';
 
+/**
+ * Placeholder do "Como funciona" enquanto o descritivo de operação não chega.
+ * Propositalmente lorem, e não um texto plausível: descrever o comportamento de
+ * uma máquina industrial por dedução é o tipo de erro que só aparece depois de
+ * publicado.
+ */
+const LOREM_COMPORTAMENTO =
+  'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent commodo cursus magna vel ' +
+  'scelerisque nisl consectetur et. Integer posuere erat a ante venenatis dapibus posuere velit ' +
+  'aliquet, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
+
 export const PRODUTOS: readonly Produto[] = [
-  { nome: 'Mini Abatedouro', categoriaId: 'agro', descricao: LOREM_CURTO },
-  { nome: 'Abatedouro de Pássaros', categoriaId: 'agro', descricao: LOREM_CURTO },
-  { nome: 'Abatedouro de Frango', categoriaId: 'agro', descricao: LOREM_CURTO },
-  { nome: 'Depenadeira', categoriaId: 'agro', descricao: LOREM_CURTO },
+  {
+    nome: 'Mini Abatedouro',
+    categoriaId: 'agro',
+    descricao: LOREM_CURTO,
+    comportamento: LOREM_COMPORTAMENTO,
+  },
+  {
+    nome: 'Abatedouro de Pássaros',
+    categoriaId: 'agro',
+    descricao: LOREM_CURTO,
+    comportamento: LOREM_COMPORTAMENTO,
+  },
+  {
+    nome: 'Abatedouro de Frango',
+    categoriaId: 'agro',
+    descricao: LOREM_CURTO,
+    comportamento: LOREM_COMPORTAMENTO,
+  },
+  {
+    nome: 'Depenadeira',
+    categoriaId: 'agro',
+    descricao: LOREM_CURTO,
+    comportamento: LOREM_COMPORTAMENTO,
+  },
   {
     nome: 'Dobradeira de Acrílico',
     categoriaId: 'comunicacao-visual',
     descricao: LOREM_CURTO,
+    comportamento:
+      'Mesa plana com uma resistência linear embutida na faixa de dobra: a chapa apoia sobre a ' +
+      'mesa, aquece só na linha e é dobrada ali. A guia de alumínio corre paralela à resistência ' +
+      'e trava por manípulos nas duas pontas, o que repete a mesma distância de dobra peça após ' +
+      'peça. O painel tem liga/desliga, ajuste de potência e porta-fusível — é pela potência que ' +
+      'se acerta o aquecimento à espessura do acrílico.',
+    fotos: [
+      {
+        src: '/img/dobrador-acrilico.jpg',
+        alt: 'Dobradeira de acrílico da AUZA em vista diagonal: mesa branca com a resistência linear ao centro, guia de alumínio paralela travada por manípulos e painel preto com chave liga/desliga, ajuste de potência e porta-fusível.',
+      },
+    ],
   },
-  { nome: 'Cortador de XPS', categoriaId: 'comunicacao-visual', descricao: LOREM_CURTO },
-  { nome: 'Cortador de EPS', categoriaId: 'comunicacao-visual', descricao: LOREM_CURTO },
-  { nome: 'Cortador de EVA', categoriaId: 'comunicacao-visual', descricao: LOREM_CURTO },
-  { nome: 'Estufa de Filamento', categoriaId: 'impressao-3d', descricao: LOREM_CURTO },
-  { nome: 'Estufa de Filamento Dupla', categoriaId: 'impressao-3d', descricao: LOREM_CURTO },
-  { nome: 'Cortador de Cintas', categoriaId: 'textil', descricao: LOREM_CURTO },
-  { nome: 'Máquina de Fuxico', categoriaId: 'textil', descricao: LOREM_CURTO },
-  { nome: 'Misturador Inox', categoriaId: 'caldeiras', descricao: LOREM_CURTO },
-  { nome: 'Caldeira Inox', categoriaId: 'caldeiras', descricao: LOREM_CURTO },
+  {
+    nome: 'Cortador de XPS',
+    categoriaId: 'comunicacao-visual',
+    descricao: LOREM_CURTO,
+    comportamento: LOREM_COMPORTAMENTO,
+  },
+  {
+    nome: 'Cortador de EPS',
+    categoriaId: 'comunicacao-visual',
+    descricao: LOREM_CURTO,
+    comportamento: LOREM_COMPORTAMENTO,
+  },
+  {
+    nome: 'Cortador de EVA',
+    categoriaId: 'comunicacao-visual',
+    descricao: LOREM_CURTO,
+    comportamento: LOREM_COMPORTAMENTO,
+  },
+  {
+    nome: 'Estufa de Filamento',
+    categoriaId: 'impressao-3d',
+    descricao: LOREM_CURTO,
+    comportamento:
+      'Câmara fechada com gaveta sobre trilhos: o filamento fica em bandejas teladas, que deixam ' +
+      'o ar circular por todos os lados do rolo. O controlador digital no painel frontal mostra a ' +
+      'temperatura da câmara e recebe o valor de trabalho, e aquecedor e iluminação têm ' +
+      'acionamento independente — dá para conferir o rolo pela tampa transparente sem abrir a ' +
+      'gaveta nem interromper o aquecimento.',
+    fotos: [
+      {
+        src: '/img/estufa.jpg',
+        alt: 'Estufa de filamento da AUZA com a gaveta aberta, mostrando as bandejas teladas; no painel frontal, o controlador digital marca 29.8 °C ao lado dos acionamentos de aquecedor e iluminação.',
+      },
+    ],
+  },
+  {
+    nome: 'Estufa de Filamento Dupla',
+    categoriaId: 'impressao-3d',
+    descricao: LOREM_CURTO,
+    comportamento: LOREM_COMPORTAMENTO,
+  },
+  {
+    nome: 'Cortador de Cintas',
+    categoriaId: 'textil',
+    descricao: LOREM_CURTO,
+    comportamento:
+      'Mesa de corte com fio tensionado na coluna e réguas graduadas nos dois eixos. A guia de ' +
+      'alumínio trava por manípulo na medida escolhida e passa a ser o batente: a cinta encosta ' +
+      'nela e sai na mesma largura em toda a tiragem, sem remarcar peça por peça.',
+    fotos: [
+      {
+        src: '/img/cortador-cinta.jpg',
+        alt: 'Mesa do cortador de cintas da AUZA vista de cima: tampo branco com o logotipo gravado, réguas graduadas em dois eixos, guia de alumínio travada por manípulo e o fio de corte tensionado na coluna.',
+      },
+    ],
+  },
+  {
+    nome: 'Máquina de Fuxico',
+    categoriaId: 'textil',
+    descricao: LOREM_CURTO,
+    comportamento: LOREM_COMPORTAMENTO,
+  },
+  {
+    nome: 'Misturador Inox',
+    categoriaId: 'caldeiras',
+    descricao: LOREM_CURTO,
+    comportamento: LOREM_COMPORTAMENTO,
+  },
+  {
+    nome: 'Caldeira Inox',
+    categoriaId: 'caldeiras',
+    descricao: LOREM_CURTO,
+    comportamento:
+      'Corpo em inox de fundo cônico montado sobre estrutura própria, com registro de esfera na ' +
+      'parte baixa: o produto sai pelo ponto mais fundo do tanque, o que esvazia e limpa sem ' +
+      'tombar o corpo. A tampa transparente é articulada e as duas alças laterais são fixas à ' +
+      'estrutura.',
+    fotos: [
+      {
+        src: '/img/caldeira.jpg',
+        alt: 'Caldeira em inox da AUZA sobre estrutura de pés, com tampa transparente articulada, duas alças laterais e registro de esfera vermelho na saída do fundo cônico.',
+      },
+    ],
+  },
   {
     nome: 'Caldeira com Misturador Automático',
     categoriaId: 'caldeiras',
     descricao: LOREM_CURTO,
+    comportamento: LOREM_COMPORTAMENTO,
   },
 ];

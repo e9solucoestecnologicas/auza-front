@@ -14,7 +14,8 @@
           Linha completa
         </h2>
         <p class="max-w-xl font-geist-mono text-lg text-neutral-500">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.
+          Explore nossas soluções em tecnologia e engenharia para o agronegócio, setor têxtil,
+          comunicação visual, impressão 3D e máquinas industriais.
         </p>
       </div>
 
@@ -71,45 +72,59 @@
       }
     </div>
 
-    <!-- Trilho -->
-    <div
-      #trilho
-      class="vitrine-trilho flex gap-6 pb-4"
-      (mouseenter)="pausar()"
-      (mouseleave)="retomar()"
-      (focusin)="pausar()"
-      (focusout)="retomar()"
-    >
-      @for (produto of produtos(); track produto.nome) {
-        <!-- Service Card do DS -->
-        <article
-          class="group w-[280px] shrink-0 snap-start rounded-2xl border border-neutral-200 bg-white p-6 transition-all duration-300 hover:shadow-xl sm:w-[320px]"
-        >
-          <div
-            class="mb-6 grid h-48 place-items-center overflow-hidden rounded-xl border border-neutral-100 bg-neutral-100"
+    <!--
+      Palco: só existe para o esmaecimento das duas bordas. Sem ele o card é
+      cortado a seco na borda do container, e o trilho lê como uma lista
+      truncada em vez de cards atravessando a seção. A máscara fica no palco, e
+      não no trilho, para não pesar na camada que rola.
+    -->
+    <div class="vitrine-palco">
+      <!--
+        Trilho. `track $index` e não `produto.nome`: em loop a mesma lista é
+        renderizada duas vezes, e o nome deixaria de ser chave única.
+      -->
+      <div
+        #trilho
+        class="vitrine-trilho flex gap-6 pb-4"
+        (mouseenter)="pausar()"
+        (mouseleave)="retomar()"
+        (focusin)="pausar()"
+        (focusout)="retomar()"
+      >
+        @for (produto of cards(); track $index; let i = $index) {
+          <!-- Service Card do DS -->
+          <article
+            class="group w-[280px] shrink-0 rounded-2xl border border-neutral-200 bg-white p-6 transition-all duration-300 hover:shadow-xl sm:w-[320px]"
+            [attr.aria-hidden]="i >= produtos().length ? 'true' : null"
           >
-            <app-icon
-              [name]="iconeCategoria(produto.categoriaId)"
-              class="h-10 w-10 text-neutral-400"
-            />
-          </div>
-          <div
-            class="mb-4 inline-flex rounded-full border border-neutral-200 bg-neutral-100 px-3 py-1 font-geist-mono text-xs text-neutral-600"
-          >
-            {{ nomeCategoria(produto.categoriaId) }}
-          </div>
-          <h3 class="mb-3 text-xl font-semibold text-neutral-900">{{ produto.nome }}</h3>
-          <p class="font-geist-mono text-sm leading-relaxed text-neutral-500">
-            {{ produto.descricao }}
-          </p>
-        </article>
-      }
+            <div
+              class="mb-6 grid h-48 place-items-center overflow-hidden rounded-xl border border-neutral-100 bg-neutral-100"
+            >
+              <app-icon
+                [name]="iconeCategoria(produto.categoriaId)"
+                class="h-10 w-10 text-neutral-400"
+              />
+            </div>
+            <div
+              class="mb-4 inline-flex rounded-full border border-neutral-200 bg-neutral-100 px-3 py-1 font-geist-mono text-xs text-neutral-600"
+            >
+              {{ nomeCategoria(produto.categoriaId) }}
+            </div>
+            <h3 class="mb-3 text-xl font-semibold text-neutral-900">{{ produto.nome }}</h3>
+            <p class="font-geist-mono text-sm leading-relaxed text-neutral-500">
+              {{ produto.descricao }}
+            </p>
+          </article>
+        }
+      </div>
     </div>
 
+    <!-- Sai da home: a página /produtos abre o descritivo de operação e as fotos
+         de cada equipamento, que não caberiam no cartão do trilho. -->
     <div class="mt-10 flex justify-center">
       <a
         class="inline-flex items-center gap-2 rounded-full border border-neutral-200 bg-white px-8 py-4 font-geist-mono text-sm text-neutral-900 shadow-sm transition-all hover:bg-neutral-50 hover:shadow-md"
-        href="#contato"
+        routerLink="/produtos"
       >
         Ver todos os produtos
         <app-icon name="plus" class="h-4 w-4" />

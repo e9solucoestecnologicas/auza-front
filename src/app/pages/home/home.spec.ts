@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { Home } from './home';
 import { CATEGORIAS, PRODUTOS } from './home.data';
 
@@ -16,6 +17,8 @@ describe('Home', () => {
 
     await TestBed.configureTestingModule({
       imports: [Home],
+      // A vitrine leva ao catálogo por `routerLink`, e o RouterLink injeta Router.
+      providers: [provideRouter([])],
     }).compileComponents();
   });
 
@@ -130,7 +133,12 @@ describe('Home', () => {
     await fixture.whenStable();
     const root = fixture.nativeElement as HTMLElement;
 
-    expect(root.querySelectorAll('.vitrine-trilho > article').length).toBe(PRODUTOS.length);
+    // `:not([aria-hidden])` descarta a segunda volta do trilho: quando a lista
+    // transborda, ela é renderizada duas vezes para a deriva dar a volta sem
+    // costura, e a cópia é marcada como decorativa.
+    expect(root.querySelectorAll('.vitrine-trilho > article:not([aria-hidden])').length).toBe(
+      PRODUTOS.length,
+    );
     // Só o hero e o rodapé usam a superfície escura: as categorias saíram do
     // revezamento quando o bloco de Produtos foi unificado no marfim.
     expect(root.querySelectorAll('.on-dark').length).toBe(2);

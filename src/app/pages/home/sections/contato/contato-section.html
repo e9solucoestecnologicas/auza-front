@@ -11,30 +11,67 @@
     <div class="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
       <div class="lg:col-span-5">
         <h2 class="mb-4 text-3xl font-semibold tracking-tight text-neutral-900 md:text-4xl">
-          Vamos falar do seu processo
+          Fale com nossos especialistas
         </h2>
         <p class="mb-10 max-w-md font-geist-mono text-lg leading-relaxed text-neutral-600">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
-          ut labore et dolore magna aliqua.
+          Descubra a solução perfeita para o seu segmento. Preencha os dados abaixo e entraremos em
+          contato rapidamente.
         </p>
 
+        <div
+          class="mb-4 font-geist-mono text-xs font-bold uppercase tracking-widest text-neutral-400"
+        >
+          Atendimento
+        </div>
+
+        <!--
+          Os três primeiros são LINK, não texto: no celular o telefone disca e o
+          WhatsApp abre a conversa. Número em tela não clicável obriga a copiar à
+          mão justamente onde é mais difícil fazê-lo.
+        -->
         <ul class="space-y-5">
-          <li class="flex items-center gap-4">
-            <span
-              class="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-neutral-200 bg-neutral-50 text-neutral-900"
-            >
-              <app-icon name="mail" class="h-4 w-4" />
-            </span>
-            <span class="font-geist-mono text-sm text-neutral-600">contato&#64;auza.com.br</span>
-          </li>
           <li class="flex items-center gap-4">
             <span
               class="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-neutral-200 bg-neutral-50 text-neutral-900"
             >
               <app-icon name="phone" class="h-4 w-4" />
             </span>
-            <span class="font-geist-mono text-sm text-neutral-600">(00) 0000-0000</span>
+            <a
+              class="font-geist-mono text-sm text-neutral-600 transition-colors hover:text-neutral-900"
+              [href]="'tel:' + contato.atendimento.discagem"
+              >{{ contato.atendimento.exibicao }}</a
+            >
           </li>
+          <li class="flex items-center gap-4">
+            <!-- Verde da marca do WhatsApp: é a única cor fora da paleta na
+                 página, e está aqui pelo mesmo motivo do material impresso —
+                 o selo é o que identifica o canal à primeira vista. -->
+            <span
+              class="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-neutral-200 bg-neutral-50 text-[#25D366]"
+            >
+              <app-icon name="whatsapp" class="h-5 w-5" />
+            </span>
+            <a
+              class="font-geist-mono text-sm text-neutral-600 transition-colors hover:text-neutral-900"
+              [href]="linkWhatsapp(contato.celular)"
+              target="_blank"
+              rel="noopener"
+              >{{ contato.celular.exibicao }}</a
+            >
+          </li>
+          <li class="flex items-center gap-4">
+            <span
+              class="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-neutral-200 bg-neutral-50 text-neutral-900"
+            >
+              <app-icon name="mail" class="h-4 w-4" />
+            </span>
+            <a
+              class="font-geist-mono text-sm text-neutral-600 transition-colors hover:text-neutral-900"
+              [href]="'mailto:' + contato.email"
+              >{{ contato.email }}</a
+            >
+          </li>
+          <!-- Endereço segue placeholder: não veio no material de contato. -->
           <li class="flex items-center gap-4">
             <span
               class="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-neutral-200 bg-neutral-50 text-neutral-900"

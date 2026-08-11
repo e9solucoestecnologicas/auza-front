@@ -1,0 +1,70 @@
+<div class="ds-root min-h-screen bg-white antialiased">
+  <header class="border-b border-soft px-6 sm:px-8">
+    <div class="mx-auto flex h-20 max-w-6xl items-center justify-between gap-6">
+      <app-logo variante="claro" class="w-[150px]" />
+      <div class="flex items-center gap-3">
+        <button
+          type="button"
+          class="btn-ghost rounded-lg border border-soft px-4 py-2 font-geist-mono text-xs uppercase tracking-widest transition-colors disabled:opacity-50"
+          [disabled]="saindo()"
+          (click)="sairDeTodos()"
+        >
+          Sair de todos
+        </button>
+        <button
+          type="button"
+          class="btn-primary rounded-lg px-4 py-2 font-geist-mono text-xs uppercase tracking-widest transition-colors disabled:opacity-50"
+          [disabled]="saindo()"
+          (click)="sair()"
+        >
+          {{ saindo() ? 'Saindo…' : 'Sair' }}
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="mx-auto max-w-6xl px-6 py-16 sm:px-8">
+    @if (usuario(); as u) {
+      <div class="mb-6 flex items-center gap-3">
+        <span class="font-geist-mono text-xs font-bold uppercase tracking-widest text-subtle"
+          >Painel</span
+        >
+        <div class="rule-soft h-px flex-1"></div>
+      </div>
+
+      <h1 class="mb-2 text-3xl font-semibold tracking-tight text-ink md:text-4xl">
+        Olá, {{ u.name }}
+      </h1>
+      <p class="mb-12 font-geist-mono text-sm text-muted">
+        Sessão ativa. Esta área é protegida pelo <code>authGuard</code> e pelo Bearer token.
+      </p>
+
+      <dl class="grid max-w-2xl grid-cols-1 gap-6 sm:grid-cols-2">
+        <div class="rounded-xl border border-soft bg-neutral-50 p-6">
+          <dt class="mb-1 font-geist-mono text-xs uppercase tracking-widest text-subtle">E-mail</dt>
+          <dd class="font-geist-mono text-sm text-ink">{{ u.email }}</dd>
+        </div>
+        <div class="rounded-xl border border-soft bg-neutral-50 p-6">
+          <dt class="mb-1 font-geist-mono text-xs uppercase tracking-widest text-subtle">Papel</dt>
+          <dd class="font-geist-mono text-sm text-ink">{{ u.role }}</dd>
+        </div>
+        <div class="rounded-xl border border-soft bg-neutral-50 p-6">
+          <dt class="mb-1 font-geist-mono text-xs uppercase tracking-widest text-subtle">
+            Último acesso
+          </dt>
+          <dd class="font-geist-mono text-sm text-ink">
+            {{ u.lastLoginAt ? (u.lastLoginAt | date: 'dd/MM/yyyy HH:mm') : '—' }}
+          </dd>
+        </div>
+        <div class="rounded-xl border border-soft bg-neutral-50 p-6">
+          <dt class="mb-1 font-geist-mono text-xs uppercase tracking-widest text-subtle">
+            Conta criada em
+          </dt>
+          <dd class="font-geist-mono text-sm text-ink">
+            {{ u.createdAt | date: 'dd/MM/yyyy' }}
+          </dd>
+        </div>
+      </dl>
+    }
+  </main>
+</div>
