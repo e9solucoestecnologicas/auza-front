@@ -11,6 +11,8 @@ import type {
   UsuarioPublico,
 } from './auth.models';
 import { TokenStorage } from './token-storage';
+// PROVISÓRIO — este import inteiro sai quando o login de teste for removido.
+import { ehLoginDeTeste, ehSessaoDeTeste, sessaoDeTeste } from './login-de-teste';
 
 /** Sessão que não dá para renovar: sem refresh token, ou já vencido. */
 export class SessaoExpirada extends Error {
@@ -54,6 +56,11 @@ export class AuthService {
   private renovacao: Promise<string> | null = null;
 
   entrar(credenciais: Credenciais): Promise<UsuarioPublico> {
+    // PROVISÓRIO — ver login-de-teste.ts. Sai junto com aquele arquivo.
+    if (ehLoginDeTeste(credenciais)) {
+      return Promise.resolve(this.aplicarSessao(sessaoDeTeste()));
+    }
+
     return firstValueFrom(
       this.http.post<RespostaAutenticacao>(`${this.base}/auth/login`, credenciais),
     ).then((resposta) => this.aplicarSessao(resposta));
@@ -105,6 +112,14 @@ export class AuthService {
     if (!this.tokens.accessToken) {
       return false;
     }
+
+    // PROVISÓRIO — ver login-de-teste.ts. Sem isto, um F5 chamaria `/auth/me`
+    // com o token falso e o testador seria deslogado ao recarregar a página.
+    if (ehSessaoDeTeste(this.tokens.accessToken)) {
+      this._usuario.set(sessaoDeTeste().user);
+      return true;
+    }
+
     try {
       const usuario = await firstValueFrom(this.http.get<UsuarioPublico>(`${this.base}/auth/me`));
       this._usuario.set(usuario);
@@ -130,6 +145,14 @@ export class AuthService {
     // Sem token, ou vencido: nem vale gastar uma requisição.
     if (!refreshToken || this.tokens.refreshExpirado) {
       this.encerrarPorExpiracao();
+      return Promise.reject(new SessaoExpirada());
+    }
+
+    // PROVISÓRIO — ver login-de-teste.ts. A sessão de teste não tem o que
+    // renovar, e aqui NÃO se chama `encerrarPorExpiracao`: se a API estiver no ar,
+    // ela responde 401 à primeira chamada autenticada, e derrubar a sessão nesse
+    // ponto expulsaria o testador da tela em vez de só mostrar o erro.
+    if (ehSessaoDeTeste(refreshToken)) {
       return Promise.reject(new SessaoExpirada());
     }
 

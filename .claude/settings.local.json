@@ -134,7 +134,12 @@
       "PowerShell(& \"C:\\\\Users\\\\User\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-User-E9SOLUCOES-Clientes-Auza-auza-front\\\\1acad043-9f26-4abe-a072-8fa009b8c833\\\\scratchpad\\\\medir-logo.ps1\")",
       "PowerShell(& \"C:\\\\Users\\\\User\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-User-E9SOLUCOES-Clientes-Auza-auza-front\\\\1acad043-9f26-4abe-a072-8fa009b8c833\\\\scratchpad\\\\recortar-a.ps1\")",
       "PowerShell(& \"C:\\\\Users\\\\User\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-User-E9SOLUCOES-Clientes-Auza-auza-front\\\\1acad043-9f26-4abe-a072-8fa009b8c833\\\\scratchpad\\\\previa-16.ps1\")",
-      "PowerShell(& \"C:\\\\Users\\\\User\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-User-E9SOLUCOES-Clientes-Auza-auza-front\\\\1acad043-9f26-4abe-a072-8fa009b8c833\\\\scratchpad\\\\gerar-favicon.ps1\")"
+      "PowerShell(& \"C:\\\\Users\\\\User\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-User-E9SOLUCOES-Clientes-Auza-auza-front\\\\1acad043-9f26-4abe-a072-8fa009b8c833\\\\scratchpad\\\\gerar-favicon.ps1\")",
+      "Bash(node -e \"const j=require\\('./angular.json'\\); const b=j.projects['auza-front'].architect?.build ?? j.projects['auza-front'].targets.build; console.log\\(JSON.stringify\\({builder:b.builder, configurations:Object.keys\\(b.configurations\\), production:b.configurations.production, development:b.configurations.development}, null, 2\\)\\);\")",
+      "Bash(rm -rf dist)",
+      "Bash(grep -v \":0$\")",
+      "Bash(rm -f src/app/core/auth/login-de-teste.producao.ts)",
+      "Bash(git checkout *)"
     ],
     "additionalDirectories": [
       "\\tmp"
