@@ -1,0 +1,352 @@
+<div class="mb-6 flex items-center gap-3">
+  <span class="font-geist-mono text-xs font-bold uppercase tracking-widest text-subtle"
+    >Produtos</span
+  >
+  <div class="rule-soft h-px flex-1"></div>
+</div>
+
+<div class="mb-10 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+  <div>
+    <h1 class="mb-2 text-3xl font-semibold tracking-tight text-ink md:text-4xl">
+      Produtos cadastrados
+    </h1>
+    <p class="font-geist-mono text-sm text-muted">
+      @if (meta(); as m) {
+        {{ m.total }} {{ m.total === 1 ? 'produto' : 'produtos' }} no catálogo.
+      } @else {
+        Carregando o catálogo…
+      }
+    </p>
+  </div>
+
+  <a
+    class="btn-primary inline-flex shrink-0 items-center gap-2 rounded-lg px-6 py-3 font-geist-mono text-sm font-medium transition-colors"
+    routerLink="/painel/produtos/novo"
+  >
+    <app-icon name="plus" class="h-4 w-4" />
+    Cadastrar produto
+  </a>
+</div>
+
+<!-- Filtros. Categoria e status vêm de /products/options: quando entrar uma
+     categoria nova no backend, este filtro acompanha sem deploy. -->
+<div class="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+  <label class="block">
+    <span class="mb-2 block font-geist-mono text-xs uppercase tracking-wide text-subtle"
+      >Buscar</span
+    >
+    <input
+      type="search"
+      class="ds-input"
+      placeholder="Nome do produto"
+      [value]="filtro().search"
+      (change)="filtrarPor({ search: $any($event.target).value })"
+    />
+  </label>
+
+  <label class="block">
+    <span class="mb-2 block font-geist-mono text-xs uppercase tracking-wide text-subtle"
+      >Categoria</span
+    >
+    <!-- `[value]` no SELECT, e não `[selected]` nas opções: ordenar pelo cabeçalho
+         da tabela também muda o filtro, e o select tem de acompanhar. -->
+    <select
+      class="ds-input"
+      [value]="filtro().category"
+      (change)="filtrarPor({ category: $any($event.target).value })"
+    >
+      <option value="">Todas</option>
+      @for (opcao of opcoes()?.categories ?? []; track opcao.value) {
+        <option [value]="opcao.value">{{ opcao.label }}</option>
+      }
+    </select>
+  </label>
+
+  <label class="block">
+    <span class="mb-2 block font-geist-mono text-xs uppercase tracking-wide text-subtle"
+      >Status</span
+    >
+    <select
+      class="ds-input"
+      [value]="filtro().status"
+      (change)="filtrarPor({ status: $any($event.target).value })"
+    >
+      <option value="">Todos</option>
+      @for (opcao of opcoes()?.statuses ?? []; track opcao.value) {
+        <option [value]="opcao.value">{{ opcao.label }}</option>
+      }
+    </select>
+  </label>
+
+  <label class="block">
+    <span class="mb-2 block font-geist-mono text-xs uppercase tracking-wide text-subtle"
+      >Ordenar por</span
+    >
+    <select
+      class="ds-input"
+      [value]="filtro().sortBy"
+      (change)="ordenarPor($any($event.target).value)"
+    >
+      <option value="createdAt">Mais recentes</option>
+      <option value="clickCount">Mais clicados</option>
+      <option value="name">Nome</option>
+    </select>
+  </label>
+</div>
+
+@if (erro(); as mensagem) {
+  <p
+    role="alert"
+    class="mb-8 rounded-lg border border-red-200 bg-red-50 px-4 py-3 font-geist-mono text-sm text-red-700"
+  >
+    {{ mensagem }}
+  </p>
+}
+
+@if (carregando()) {
+  <p class="font-geist-mono text-sm text-muted">Carregando…</p>
+} @else if (vazio()) {
+  <div class="rounded-2xl border border-soft bg-neutral-50 px-6 py-16 text-center">
+    <p class="mb-2 font-geist-mono text-sm text-ink">
+      {{ filtrado() ? 'Nenhum produto para este filtro.' : 'Nenhum produto cadastrado ainda.' }}
+    </p>
+    <p class="font-geist-mono text-xs text-muted">
+      {{
+        filtrado()
+          ? 'Limpe a busca ou escolha outra categoria.'
+          : 'Cadastre o primeiro para ele aparecer na vitrine.'
+      }}
+    </p>
+  </div>
+} @else {
+  <!-- Tabela em tela larga; no celular cada produto vira um cartão (a tabela
+       rolaria lateralmente e esconderia justamente as ações). -->
+  <div class="hidden overflow-hidden rounded-2xl border border-soft lg:block">
+    <table class="w-full border-collapse text-left">
+      <thead class="bg-neutral-50">
+        <tr class="font-geist-mono text-xs uppercase tracking-wide text-subtle">
+          <th class="px-4 py-3 font-medium">Produto</th>
+          <th class="px-4 py-3 font-medium">Categoria</th>
+          <th class="px-4 py-3 font-medium">Status</th>
+          <th class="px-4 py-3 font-medium">
+            <button type="button" class="hover:text-ink" (click)="ordenarPor('clickCount')">
+              Cliques {{ seta('clickCount') }}
+            </button>
+          </th>
+          <th class="px-4 py-3 font-medium">
+            <button type="button" class="hover:text-ink" (click)="ordenarPor('createdAt')">
+              Cadastro {{ seta('createdAt') }}
+            </button>
+          </th>
+          <th class="px-4 py-3 text-right font-medium">Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (produto of produtos(); track produto.id) {
+          <tr class="border-t border-soft align-middle">
+            <td class="px-4 py-3">
+              <div class="flex items-center gap-3">
+                @if (imagem(produto); as src) {
+                  <img
+                    [src]="src"
+                    [alt]="produto.name"
+                    class="h-12 w-12 shrink-0 rounded-lg border border-soft object-cover"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                } @else {
+                  <span
+                    class="media-ph grid h-12 w-12 shrink-0 place-items-center rounded-lg text-subtle"
+                    aria-hidden="true"
+                  >
+                    <app-icon name="box" class="h-4 w-4" />
+                  </span>
+                }
+                <div class="min-w-0">
+                  <p class="truncate text-sm font-medium text-ink">{{ produto.name }}</p>
+                  @if (produto.featured) {
+                    <span class="font-geist-mono text-xs text-subtle">Destaque</span>
+                  }
+                </div>
+              </div>
+            </td>
+            <td class="px-4 py-3 font-geist-mono text-xs text-muted">
+              {{ produto.categoryLabel }}
+            </td>
+            <td class="px-4 py-3">
+              <span
+                class="produto-status"
+                [class.produto-status--oculto]="produto.status === 'OCULTO'"
+              >
+                {{ produto.statusLabel }}
+              </span>
+            </td>
+            <td class="px-4 py-3 font-geist-mono text-sm tabular-nums text-ink">
+              {{ produto.clickCount }}
+            </td>
+            <td class="px-4 py-3 font-geist-mono text-xs text-muted">
+              {{ produto.createdAt | date: 'dd/MM/yyyy' }}
+            </td>
+            <td class="px-4 py-3">
+              <div class="flex items-center justify-end gap-2">
+                <a
+                  class="rounded-lg border border-soft px-3 py-2 font-geist-mono text-xs text-ink transition-colors hover:bg-neutral-100"
+                  [routerLink]="['/painel/produtos', produto.id]"
+                  >Editar</a
+                >
+                <button
+                  type="button"
+                  class="rounded-lg border border-soft px-3 py-2 font-geist-mono text-xs text-red-700 transition-colors hover:bg-red-50"
+                  (click)="confirmarRemocao(produto.id)"
+                >
+                  Remover
+                </button>
+              </div>
+
+              <!-- Confirmação inline: a remoção é definitiva na API, sem lixeira. -->
+              @if (removendo() === produto.id) {
+                <div
+                  class="mt-2 rounded-lg border border-red-200 bg-red-50 p-3 text-right"
+                  role="alertdialog"
+                  aria-label="Confirmar remoção"
+                >
+                  <p class="mb-2 font-geist-mono text-xs text-red-700">
+                    Remover em definitivo? A imagem vai junto.
+                  </p>
+                  <div class="flex justify-end gap-2">
+                    <button
+                      type="button"
+                      class="rounded-lg border border-soft bg-white px-3 py-1.5 font-geist-mono text-xs text-ink"
+                      (click)="cancelarRemocao()"
+                    >
+                      Cancelar
+                    </button>
+                    <button
+                      type="button"
+                      class="rounded-lg bg-red-700 px-3 py-1.5 font-geist-mono text-xs text-white disabled:opacity-50"
+                      [disabled]="apagando()"
+                      (click)="remover(produto.id)"
+                    >
+                      {{ apagando() ? 'Removendo…' : 'Remover' }}
+                    </button>
+                  </div>
+                </div>
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <ul class="space-y-4 lg:hidden">
+    @for (produto of produtos(); track produto.id) {
+      <li class="rounded-2xl border border-soft bg-neutral-50 p-4">
+        <div class="mb-3 flex items-start gap-3">
+          @if (imagem(produto); as src) {
+            <img
+              [src]="src"
+              [alt]="produto.name"
+              class="h-16 w-16 shrink-0 rounded-lg border border-soft object-cover"
+              loading="lazy"
+              decoding="async"
+            />
+          } @else {
+            <span
+              class="media-ph grid h-16 w-16 shrink-0 place-items-center rounded-lg text-subtle"
+              aria-hidden="true"
+            >
+              <app-icon name="box" class="h-5 w-5" />
+            </span>
+          }
+          <div class="min-w-0 flex-1">
+            <p class="text-sm font-medium text-ink">{{ produto.name }}</p>
+            <p class="font-geist-mono text-xs text-muted">{{ produto.categoryLabel }}</p>
+          </div>
+          <span class="produto-status" [class.produto-status--oculto]="produto.status === 'OCULTO'">
+            {{ produto.statusLabel }}
+          </span>
+        </div>
+
+        <dl class="mb-3 flex gap-6 font-geist-mono text-xs text-muted">
+          <div>
+            <dt class="text-subtle">Cliques</dt>
+            <dd class="tabular-nums text-ink">{{ produto.clickCount }}</dd>
+          </div>
+          <div>
+            <dt class="text-subtle">Cadastro</dt>
+            <dd class="text-ink">{{ produto.createdAt | date: 'dd/MM/yyyy' }}</dd>
+          </div>
+        </dl>
+
+        <div class="flex gap-2">
+          <a
+            class="flex-1 rounded-lg border border-soft bg-white px-3 py-2 text-center font-geist-mono text-xs text-ink"
+            [routerLink]="['/painel/produtos', produto.id]"
+            >Editar</a
+          >
+          <button
+            type="button"
+            class="flex-1 rounded-lg border border-soft bg-white px-3 py-2 font-geist-mono text-xs text-red-700"
+            (click)="confirmarRemocao(produto.id)"
+          >
+            Remover
+          </button>
+        </div>
+
+        @if (removendo() === produto.id) {
+          <div
+            class="mt-3 rounded-lg border border-red-200 bg-red-50 p-3"
+            role="alertdialog"
+            aria-label="Confirmar remoção"
+          >
+            <p class="mb-2 font-geist-mono text-xs text-red-700">
+              Remover em definitivo? A imagem vai junto.
+            </p>
+            <div class="flex gap-2">
+              <button
+                type="button"
+                class="flex-1 rounded-lg border border-soft bg-white px-3 py-1.5 font-geist-mono text-xs text-ink"
+                (click)="cancelarRemocao()"
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                class="flex-1 rounded-lg bg-red-700 px-3 py-1.5 font-geist-mono text-xs text-white disabled:opacity-50"
+                [disabled]="apagando()"
+                (click)="remover(produto.id)"
+              >
+                {{ apagando() ? 'Removendo…' : 'Remover' }}
+              </button>
+            </div>
+          </div>
+        }
+      </li>
+    }
+  </ul>
+
+  @if (totalPaginas() > 1) {
+    <nav class="mt-8 flex items-center justify-between gap-4" aria-label="Paginação">
+      <button
+        type="button"
+        class="rounded-lg border border-soft px-4 py-2 font-geist-mono text-xs text-ink transition-colors hover:bg-neutral-100 disabled:opacity-40"
+        [disabled]="pagina() <= 1"
+        (click)="irParaPagina(pagina() - 1)"
+      >
+        Anterior
+      </button>
+      <span class="font-geist-mono text-xs text-muted">
+        Página {{ pagina() }} de {{ totalPaginas() }}
+      </span>
+      <button
+        type="button"
+        class="rounded-lg border border-soft px-4 py-2 font-geist-mono text-xs text-ink transition-colors hover:bg-neutral-100 disabled:opacity-40"
+        [disabled]="pagina() >= totalPaginas()"
+        (click)="irParaPagina(pagina() + 1)"
+      >
+        Próxima
+      </button>
+    </nav>
+  }
+}

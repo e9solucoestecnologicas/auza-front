@@ -7,10 +7,39 @@ export const routes: Routes = [
     path: 'login',
     loadComponent: () => import('./pages/login/login').then((m) => m.Login),
   },
+  /**
+   * Área autenticada. O `authGuard` fica na rota PAI: filho nenhum é alcançável
+   * sem passar por ele, inclusive por URL digitada.
+   *
+   * `produtos/novo` vem antes de `produtos/:id` porque a ordem decide — como
+   * parâmetro, `:id` casaria com "novo" e abriria a edição de um produto
+   * inexistente.
+   */
   {
     path: 'painel',
     canActivate: [authGuard],
-    loadComponent: () => import('./pages/painel/painel').then((m) => m.Painel),
+    loadComponent: () => import('./pages/painel/painel-layout').then((m) => m.PainelLayout),
+    children: [
+      {
+        path: '',
+        loadComponent: () => import('./pages/painel/painel').then((m) => m.Painel),
+      },
+      {
+        path: 'produtos',
+        loadComponent: () =>
+          import('./pages/painel/produtos/produtos-lista').then((m) => m.ProdutosLista),
+      },
+      {
+        path: 'produtos/novo',
+        loadComponent: () =>
+          import('./pages/painel/produtos/produto-form').then((m) => m.ProdutoForm),
+      },
+      {
+        path: 'produtos/:id',
+        loadComponent: () =>
+          import('./pages/painel/produtos/produto-form').then((m) => m.ProdutoForm),
+      },
+    ],
   },
   {
     path: 'home',

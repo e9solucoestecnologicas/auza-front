@@ -714,6 +714,52 @@
   border-color: #feebca;
 }
 
+/* ---------- Abas do painel ---------- */
+/* Aba, e não botão: a navegação é por rota, então tem de ser link — com URL que
+   dá para copiar, abrir em outra aba e voltar pelo histórico. A ativa é marcada
+   por `routerLinkActive`, e o traço fica na borda de baixo para encostar na régua
+   do cabeçalho. */
+.ds-root .painel-aba {
+  padding: 0.75rem 0.25rem;
+  border-bottom: 2px solid transparent;
+  font-family: 'Geist Mono', monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #8a6647;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+.ds-root .painel-aba:hover {
+  color: #4a1d06;
+}
+.ds-root .painel-aba--ativa {
+  color: #4a1d06;
+  border-bottom-color: #4a1d06;
+}
+
+/* ---------- Selo de status do produto (painel) ---------- */
+/* Visível é o estado bom e usa o verde de sucesso do formulário de contato;
+   oculto fica em tom de marca esmaecido, e não em vermelho: produto oculto não é
+   erro, é rascunho. */
+.ds-root .produto-status {
+  display: inline-block;
+  border-radius: 999px;
+  border: 1px solid #bbf7d0;
+  background-color: #f0fdf4;
+  padding: 0.125rem 0.625rem;
+  font-family: 'Geist Mono', monospace;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  color: #15803d;
+}
+.ds-root .produto-status--oculto {
+  border-color: rgba(74, 29, 6, 0.18);
+  background-color: rgba(74, 29, 6, 0.06);
+  color: #6f4a2f;
+}
+
 /* ---------- Trilho da vitrine ---------- */
 /* Esmaece as duas bordas: os cards entram e saem da seção em vez de aparecerem
    e desaparecerem num corte reto. A máscara vive no palco, que não rola, e não

@@ -1,6 +1,6 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { provideRouter, withInMemoryScrolling } from '@angular/router';
+import { provideRouter, withComponentInputBinding, withInMemoryScrolling } from '@angular/router';
 
 import { routes } from './app.routes';
 import { authInterceptor } from './core/auth/auth.interceptor';
@@ -22,6 +22,9 @@ export const appConfig: ApplicationConfig = {
     provideRouter(
       routes,
       withInMemoryScrolling({ scrollPositionRestoration: 'enabled', anchorScrolling: 'enabled' }),
+      // `:id` da rota chega no `input('id')` do formulário de produto. Sem isto,
+      // a tela de edição não saberia qual produto carregar.
+      withComponentInputBinding(),
     ),
     // Interceptor funcional (não classe): é o formato suportado quando o
     // HttpClient é provido por `provideHttpClient`, e o único que o Angular

@@ -1,11 +1,27 @@
 <!doctype html>
-<html lang="en">
+<html lang="pt-BR">
   <head>
     <meta charset="utf-8" />
-    <title>AuzaFront</title>
+    <title>AUZA — Engenharia e Automação</title>
     <base href="/" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+
+    <!--
+      Favicon: o "A" da marca, recortado do próprio logo (public/img/logo-fundo-claro.png).
+
+      O `?v=2` existe porque browser guarda favicon com cache agressivo, e sem
+      trocar a URL o ícone antigo fica na aba mesmo depois do deploy.
+
+      Os tamanhos pequenos do .ico são gerados com recorte na moldura de
+      construção e reforço de contraste: a 16px a moldura vira sujeira cinza e
+      rouba área da letra. Os grandes levam a marca inteira.
+    -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico?v=2" sizes="16x16 32x32 48x48" />
+    <link rel="icon" type="image/png" href="icon-192.png?v=2" sizes="192x192" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2" sizes="180x180" />
+
+    <!-- Cor da barra do browser no mobile: o ink da marca, como o hero. -->
+    <meta name="theme-color" content="#4a1d06" />
   </head>
   <body>
     <app-root></app-root>
