@@ -1,15 +1,30 @@
-import { InjectionToken } from '@angular/core';
+import { InjectionToken, isDevMode } from '@angular/core';
+
+/** API hospedada (Render). Um lugar só para trocar de ambiente. */
+export const API_HOSPEDADA = 'https://auza-api-xynb.onrender.com';
 
 /**
  * Raiz da API. Vem por token e não de uma constante importada para que os testes
- * possam trocar por um valor fixo sem tocar em rede, e para que o deploy possa
- * sobrescrever num único lugar (app.config.ts).
+ * possam trocar por um valor fixo sem tocar em rede.
  *
- * O auza-back sobe em :3333 e prefixa tudo com /api/v1 (ver src/routes.ts lá).
+ * DUAS FORMAS, de propósito:
+ *
+ *  - em desenvolvimento o caminho é RELATIVO (`/api/v1`), então a chamada sai
+ *    para o próprio dev server, que a repassa para a API hospedada (proxy em
+ *    proxy.config.json). É a única forma de funcionar hoje: a API hospedada NÃO
+ *    devolve `Access-Control-Allow-Origin` para nenhuma origem, e o browser
+ *    bloqueia qualquer chamada direta. Como o repasse é servidor-a-servidor, CORS
+ *    não entra na conversa;
+ *  - em build de produção o endereço é absoluto, porque ali não há dev server
+ *    para repassar. Para o front publicado funcionar, o backend precisa liberar a
+ *    origem dele no CORS.
+ *
+ * Para rodar contra a API local, troque por 'http://localhost:3333/api/v1' — ou
+ * aponte o target do proxy para lá, que é o mesmo efeito sem tocar no código.
  */
 export const API_BASE_URL = new InjectionToken<string>('API_BASE_URL', {
   providedIn: 'root',
-  factory: () => 'http://localhost:3333/api/v1',
+  factory: () => (isDevMode() ? '/api/v1' : `${API_HOSPEDADA}/api/v1`),
 });
 
 /**
