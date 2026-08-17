@@ -3,8 +3,17 @@ import { authGuard } from './core/auth/auth.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
+  /**
+   * `title` por rota: o Angular escreve em document.title a cada navegação. A
+   * marca vem PRIMEIRO em todos, porque é por ela que se busca — e é o começo do
+   * título que aparece na aba estreita e no resultado do Google.
+   *
+   * O título do index.html vale para a primeira carga (o que o robô lê antes de
+   * rodar JS); estes valem da navegação em diante.
+   */
   {
     path: 'login',
+    title: 'AUZA — Área restrita',
     loadComponent: () => import('./pages/login/login').then((m) => m.Login),
   },
   /**
@@ -17,6 +26,7 @@ export const routes: Routes = [
    */
   {
     path: 'painel',
+    title: 'AUZA — Painel',
     canActivate: [authGuard],
     loadComponent: () => import('./pages/painel/painel-layout').then((m) => m.PainelLayout),
     children: [
@@ -43,10 +53,12 @@ export const routes: Routes = [
   },
   {
     path: 'home',
+    title: 'AUZA Engenharia e Automação — Máquinas industriais',
     loadComponent: () => import('./pages/home/home').then((m) => m.Home),
   },
   {
     path: 'produtos',
+    title: 'AUZA — Catálogo de máquinas e equipamentos',
     loadComponent: () => import('./pages/produtos/produtos').then((m) => m.Produtos),
   },
   {
