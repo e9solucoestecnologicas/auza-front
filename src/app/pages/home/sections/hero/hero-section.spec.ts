@@ -97,6 +97,12 @@ describe('HeroSection', () => {
         // regra correspondente em _ds-surfaces.scss a peça não tem altura útil.
         expect(peca()!.classList.contains(`hero-peca--${cat.id}`), cat.nome).toBe(true);
         expect(peca()!.querySelector('.hero-peca__varredura'), cat.nome).toBeTruthy();
+
+        // A peça vale em TODA largura de tela: com `hidden` (era `hidden
+        // lg:block`) o banner no celular ficava só com texto, sem o equipamento
+        // que é o assunto dele. No mobile ela vira faixa no rodapé por CSS, e não
+        // por classe utilitária — ver o bloco de media query em _ds-surfaces.scss.
+        expect(peca()!.classList.contains('hidden'), cat.nome).toBe(false);
       }
 
       // Peça e véu precisam apontar para o mesmo lado, senão o gradiente

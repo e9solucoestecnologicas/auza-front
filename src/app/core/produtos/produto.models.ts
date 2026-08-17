@@ -54,6 +54,16 @@ export interface NovoProduto {
   readonly imageUrl?: string | null;
 }
 
+/**
+ * Produto como a VITRINE o vê (`/public/products`).
+ *
+ * A rota pública devolve só os VISÍVEIS e omite os campos de gestão — `status`,
+ * `statusLabel`, `clickCount` e `updatedAt`. O tipo omite os mesmos campos de
+ * propósito: se a landing pudesse ler `clickCount`, alguém acabaria exibindo na
+ * página o número de cliques.
+ */
+export type ProdutoPublico = Omit<Produto, 'status' | 'statusLabel' | 'clickCount' | 'updatedAt'>;
+
 /** `PATCH /products/:id` é parcial: mande só o que mudou. Corpo vazio → 400. */
 export type EdicaoProduto = Partial<NovoProduto>;
 

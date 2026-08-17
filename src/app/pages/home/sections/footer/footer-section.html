@@ -47,11 +47,37 @@
       </div>
     </div>
 
+    <!-- `items-start` e não `items-center`: os dados cadastrais ocupam duas ou três
+         linhas em tela estreita, e centralizar deixaria o copyright flutuando no
+         meio delas. -->
     <div
-      class="mt-14 flex flex-col gap-4 border-t border-soft pt-8 font-geist-mono text-xs text-subtle sm:flex-row sm:items-center sm:justify-between"
+      class="mt-14 flex flex-col gap-4 border-t border-soft pt-8 font-geist-mono text-xs text-subtle sm:flex-row sm:items-start sm:justify-between sm:gap-8"
     >
-      <span>© {{ ano }} AUZA. Todos os direitos reservados.</span>
-      <span>Lorem ipsum · CNPJ 00.000.000/0000-00</span>
+      <div class="space-y-2">
+        <p>© {{ ano }} AUZA. Todos os direitos reservados.</p>
+        <p>
+          Desenvolvido por
+          <a
+            class="text-muted underline decoration-[rgba(254,235,202,0.35)] underline-offset-4 transition-colors hover:text-ink hover:decoration-[rgba(254,235,202,0.8)]"
+            href="https://www.e9solucoes.com.br/"
+            target="_blank"
+            rel="noopener"
+            >e9solucoes</a
+          >
+        </p>
+      </div>
+
+      <!--
+        Dados cadastrais, à direita. `leading-relaxed` e largura limitada porque a
+        linha inteira tem ~88 caracteres: sem quebra ela empurraria o copyright.
+
+        A razão social vai como foi informada, em caixa alta e sem acento em
+        INDUSTRIA e COMERCIO — é nome registrado, não texto de tela, e "corrigir"
+        aqui divergiria do cartão CNPJ.
+      -->
+      <p class="leading-relaxed sm:max-w-sm sm:text-right">
+        AUZA AUTOMAÇÃO INDUSTRIA E COMERCIO ltda. / CNPJ: 28.810.863/0001-43 / IE: 118.608.650.118
+      </p>
     </div>
   </div>
 </footer>

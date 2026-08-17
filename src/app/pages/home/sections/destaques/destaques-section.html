@@ -10,16 +10,98 @@
         </div>
 
         <div class="grid grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:gap-16">
-          <!-- Área de imagem (placeholder até termos as fotos) -->
+          <!-- Mídia: os produtos da categoria, um por vez -->
           <div class="lg:col-span-6" [class]="ordemMidia(i)">
-            <div class="media-ph aspect-[4/3] w-full">
-              <div class="flex flex-col items-center gap-3">
-                <app-icon [name]="cat.icone" class="h-10 w-10 text-subtle" />
-                <span class="font-geist-mono text-xs uppercase tracking-widest text-subtle"
-                  >Imagem — {{ cat.nome }}</span
+            @if (produtos(cat.codigo); as lista) {
+              @if (lista.length > 0) {
+                <!--
+                  `ds-stack` empilha todos no mesmo espaço da grade, e a troca é só
+                  opacidade: ninguém sai de posição, então a caixa não pula de
+                  altura no meio do revezamento. É o mesmo mecanismo dos slides do
+                  hero.
+                -->
+                <div
+                  class="ds-stack aspect-[4/3] w-full"
+                  (mouseenter)="pausar()"
+                  (mouseleave)="retomar()"
                 >
-              </div>
-            </div>
+                  @for (produto of lista; track produto.id; let j = $index) {
+                    <a
+                      class="group block h-full w-full overflow-hidden rounded-xl border border-soft bg-neutral-50 transition-opacity duration-700 ease-out"
+                      [class.opacity-0]="!emCena(cat.codigo, j)"
+                      [class.pointer-events-none]="!emCena(cat.codigo, j)"
+                      [attr.aria-hidden]="!emCena(cat.codigo, j)"
+                      [attr.tabindex]="emCena(cat.codigo, j) ? null : -1"
+                      [href]="produto.link"
+                      target="_blank"
+                      rel="noopener"
+                      (click)="registrarClique(produto)"
+                    >
+                      @if (imagem(produto); as src) {
+                        <img
+                          [src]="src"
+                          [alt]="produto.name"
+                          class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      } @else {
+                        <!-- Produto sem foto é estado normal no contrato: cai no
+                             placeholder do DS com o ícone da categoria. -->
+                        <div class="media-ph grid h-full w-full place-items-center">
+                          <div class="flex flex-col items-center gap-3">
+                            <app-icon [name]="cat.icone" class="h-10 w-10 text-subtle" />
+                            <span
+                              class="px-6 text-center font-geist-mono text-xs uppercase tracking-widest text-subtle"
+                              >{{ produto.name }}</span
+                            >
+                          </div>
+                        </div>
+                      }
+                    </a>
+                  }
+                </div>
+
+                <!-- Nome do que está em cena + bolinhas. Só aparecem quando há
+                     mais de um: com um produto, seriam ruído. -->
+                <div class="mt-4 flex items-center justify-between gap-4">
+                  <p class="min-w-0 font-geist-mono text-sm text-ink">
+                    @for (produto of lista; track produto.id; let j = $index) {
+                      @if (emCena(cat.codigo, j)) {
+                        <span class="block truncate">{{ produto.name }}</span>
+                      }
+                    }
+                  </p>
+                  @if (lista.length > 1) {
+                    <div class="flex shrink-0 items-center gap-2" aria-hidden="true">
+                      @for (produto of lista; track produto.id; let j = $index) {
+                        <span
+                          class="destaque-dot"
+                          [class.destaque-dot--ativo]="emCena(cat.codigo, j)"
+                        ></span>
+                      }
+                    </div>
+                  }
+                </div>
+              } @else if (carregando()) {
+                <!-- Catálogo no ar: esqueleto, não placeholder — a seção avisa
+                     que está carregando em vez de fingir que não tem produto. -->
+                <div class="ds-esqueleto aspect-[4/3] w-full rounded-xl" aria-hidden="true"></div>
+                <div class="mt-4 flex items-center gap-4">
+                  <div class="ds-esqueleto h-5 w-48" aria-hidden="true"></div>
+                </div>
+              } @else {
+                <!-- Sem catálogo (falha na API ou categoria vazia) -->
+                <div class="media-ph aspect-[4/3] w-full">
+                  <div class="flex flex-col items-center gap-3">
+                    <app-icon [name]="cat.icone" class="h-10 w-10 text-subtle" />
+                    <span class="font-geist-mono text-xs uppercase tracking-widest text-subtle"
+                      >Imagem — {{ cat.nome }}</span
+                    >
+                  </div>
+                </div>
+              }
+            }
           </div>
 
           <!-- Texto -->
@@ -31,12 +113,40 @@
               {{ cat.descricao }}
             </p>
 
+            <!--
+              A linha de produtos. Com catálogo, são os nomes que vieram da API (os
+              mesmos que se revezam na mídia, com o atual marcado); sem catálogo,
+              a lista estática de home.data.ts.
+            -->
             <ul class="mb-10 space-y-3">
-              @for (produto of cat.produtos; track produto) {
-                <li class="flex items-center gap-3">
-                  <app-icon name="check" class="h-4 w-4 shrink-0 text-ink" />
-                  <span class="font-geist-mono text-sm text-muted">{{ produto }}</span>
-                </li>
+              @if (produtos(cat.codigo); as lista) {
+                @if (lista.length > 0) {
+                  @for (produto of lista; track produto.id; let j = $index) {
+                    <li class="flex items-center gap-3">
+                      <app-icon name="check" class="h-4 w-4 shrink-0 text-ink" />
+                      <span
+                        class="font-geist-mono text-sm transition-colors duration-500"
+                        [class.text-ink]="emCena(cat.codigo, j)"
+                        [class.text-muted]="!emCena(cat.codigo, j)"
+                        >{{ produto.name }}</span
+                      >
+                    </li>
+                  }
+                } @else if (carregando()) {
+                  @for (vazio of [1, 2, 3]; track vazio) {
+                    <li class="flex items-center gap-3" aria-hidden="true">
+                      <div class="ds-esqueleto h-4 w-4 shrink-0 rounded"></div>
+                      <div class="ds-esqueleto h-4 w-40"></div>
+                    </li>
+                  }
+                } @else {
+                  @for (produto of cat.produtos; track produto) {
+                    <li class="flex items-center gap-3">
+                      <app-icon name="check" class="h-4 w-4 shrink-0 text-ink" />
+                      <span class="font-geist-mono text-sm text-muted">{{ produto }}</span>
+                    </li>
+                  }
+                }
               }
             </ul>
 

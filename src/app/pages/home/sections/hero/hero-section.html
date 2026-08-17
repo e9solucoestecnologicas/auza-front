@@ -15,9 +15,14 @@
     que permite o título cruzá-la. Recriada a cada troca de categoria, e é isso
     que faz a varredura de luz rodar de novo.
     Decorativa: quem lê a tela recebe a mesma informação pelo texto do banner.
+
+    Aparece em TODA largura de tela. Antes era `hidden lg:block`, e no celular o
+    banner ficava só com texto: o equipamento, que é o assunto, não aparecia.
+    Abaixo de `lg` ela vira faixa no rodapé — ver o bloco mobile em
+    _ds-surfaces.scss —, e não camada atrás do texto.
   -->
   @if (categoriaAtual().imagem; as peca) {
-    <div class="hero-peca hidden lg:block" [class]="modificadoresPeca()" aria-hidden="true">
+    <div class="hero-peca" [class]="modificadoresPeca()" aria-hidden="true">
       <img class="hero-peca__img" [src]="peca" alt="" decoding="async" />
       <span class="hero-peca__varredura"></span>
     </div>
@@ -32,6 +37,11 @@
     deitado) o conteúdo passaria de 100vh e a seção, que é `overflow-hidden`,
     cortaria o título. Com `min-`, 100vh é piso, e a centralização vale para a
     altura que a seção tiver.
+  -->
+  <!--
+    Sem reserva de rodapé no celular: a peça não é mais faixa embaixo, é a metade
+    direita da tela (ver o bloco mobile em _ds-surfaces.scss). O texto volta a
+    cruzá-la, como no desktop.
   -->
   <div
     class="relative z-10 mx-auto flex min-h-screen max-w-6xl flex-col px-6 pb-24 pt-10 sm:px-8 min-[1336px]:pb-16"

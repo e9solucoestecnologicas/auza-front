@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { CATEGORIAS, PRODUTOS, type Produto } from '../home/home.data';
+import { CATEGORIAS, type Foto } from '../home/home.data';
+import { VitrineStore } from '../../core/produtos/vitrine.store';
+import type { ProdutoPublico } from '../../core/produtos/produto.models';
 import { Icon } from '../../ui/icon/icon';
 import { Logo } from '../../ui/logo/logo';
 import { FooterSection } from '../home/sections/footer/footer-section';
@@ -28,25 +30,88 @@ import { GaleriaProduto } from './galeria/galeria';
 export class Produtos {
   private readonly router = inject(Router);
 
-  protected readonly categorias = CATEGORIAS;
-  protected readonly total = PRODUTOS.length;
-  protected readonly filtro = signal('todos');
+  private readonly store = inject(VitrineStore);
 
-  protected readonly produtos = computed<readonly Produto[]>(() => {
+  protected readonly categorias = CATEGORIAS;
+  protected readonly filtro = signal('todos');
+  protected readonly carregando = this.store.carregando;
+  /** Total do catálogo inteiro, não do filtro: é o número do cabeçalho. */
+  protected readonly total = computed(() => this.store.produtos().length);
+
+  /** Filtra pelo CÓDIGO da categoria na API (AGRO, TEXTIL…), não pelo slug local. */
+  protected readonly produtos = computed<readonly ProdutoPublico[]>(() => {
     const filtro = this.filtro();
-    return filtro === 'todos' ? PRODUTOS : PRODUTOS.filter((p) => p.categoriaId === filtro);
+    const catalogo = this.store.produtos();
+    return filtro === 'todos' ? catalogo : catalogo.filter((p) => p.category === filtro);
   });
 
-  protected filtrar(id: string): void {
-    this.filtro.set(id);
+  constructor() {
+    // Mesmo store da home: se o visitante veio de lá, o catálogo já está em mão.
+    this.store.carregar();
   }
 
-  protected nomeCategoria(id: string): string {
-    return this.categorias.find((c) => c.id === id)?.nome ?? '';
+  protected filtrar(codigo: string): void {
+    this.filtro.set(codigo);
   }
 
-  protected iconeCategoria(id: string): string {
-    return this.categorias.find((c) => c.id === id)?.icone ?? 'box';
+  protected iconeCategoria(codigo: string): string {
+    return this.categorias.find((c) => c.codigo === codigo)?.icone ?? 'box';
+  }
+
+  /**
+   * A galeria fala em lista de fotos; a API dá UMA imagem por produto
+   * (`imageUrl`, que pode ser null). A conversão fica aqui em vez de mudar a
+   * galeria: ela já sabe exibir uma foto só, e se o contrato passar a ter várias
+   * é este método que cresce.
+   *
+   * O `alt` sai do nome do produto. A galeria pede alt descritivo, e é o melhor
+   * que existe: o contrato não tem campo de texto alternativo.
+   */
+  protected fotos(produto: ProdutoPublico): readonly Foto[] {
+    const src = this.store.imagem(produto);
+    return src ? [{ src, alt: produto.name }] : [];
+  }
+
+  /** Conta o clique; quem navega é o `href` do link de venda. */
+  protected registrarClique(produto: ProdutoPublico): void {
+    this.store.registrarClique(produto);
+  }
+
+  /**
+   * Ids com o descritivo aberto.
+   *
+   * O cartão tem ALTURA FIXA, então abrir não empurra o botão para fora nem
+   * desalinha a grade: o texto passa a rolar dentro da própria área. É a única
+   * forma de honrar "altura fixa" e "ver mais" ao mesmo tempo — expandir o cartão
+   * quebraria a primeira, e um modal seria outra tela.
+   */
+  private readonly abertos = signal<ReadonlySet<string>>(new Set());
+
+  protected expandido(id: string): boolean {
+    return this.abertos().has(id);
+  }
+
+  protected alternarTexto(id: string): void {
+    this.abertos.update((atual) => {
+      const proximo = new Set(atual);
+      if (!proximo.delete(id)) {
+        proximo.add(id);
+      }
+      return proximo;
+    });
+  }
+
+  /**
+   * Vale oferecer "Ver mais"?
+   *
+   * Decide por comprimento do texto, e não medindo o parágrafo: medir exigiria
+   * ler `scrollHeight` de cada cartão depois do render, e o número muda com a
+   * largura da coluna e com a fonte carregada. O corte é deliberadamente BAIXO —
+   * um "Ver mais" que abre pouca coisa é um incômodo pequeno, um texto cortado
+   * sem como abrir é conteúdo perdido.
+   */
+  protected temMais(produto: ProdutoPublico): boolean {
+    return produto.description.length > 120;
   }
 
   /**

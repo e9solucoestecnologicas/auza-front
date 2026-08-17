@@ -11,7 +11,9 @@ import {
   viewChild,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { CATEGORIAS, PRODUTOS, type Produto } from '../../home.data';
+import { CATEGORIAS } from '../../home.data';
+import { VitrineStore } from '../../../../core/produtos/vitrine.store';
+import type { ProdutoPublico } from '../../../../core/produtos/produto.models';
 import { Icon } from '../../../../ui/icon/icon';
 
 /**
@@ -74,9 +76,20 @@ export class VitrineSection {
   protected readonly categorias = CATEGORIAS;
   protected readonly filtro = signal('todos');
 
-  protected readonly produtos = computed<readonly Produto[]>(() => {
+  private readonly store = inject(VitrineStore);
+  /** Compartilhado com as seções de categoria: uma requisição para as duas partes. */
+  protected readonly carregando = this.store.carregando;
+  protected readonly semCatalogo = this.store.vazio;
+
+  /**
+   * Catálogo da API, filtrado em memória. O filtro compara com `category`, o
+   * CÓDIGO da API (AGRO, TEXTIL…), e não com o id local da categoria: são as
+   * tags da vitrine que passaram a carregar o código.
+   */
+  protected readonly produtos = computed<readonly ProdutoPublico[]>(() => {
     const filtro = this.filtro();
-    return filtro === 'todos' ? PRODUTOS : PRODUTOS.filter((p) => p.categoriaId === filtro);
+    const catalogo = this.store.produtos();
+    return filtro === 'todos' ? catalogo : catalogo.filter((p) => p.category === filtro);
   });
 
   /** Ligado por `medir()`: é o que decide se existe a segunda volta e a deriva. */
@@ -87,7 +100,7 @@ export class VitrineSection {
    * loop. Os cards da segunda volta são os mesmos objetos — quem lê a tela
    * recebe só a primeira, marcada no template por `aria-hidden`.
    */
-  protected readonly cards = computed<readonly Produto[]>(() => {
+  protected readonly cards = computed<readonly ProdutoPublico[]>(() => {
     const produtos = this.produtos();
     return this.emLoop() ? [...produtos, ...produtos] : produtos;
   });
@@ -107,6 +120,7 @@ export class VitrineSection {
   private rolagem: { de: number; para: number; decorrido: number } | undefined;
 
   constructor() {
+    this.store.carregar();
     const aoDestruir = inject(DestroyRef);
 
     // Remede a cada render que mexe na lista (é o filtro que mexe), com o DOM
@@ -155,12 +169,25 @@ export class VitrineSection {
     this.trilho().nativeElement.scrollTo({ left: 0, behavior: 'auto' });
   }
 
-  protected nomeCategoria(id: string): string {
-    return this.categorias.find((c) => c.id === id)?.nome ?? '';
+  /**
+   * Ícone da categoria, por CÓDIGO da API.
+   *
+   * O nome da categoria não tem função equivalente: `categoryLabel` vem pronto
+   * em cada produto, e o contrato pede para usá-lo em vez de manter de-para no
+   * front. O ícone continua aqui porque é decisão de design nossa, não dado da
+   * API.
+   */
+  protected iconeCategoria(codigo: string): string {
+    return this.categorias.find((c) => c.codigo === codigo)?.icone ?? 'box';
   }
 
-  protected iconeCategoria(id: string): string {
-    return this.categorias.find((c) => c.id === id)?.icone ?? 'box';
+  protected imagem(produto: ProdutoPublico): string | null {
+    return this.store.imagem(produto);
+  }
+
+  /** Conta o clique; quem navega é o `href` do link. */
+  protected registrarClique(produto: ProdutoPublico): void {
+    this.store.registrarClique(produto);
   }
 
   protected avancar(): void {

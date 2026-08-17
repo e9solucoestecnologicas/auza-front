@@ -1,7 +1,7 @@
 @if (fotos().length === 0) {
   <!-- Sem foto: mesmo placeholder das seções de destaque, para o cartão não
        abrir com um vazio sem explicação. -->
-  <div class="media-ph media-ph--capa aspect-[4/3] w-full">
+  <div class="media-ph media-ph--capa w-full" [class]="midia()">
     <div class="flex flex-col items-center gap-3">
       <app-icon [name]="icone()" class="h-10 w-10 text-subtle" />
       <span class="font-geist-mono text-xs uppercase tracking-widest text-subtle"
@@ -12,7 +12,7 @@
 } @else {
   <!-- `group` só para as setas aparecerem no hover do quadro. -->
   <div class="group relative border-b border-soft">
-    <div class="ds-stack aspect-[4/3] w-full overflow-hidden bg-neutral-100">
+    <div class="ds-stack w-full overflow-hidden bg-neutral-100" [class]="midia()">
       @for (foto of fotos(); track foto.src; let i = $index) {
         <!--
           Todas no DOM e a visível por opacidade: a troca dissolve.

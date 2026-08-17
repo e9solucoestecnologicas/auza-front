@@ -35,6 +35,15 @@ export class GaleriaProduto {
   readonly rotulo = input.required<string>();
 
   /**
+   * Classe de tamanho da área de mídia. Padrão: proporção 4/3, como era antes.
+   *
+   * A /produtos passa ALTURA FIXA porque os cartões dela têm altura fixa: numa
+   * coluna de ~530px a proporção 4/3 daria uma foto de ~400px, e o cartão
+   * passaria de 700px só de mídia e botão.
+   */
+  readonly midia = input<string>('aspect-[4/3]');
+
+  /**
    * `linkedSignal` e não `signal`: se a lista de fotos mudar, o índice guardado
    * pode passar a apontar para fora dela. Aqui ele é reprojetado sobre a lista
    * nova em vez de zerar — trocar a foto exibida por causa de uma edição de

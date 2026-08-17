@@ -1,3 +1,5 @@
+import type { CategoriaProduto } from '../../core/produtos/produto.models';
+
 /**
  * Conteúdo da landing e da página de produtos.
  *
@@ -67,8 +69,16 @@ export function linkWhatsapp(telefone: Telefone, mensagem: string = MENSAGEM_WHA
 }
 
 export interface Categoria {
-  /** slug usado nas âncoras (#solucao-agro) e no filtro da vitrine */
+  /** slug usado nas âncoras (#solucao-agro) */
   readonly id: string;
+  /**
+   * Código da categoria na API (enum de `/public/products/categories`).
+   *
+   * É o elo entre esta cópia de marketing e o catálogo: a landing casa produto
+   * com seção por ele. Não dá para derivar do `id` — 'caldeiras' viraria
+   * CALDEIRAS, e o código é CALDEIRAS_MISTURADOR_INOX.
+   */
+  readonly codigo: CategoriaProduto;
   /** nome curto exibido em eyebrow / tag / filtro */
   readonly nome: string;
   /** linha de produtos da categoria, mostrada no hero */
@@ -112,6 +122,22 @@ export interface Foto {
   readonly alt: string;
 }
 
+/**
+ * SEM USO NA TELA desde que a vitrine, as seções e a /produtos passaram a ler o
+ * catálogo da API (`/public/products`).
+ *
+ * Fica de pé por dois motivos, e não por esquecimento:
+ *
+ *  - é o único inventário das FOTOS que existem em `public/img/` — o `src` e o
+ *    `alt` de cada uma. Serve de roteiro para subir essas imagens no cadastro do
+ *    painel, uma a uma;
+ *  - o `comportamento` de cada produto é texto escrito à mão que a API ainda não
+ *    tem onde guardar (ela tem um campo de texto só, o `description`). Apagar
+ *    aqui perderia o texto.
+ *
+ * Quando as fotos e os textos estiverem no banco, isto pode sair inteiro — junto
+ * com a interface `Produto` e o tipo `Foto`, se a galeria já não precisar deles.
+ */
 export interface Produto {
   readonly nome: string;
   readonly categoriaId: string;
@@ -143,6 +169,7 @@ export interface Produto {
 export const CATEGORIAS: readonly Categoria[] = [
   {
     id: 'agro',
+    codigo: 'AGRO',
     nome: 'Agro',
     produtos: ['Mini Abatedouro', 'Pássaros', 'Frango'],
     resumo:
@@ -154,6 +181,7 @@ export const CATEGORIAS: readonly Categoria[] = [
   },
   {
     id: 'comunicacao-visual',
+    codigo: 'COMUNICACAO_VISUAL',
     nome: 'Comunicação Visual',
     produtos: ['Dobradeira de Acrílico', 'Cortador XPS', 'EPS', 'EVA'],
     resumo:
@@ -165,6 +193,7 @@ export const CATEGORIAS: readonly Categoria[] = [
   },
   {
     id: 'impressao-3d',
+    codigo: 'IMPRESSAO_3D',
     nome: 'Impressão 3D',
     produtos: ['Estufa de Filamento'],
     resumo:
@@ -172,11 +201,12 @@ export const CATEGORIAS: readonly Categoria[] = [
     descricao:
       'Oferecemos tecnologia de ponta para elevar o patamar produtivo no setor de fabricação digital. Unindo engenharia e precisão, disponibilizamos impressoras 3D estruturadas para garantir agilidade, otimização de insumos e acabamentos superiores em múltiplos materiais.',
     icone: 'box',
-    imagem: '/img/pecas/impressao-3d.jpg',
+    imagem: '/img/pecas/secadora.webp',
     fotoEmoldurada: true,
   },
   {
     id: 'textil',
+    codigo: 'TEXTIL',
     nome: 'Têxtil',
     produtos: ['Cortador de Cintas', 'Fuxico'],
     resumo:
@@ -184,11 +214,11 @@ export const CATEGORIAS: readonly Categoria[] = [
     descricao:
       'Unindo engenharia e precisão, disponibilizamos cortadores de cintas e equipamentos especializados para fuxico estruturados para garantir agilidade, otimização de insumos e acabamentos superiores em múltiplos tecidos e aviamentos.',
     icone: 'shirt',
-    imagem: '/img/pecas/textil.jpg',
-    fotoEmoldurada: true,
+    imagem: '/img/pecas/textil-mesa.jpg',
   },
   {
     id: 'caldeiras',
+    codigo: 'CALDEIRAS_MISTURADOR_INOX',
     nome: 'Caldeiras & Misturador Inox',
     produtos: ['Misturadores', 'Caldeiras', 'Caldeira com Misturador Automático'],
     resumo:

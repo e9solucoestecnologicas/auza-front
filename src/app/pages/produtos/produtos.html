@@ -24,7 +24,7 @@
         >
         <span class="rule-soft h-px w-10"></span>
         <span class="font-geist-mono text-xs font-bold uppercase tracking-widest text-muted">
-          {{ total }} produtos · {{ categorias.length }} segmentos
+          {{ carregando() ? '…' : total() }} produtos · {{ categorias.length }} segmentos
         </span>
       </div>
 
@@ -62,26 +62,37 @@
             type="button"
             class="rounded-full border px-3 py-1 font-geist-mono text-xs transition-colors"
             [class]="
-              filtro() === cat.id
+              filtro() === cat.codigo
                 ? 'bg-neutral-900 text-white border-neutral-900'
                 : 'bg-neutral-100 text-neutral-600 border-neutral-200 hover:bg-neutral-200'
             "
-            [attr.aria-pressed]="filtro() === cat.id"
-            (click)="filtrar(cat.id)"
+            [attr.aria-pressed]="filtro() === cat.codigo"
+            (click)="filtrar(cat.codigo)"
           >
             {{ cat.nome }}
           </button>
         }
       </div>
 
-      <!-- `aria-live`: quem filtra sem ver a tela precisa saber que a lista mudou
-           de tamanho — a mudança acontece longe do botão que a causou. -->
+      <!--
+        `aria-live`: quem filtra sem ver a tela precisa saber que a lista mudou de
+        tamanho — a mudança acontece longe do botão que a causou.
+
+        É aqui que o carregamento é ANUNCIADO, e não só desenhado: o esqueleto é
+        `aria-hidden`, então sem esta frase quem usa leitor de tela não teria sinal
+        nenhum de que a página está esperando. Também evita dizer "0 produtos"
+        enquanto o catálogo ainda vem, o que soaria como catálogo vazio.
+      -->
       <p
         class="mb-10 font-geist-mono text-xs uppercase tracking-widest text-subtle"
         aria-live="polite"
       >
-        {{ produtos().length }}
-        {{ produtos().length === 1 ? 'produto' : 'produtos' }}
+        @if (carregando()) {
+          Carregando o catálogo…
+        } @else {
+          {{ produtos().length }}
+          {{ produtos().length === 1 ? 'produto' : 'produtos' }}
+        }
       </p>
 
       <!--
@@ -90,68 +101,135 @@
         demais para um parágrafo desse tamanho.
       -->
       <div class="grid grid-cols-1 gap-8 lg:grid-cols-2">
-        @for (produto of produtos(); track produto.nome) {
+        <!--
+          Esqueleto enquanto o catálogo vem. Mesma forma e mesma altura dos
+          cartões reais, para a grade não saltar quando eles chegarem. Quatro
+          porque é o que preenche a primeira dobra em duas colunas.
+        -->
+        @if (carregando()) {
+          @for (vazio of [1, 2, 3, 4]; track vazio) {
+            <article
+              class="surface flex flex-col overflow-hidden rounded-2xl border border-soft lg:h-[48rem]"
+              aria-hidden="true"
+            >
+              <div class="ds-esqueleto aspect-[4/3] w-full rounded-none"></div>
+              <div class="flex flex-1 flex-col gap-3 p-6">
+                <div class="ds-esqueleto h-6 w-28 rounded-full"></div>
+                <div class="ds-esqueleto h-7 w-3/4"></div>
+                <div class="ds-esqueleto h-4 w-full"></div>
+                <div class="ds-esqueleto h-4 w-full"></div>
+                <div class="ds-esqueleto h-4 w-2/3"></div>
+                <div class="ds-esqueleto mt-auto h-12 w-full"></div>
+              </div>
+            </article>
+          }
+        }
+
+        @for (produto of produtos(); track produto.id) {
+          <!--
+            ALTURA FIXA a partir de `lg`: é lá que os cartões ficam lado a lado e
+            a grade precisa ser regular. Em coluna única não há degrau para
+            corrigir, e travar a altura só deixaria sobra embaixo — a foto 4/3
+            fica bem mais baixa numa coluna estreita.
+
+            O texto é cortado e abre no "Ver mais" ROLANDO dentro da própria área
+            (no desktop): expandir o cartão desmontaria a altura fixa, e o botão de
+            compra tem de ficar no mesmo lugar em todos.
+          -->
           <article
-            class="surface flex flex-col overflow-hidden rounded-2xl border border-soft transition-shadow duration-300 hover:shadow-xl"
+            class="surface flex flex-col overflow-hidden rounded-2xl border border-soft transition-shadow duration-300 hover:shadow-xl lg:h-[48rem]"
           >
+            <!-- Mídia na proporção 4/3, como antes: é ela que dá presença ao
+                 equipamento nesta página. -->
             <app-galeria-produto
-              [fotos]="produto.fotos ?? []"
-              [icone]="iconeCategoria(produto.categoriaId)"
-              [rotulo]="produto.nome"
+              [fotos]="fotos(produto)"
+              [icone]="iconeCategoria(produto.category)"
+              [rotulo]="produto.name"
             />
 
-            <div class="flex flex-1 flex-col p-6 sm:p-8">
+            <!-- `min-h-0`: sem isso o filho que rola cresce até o conteúdo caber e
+                 estoura a altura do cartão, em vez de rolar. -->
+            <div class="flex min-h-0 flex-1 flex-col p-6">
+              <!-- `categoryLabel` vem pronto e acentuado da API. -->
               <div
-                class="mb-4 inline-flex self-start rounded-full border border-soft bg-neutral-100 px-3 py-1 font-geist-mono text-xs text-muted"
+                class="mb-3 inline-flex self-start rounded-full border border-soft bg-neutral-100 px-3 py-1 font-geist-mono text-xs text-muted"
               >
-                {{ nomeCategoria(produto.categoriaId) }}
+                {{ produto.categoryLabel }}
               </div>
 
-              <h2 class="mb-3 text-2xl font-semibold tracking-tight text-ink">
-                {{ produto.nome }}
+              <h2 class="mb-3 line-clamp-2 text-xl font-semibold tracking-tight text-ink">
+                {{ produto.name }}
               </h2>
-              <p class="font-geist-mono text-sm leading-relaxed text-muted">
-                {{ produto.descricao }}
-              </p>
 
-              <!-- O bloco que motiva a página existir. -->
-              <div class="mt-8 border-t border-soft pt-8">
-                <div class="mb-4 flex items-center gap-3">
-                  <span
-                    class="font-geist-mono text-xs font-bold uppercase tracking-widest text-subtle"
-                    >Como funciona</span
-                  >
-                  <span class="rule-soft h-px flex-1"></span>
-                </div>
-                <p class="font-geist-mono text-sm leading-relaxed text-muted">
-                  {{ produto.comportamento }}
+              <div class="mb-2 flex items-center gap-3">
+                <span
+                  class="font-geist-mono text-xs font-bold uppercase tracking-widest text-subtle"
+                  >Como funciona</span
+                >
+                <span class="rule-soft h-px flex-1"></span>
+              </div>
+
+              <!--
+                Fechado: três linhas e corta. Aberto: rola. O `min-h-0` de novo,
+                porque este é o filho que cede espaço.
+              -->
+              <div
+                class="min-h-0 flex-1"
+                [class.overflow-y-auto]="expandido(produto.id)"
+                [class.pr-1]="expandido(produto.id)"
+              >
+                <p
+                  class="whitespace-pre-line font-geist-mono text-sm leading-relaxed text-muted"
+                  [class.line-clamp-3]="!expandido(produto.id)"
+                >
+                  {{ produto.description }}
                 </p>
               </div>
 
-              <!-- `mt-auto`: numa fila de duas colunas os cartões esticam para a
-                   mesma altura, e sem isso os botões flutuariam em alturas
-                   diferentes conforme o tamanho do descritivo. -->
-              <div class="mt-auto flex flex-wrap items-center gap-3 pt-8">
-                <a
-                  class="btn-primary inline-flex items-center gap-2 rounded-lg px-5 py-2.5 font-geist-mono text-sm font-medium transition-colors"
-                  href="#contato"
+              @if (temMais(produto)) {
+                <button
+                  type="button"
+                  class="mt-2 self-start font-geist-mono text-xs uppercase tracking-widest text-ink underline decoration-neutral-300 underline-offset-4 transition-colors hover:decoration-ink"
+                  [attr.aria-expanded]="expandido(produto.id)"
+                  (click)="alternarTexto(produto.id)"
                 >
-                  Solicitar orçamento
-                  <app-icon name="arrow-right" class="h-4 w-4" />
-                </a>
-                <a
-                  class="btn-ghost inline-flex items-center gap-2 rounded-lg border border-soft px-5 py-2.5 font-geist-mono text-sm font-medium transition-colors"
-                  [href]="'#solucao-' + produto.categoriaId"
-                >
-                  Ver o segmento
-                </a>
-              </div>
+                  {{ expandido(produto.id) ? 'Ver menos' : 'Ver mais' }}
+                </button>
+              }
+
+              <!--
+                Único botão do rodapé do cartão, e o de maior peso da página.
+                `mt-auto` gruda no fundo: com altura fixa, é o que o mantém na
+                mesma linha em todos os cartões.
+
+                O clique CONTA no banco (POST /public/products/:id/click,
+                incremento atômico) e a navegação é do próprio `href`: contar no
+                JS e abrir depois cairia no bloqueador de pop-up.
+              -->
+              <a
+                class="btn-primary mt-4 flex w-full shrink-0 items-center justify-center gap-2 rounded-lg px-5 py-3 font-geist-mono text-sm font-bold uppercase tracking-widest transition-colors"
+                [href]="produto.link"
+                target="_blank"
+                rel="noopener"
+                (click)="registrarClique(produto)"
+              >
+                COMPRE AGORA
+                <app-icon name="arrow-right" class="h-4 w-4" />
+              </a>
             </div>
           </article>
         } @empty {
-          <p class="font-geist-mono text-sm text-muted">
-            Nenhum produto neste segmento por enquanto.
-          </p>
+          <!-- Enquanto carrega, quem aparece é o esqueleto acima. Aqui só sobram
+               os dois vazios de verdade. -->
+          @if (!carregando()) {
+            <p class="font-geist-mono text-sm text-muted">
+              @if (filtro() === 'todos') {
+                Nenhum produto publicado no catálogo por enquanto.
+              } @else {
+                Nenhum produto neste segmento por enquanto.
+              }
+            </p>
+          }
         }
       </div>
     </div>

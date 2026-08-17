@@ -10,6 +10,7 @@ import type {
   OpcoesProduto,
   Pagina,
   Produto,
+  ProdutoPublico,
 } from './produto.models';
 
 /**
@@ -37,6 +38,16 @@ export class ProdutosService {
   /** Listagem do painel: vê OCULTO e traz clickCount. */
   listar(filtro: FiltroProdutos = {}): Observable<Pagina<Produto>> {
     return this.http.get<Pagina<Produto>>(`${this.base}/products`, {
+      params: this.parametros(filtro),
+    });
+  }
+
+  /**
+   * Vitrine: rota aberta, sem token. Devolve só os produtos VISÍVEIS e omite os
+   * campos de gestão.
+   */
+  listarPublicos(filtro: FiltroProdutos = {}): Observable<Pagina<ProdutoPublico>> {
+    return this.http.get<Pagina<ProdutoPublico>>(`${this.base}/public/products`, {
       params: this.parametros(filtro),
     });
   }
