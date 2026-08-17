@@ -20,6 +20,8 @@ export class Login {
   protected readonly email = signal('');
   protected readonly senha = signal('');
   protected readonly enviando = signal(false);
+  /** Senha à mostra. Começa oculta, e cada tela recomeça assim: o estado não persiste. */
+  protected readonly verSenha = signal(false);
   protected readonly erro = signal<string | null>(null);
   /** Mensagens por campo, quando o backend responde VALIDATION_ERROR. */
   protected readonly errosDeCampo = signal<Record<string, string>>({});
@@ -27,6 +29,10 @@ export class Login {
   protected readonly podeEnviar = computed(
     () => !this.enviando() && this.email().trim().length > 0 && this.senha().length > 0,
   );
+
+  protected alternarSenha(): void {
+    this.verSenha.update((visivel) => !visivel);
+  }
 
   protected async entrar(): Promise<void> {
     if (!this.podeEnviar()) {

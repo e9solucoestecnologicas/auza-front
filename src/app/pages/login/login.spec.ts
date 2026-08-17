@@ -103,6 +103,41 @@ describe('Login', () => {
     );
   });
 
+  it('o olho mostra e esconde a senha', async () => {
+    const fixture = TestBed.createComponent(Login);
+    await fixture.whenStable();
+    const root = fixture.nativeElement as HTMLElement;
+
+    const campo = root.querySelector<HTMLInputElement>('#senha')!;
+    const olho = root.querySelector<HTMLButtonElement>('button[aria-label="Mostrar senha"]')!;
+
+    expect(campo.type).toBe('password');
+    // Sem `type="button"`, o clique enviaria o formulário em vez de alternar.
+    expect(olho.getAttribute('type')).toBe('button');
+    expect(olho.getAttribute('aria-pressed')).toBe('false');
+
+    olho.click();
+    await fixture.whenStable();
+
+    expect(campo.type).toBe('text');
+    expect(olho.getAttribute('aria-label')).toBe('Ocultar senha');
+    expect(olho.getAttribute('aria-pressed')).toBe('true');
+
+    olho.click();
+    await fixture.whenStable();
+    expect(campo.type).toBe('password');
+  });
+
+  it('reserva espaço no campo para o botão não cobrir o texto', async () => {
+    const fixture = TestBed.createComponent(Login);
+    await fixture.whenStable();
+    const campo = (fixture.nativeElement as HTMLElement).querySelector<HTMLInputElement>('#senha')!;
+
+    // `pr-12` do Tailwind perderia para `.ds-root .ds-input`; o espaço vem do
+    // modificador do DS.
+    expect(campo.classList.contains('ds-input--com-acao')).toBe(true);
+  });
+
   it('mostra o erro por campo com a cor de erro do DS', async () => {
     const fixture = TestBed.createComponent(Login);
     await fixture.whenStable();

@@ -90,25 +90,54 @@
             }
           </label>
 
-          <label class="mb-8 block">
-            <span class="mb-2 block font-geist-mono text-xs uppercase tracking-widest text-muted">
+          <!--
+            Senha com o olho de "mostrar". O rótulo é associado por `for`/`id`, e
+            não envolvendo o campo como nos outros: com o botão DENTRO do label,
+            todo clique nele também acionaria o comportamento do label.
+          -->
+          <div class="mb-8">
+            <label
+              class="mb-2 block font-geist-mono text-xs uppercase tracking-widest text-muted"
+              for="senha"
+            >
               Senha
-            </span>
-            <input
-              name="password"
-              type="password"
-              autocomplete="current-password"
-              required
-              class="ds-input"
-              [class.ds-input--error]="errosDeCampo()['password']"
-              [ngModel]="senha()"
-              (ngModelChange)="senha.set($event)"
-              [disabled]="enviando()"
-            />
+            </label>
+            <div class="relative">
+              <input
+                id="senha"
+                name="password"
+                [type]="verSenha() ? 'text' : 'password'"
+                autocomplete="current-password"
+                required
+                class="ds-input ds-input--com-acao"
+                [class.ds-input--error]="errosDeCampo()['password']"
+                [ngModel]="senha()"
+                (ngModelChange)="senha.set($event)"
+                [disabled]="enviando()"
+              />
+              <!--
+                `type="button"` é o que impede o clique de enviar o formulário —
+                dentro de um <form>, botão sem type é submit.
+
+                `aria-pressed` porque isto é um interruptor: quem usa leitor de
+                tela precisa saber o estado, não só a ação. E a senha à mostra é
+                anunciada como texto comum, o que é justamente o que se pediu.
+              -->
+              <button
+                type="button"
+                class="absolute right-2 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-md text-muted transition-colors hover:text-ink"
+                [attr.aria-label]="verSenha() ? 'Ocultar senha' : 'Mostrar senha'"
+                [attr.aria-pressed]="verSenha()"
+                [attr.aria-controls]="'senha'"
+                (click)="alternarSenha()"
+              >
+                <app-icon [name]="verSenha() ? 'eye-off' : 'eye'" class="h-4 w-4" />
+              </button>
+            </div>
             @if (errosDeCampo()['password']; as mensagem) {
               <span class="ds-error-text mt-2 block font-geist-mono text-xs">{{ mensagem }}</span>
             }
-          </label>
+          </div>
 
           <!-- `role="alert"` para leitor de tela anunciar a falha sem o usuário ter
              que sair do campo e procurar o texto. Caixa clara, como a de sucesso

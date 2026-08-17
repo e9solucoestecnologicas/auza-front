@@ -198,6 +198,15 @@
   opacity: 0.6;
   cursor: not-allowed;
 }
+/* Campo com botão dentro — o olho de "mostrar senha".
+   Reserva o lado direito para o alvo de clique; sem isso o texto digitado passa
+   por baixo do ícone. É modificador, e não utilitário do Tailwind, porque o
+   padding vem de `.ds-root .ds-input` (especificidade 0,2,0) e um `pr-12`
+   (0,1,0) não venceria. */
+.ds-root .ds-input--com-acao {
+  padding-right: 2.75rem;
+}
+
 .ds-root .ds-input--error {
   border-color: #b3402a;
 }

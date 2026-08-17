@@ -81,6 +81,25 @@ const ICONS: Record<string, readonly Shape[]> = {
   send: [p('m22 2-7 20-4-9-9-4Z'), p('M22 2 11 13')],
 
   /**
+   * Olho e olho-cortado, do botão "mostrar senha".
+   *
+   * A lente é desenhada aqui em vez de copiada do Lucide: duas quadráticas
+   * simétricas de (2,12) a (22,12), com controle nas bordas da viewBox (y=0 e
+   * y=24). A curva chega a y=6 e y=18 — miolo de 12 unidades —, e a pupila de
+   * raio 2.5 deixa 3.5 unidades de folga.
+   *
+   * Essa folga é o que decide o desenho: o traço do set é 2px, e a 16px de tela
+   * cada linha ocupa 1.5 unidade de cada lado do próprio eixo. Com a lente mais
+   * fechada (controle em y=4, folga de 1 unidade) os dois traços se fundiam e o
+   * ícone virava um borrão preenchido.
+   *
+   * O `eye-off` fica sem pupila: com o corte atravessando, ela só suja o desenho
+   * nesse tamanho.
+   */
+  eye: [p('M2 12Q12 0 22 12Q12 24 2 12Z'), c(12, 12, 2.5)],
+  'eye-off': [p('M2 12Q12 0 22 12Q12 24 2 12Z'), p('M3 3 21 21')],
+
+  /**
    * WhatsApp. Não vem do Lucide: o set não tem marcas, por decisão dele. É o
    * glifo oficial da marca (viewBox 24, três subpaths: fone, anel interno e
    * bolha com a cauda), e por isso é CHEIO, não de traço — ver PREENCHIDOS.
