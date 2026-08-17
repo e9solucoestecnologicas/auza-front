@@ -6,44 +6,85 @@
     <div class="rule-soft h-px flex-1"></div>
   </div>
 
-  <h1 class="mb-2 text-3xl font-semibold tracking-tight text-ink md:text-4xl">Olá, {{ u.name }}</h1>
-  <p class="mb-12 font-geist-mono text-sm text-muted">
-    Sessão ativa. Esta área é protegida pelo <code>authGuard</code> e pelo Bearer token.
-  </p>
+  <h1 class="mb-3 text-3xl font-semibold tracking-tight text-ink md:text-4xl">Olá, {{ u.name }}</h1>
 
-  <dl class="grid max-w-2xl grid-cols-1 gap-6 sm:grid-cols-2">
-    <div class="rounded-xl border border-soft bg-neutral-50 p-6">
-      <dt class="mb-1 font-geist-mono text-xs uppercase tracking-widest text-subtle">E-mail</dt>
-      <dd class="font-geist-mono text-sm text-ink">{{ u.email }}</dd>
+  <!--
+    Dados da sessão em UMA linha discreta, no lugar dos quatro cartões que
+    ocupavam a metade de cima da tela. Eles não são o que se vem fazer aqui: quem
+    abre o painel vem gerenciar produtos, e a informação de sessão é conferência
+    ocasional. A informação continua toda — mudou o peso, não o conteúdo.
+
+    `dl` com `dt` em `sr-only`: na tela o rótulo seria ruído, mas quem usa leitor
+    de tela precisa saber que "17/08/2026 19:12" é o último acesso, e não uma data
+    qualquer.
+  -->
+  <dl class="mb-14 flex flex-wrap items-center gap-x-3 gap-y-1 font-geist-mono text-xs text-subtle">
+    <div>
+      <dt class="sr-only">E-mail</dt>
+      <dd>{{ u.email }}</dd>
     </div>
-    <div class="rounded-xl border border-soft bg-neutral-50 p-6">
-      <dt class="mb-1 font-geist-mono text-xs uppercase tracking-widest text-subtle">Papel</dt>
-      <dd class="font-geist-mono text-sm text-ink">{{ u.role }}</dd>
+    <span aria-hidden="true">·</span>
+    <div>
+      <dt class="sr-only">Papel</dt>
+      <dd>{{ u.role }}</dd>
     </div>
-    <div class="rounded-xl border border-soft bg-neutral-50 p-6">
-      <dt class="mb-1 font-geist-mono text-xs uppercase tracking-widest text-subtle">
-        Último acesso
-      </dt>
-      <dd class="font-geist-mono text-sm text-ink">
-        {{ u.lastLoginAt ? (u.lastLoginAt | date: 'dd/MM/yyyy HH:mm') : '—' }}
-      </dd>
+    <span aria-hidden="true">·</span>
+    <div>
+      <dt class="sr-only">Último acesso</dt>
+      <dd>último acesso {{ u.lastLoginAt ? (u.lastLoginAt | date: 'dd/MM/yyyy HH:mm') : '—' }}</dd>
     </div>
-    <div class="rounded-xl border border-soft bg-neutral-50 p-6">
-      <dt class="mb-1 font-geist-mono text-xs uppercase tracking-widest text-subtle">
-        Conta criada em
-      </dt>
-      <dd class="font-geist-mono text-sm text-ink">
-        {{ u.createdAt | date: 'dd/MM/yyyy' }}
-      </dd>
+    <span aria-hidden="true">·</span>
+    <div>
+      <dt class="sr-only">Conta criada em</dt>
+      <dd>conta desde {{ u.createdAt | date: 'MM/yyyy' }}</dd>
     </div>
   </dl>
 
-  <!-- Atalho para o trabalho de verdade do painel. -->
-  <a
-    class="btn-primary mt-12 inline-flex items-center gap-2 rounded-lg px-6 py-3 font-geist-mono text-sm font-medium transition-colors"
-    routerLink="/painel/produtos"
-  >
-    Gerenciar produtos
-    <app-icon name="arrow-right" class="h-4 w-4" />
-  </a>
+  <div class="mb-5 flex items-center gap-3">
+    <span class="font-geist-mono text-xs font-bold uppercase tracking-widest text-subtle"
+      >O que você quer fazer</span
+    >
+    <div class="rule-soft h-px flex-1"></div>
+  </div>
+
+  <!--
+    Cartão-atalho, não botão: o botão dizia apenas "Gerenciar produtos" e não
+    contava o que existe do outro lado. Aqui o alvo inteiro é clicável e traz
+    título, descrição e o destino — quem entra pela primeira vez sabe onde vai
+    cair antes de clicar.
+
+    Superfície INK numa página clara, de propósito: é o maior contraste
+    disponível, e o que faz o atalho ser a primeira coisa que se vê. `on-dark`
+    reescreve as classes semânticas dentro dele.
+
+    A grade fica aqui pronta para uma segunda área do painel: com dois atalhos,
+    troque para `md:grid-cols-2` e tire o `max-w-2xl`.
+  -->
+  <div class="grid grid-cols-1 gap-6">
+    <a
+      class="painel-atalho on-dark group flex max-w-2xl items-start gap-5 rounded-2xl border border-soft bg-neutral-900 p-6 sm:p-8"
+      routerLink="/painel/produtos"
+    >
+      <span
+        class="grid h-12 w-12 shrink-0 place-items-center rounded-xl border border-soft bg-white/10 text-white"
+      >
+        <app-icon name="box" class="h-5 w-5" />
+      </span>
+
+      <span class="min-w-0 flex-1">
+        <span class="mb-2 block text-xl font-semibold tracking-tight text-white">Produtos</span>
+        <span class="mb-4 block font-geist-mono text-sm leading-relaxed text-muted">
+          Cadastre, edite e remova os equipamentos do catálogo. É daqui que sai o que aparece na
+          vitrine do site — e onde você vê quantos cliques cada produto recebeu.
+        </span>
+        <span class="flex items-center gap-2 font-geist-mono text-sm font-medium text-white">
+          Gerenciar produtos
+          <app-icon
+            name="arrow-right"
+            class="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1"
+          />
+        </span>
+      </span>
+    </a>
+  </div>
 }

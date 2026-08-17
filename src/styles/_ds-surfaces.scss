@@ -886,6 +886,27 @@
   background-color: #4a1d06;
 }
 
+/* ---------- Atalho do painel (cartão-menu) ---------- */
+/* Levanta e ganha sombra no hover, para o cartão inteiro se anunciar como alvo
+   clicável — não só o texto do link dentro dele.
+
+   É classe, e não utilitário: a sombra tem de ser escura o suficiente para
+   aparecer sob um cartão ink, e o `focus-visible` precisa de anel próprio (o
+   contorno padrão do browser desaparece contra o ink). */
+.ds-root .painel-atalho {
+  transition:
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+.ds-root .painel-atalho:hover {
+  box-shadow: 0 16px 36px -20px rgba(74, 29, 6, 0.65);
+  transform: translateY(-2px);
+}
+.ds-root .painel-atalho:focus-visible {
+  outline: 2px solid #4a1d06;
+  outline-offset: 3px;
+}
+
 /* ---------- Selo de status do produto (painel) ---------- */
 /* Visível é o estado bom e usa o verde de sucesso do formulário de contato;
    oculto fica em tom de marca esmaecido, e não em vermelho: produto oculto não é
