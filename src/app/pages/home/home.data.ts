@@ -4,9 +4,9 @@ import type { CategoriaProduto } from '../../core/produtos/produto.models';
  * Conteúdo da landing e da página de produtos.
  *
  * O copy definitivo já entrou em `descricao` (as cinco categorias) e em `resumo`
- * do Agro, Comunicação Visual e Caldeiras. Continuam com lorem, por falta de
- * texto enviado:
- *   - `resumo` de Impressão 3D e Têxtil (a frase curta do banner do hero);
+ * de Agro, Comunicação Visual, Caldeiras e Impressão 3D. Continuam com lorem, por
+ * falta de texto enviado:
+ *   - `resumo` da Têxtil (a frase curta do banner do hero);
  *   - `descricao` de cada PRODUTO, em PRODUTOS (os cartões da vitrine);
  *   - `comportamento` dos 11 produtos sem foto (ver LOREM_COMPORTAMENTO).
  *
@@ -197,7 +197,7 @@ export const CATEGORIAS: readonly Categoria[] = [
     nome: 'Impressão 3D',
     produtos: ['Estufa de Filamento'],
     resumo:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent commodo cursus magna vel scelerisque nisl consectetur.',
+      'Secadoras e estufas de filamento com controle de temperatura, para manter o material seco e o acabamento constante na impressão 3D.',
     descricao:
       'Oferecemos tecnologia de ponta para elevar o patamar produtivo no setor de fabricação digital. Unindo engenharia e precisão, disponibilizamos impressoras 3D estruturadas para garantir agilidade, otimização de insumos e acabamentos superiores em múltiplos materiais.',
     icone: 'box',
