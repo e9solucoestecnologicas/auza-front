@@ -35,14 +35,14 @@ import { AuthService } from '../../core/auth/auth.service';
             </a>
 
             <div class="flex items-center gap-3">
-              <button
-                type="button"
-                class="btn-ghost rounded-lg border border-soft px-4 py-2 font-geist-mono text-xs uppercase tracking-widest transition-colors disabled:opacity-50"
-                [disabled]="saindo()"
-                (click)="sairDeTodos()"
-              >
-                Sair de todos
-              </button>
+              <!--
+                Só "Sair". O "Sair de todos" saiu porque, na tela, fazia o mesmo:
+                encerra a sessão e volta ao login. A diferença é no backend — ele
+                chama /auth/logout-all e derruba as sessões de TODOS os
+                dispositivos —, e isso não se distingue de quem usa um só.
+                Se um dia fizer sentido ("sair de todos os aparelhos" numa tela de
+                conta), o método já existe: AuthService.sairDeTodosOsDispositivos.
+              -->
               <button
                 type="button"
                 class="btn-primary rounded-lg px-4 py-2 font-geist-mono text-xs uppercase tracking-widest transition-colors disabled:opacity-50"
@@ -85,10 +85,5 @@ export class PainelLayout {
   protected async sair(): Promise<void> {
     this.saindo.set(true);
     await this.auth.sair();
-  }
-
-  protected async sairDeTodos(): Promise<void> {
-    this.saindo.set(true);
-    await this.auth.sairDeTodosOsDispositivos();
   }
 }
