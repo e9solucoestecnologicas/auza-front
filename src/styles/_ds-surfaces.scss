@@ -1,0 +1,992 @@
+/* ============================================================
+   AUZA DS — camada semântica de superfícies + peças da landing.
+
+   A landing alterna seções claras e escuras. Em vez de duplicar o
+   markup por tema, o mesmo bloco usa classes semânticas
+   (`text-ink`, `text-muted`, `border-soft`, `surface`, `btn-primary`)
+   e a seção escura só ganha `.on-dark` — as classes se reescrevem
+   dentro dela. Valores saem da paleta documentada no DS.
+   ============================================================ */
+
+/* ---------- Tema claro (padrão) ---------- */
+.ds-root .text-ink {
+  color: #021d36 !important;
+}
+.ds-root .text-muted {
+  color: #3d5470 !important;
+}
+.ds-root .text-subtle {
+  color: #5b7189 !important;
+}
+.ds-root .border-soft {
+  border-color: rgba(2, 29, 54, 0.18) !important;
+}
+.ds-root .rule-soft {
+  background-color: rgba(2, 29, 54, 0.18);
+}
+.ds-root .surface {
+  background-color: #ffffff;
+}
+
+/* ---------- Tema escuro (superfície ink) ---------- */
+.ds-root .on-dark {
+  color: #ffffff;
+}
+.ds-root .on-dark .text-ink {
+  color: #ffffff !important;
+}
+.ds-root .on-dark .text-muted {
+  color: rgba(255, 255, 255, 0.72) !important;
+}
+.ds-root .on-dark .text-subtle {
+  color: rgba(255, 255, 255, 0.55) !important;
+}
+.ds-root .on-dark .border-soft {
+  border-color: rgba(255, 255, 255, 0.18) !important;
+}
+.ds-root .on-dark .rule-soft {
+  background-color: rgba(255, 255, 255, 0.28);
+}
+.ds-root .on-dark .surface {
+  background-color: rgba(255, 255, 255, 0.06);
+}
+
+/* ---------- Botões ---------- */
+/* O primário é o laranja da marca nas DUAS superfícies — é a cor de ação, e não
+   inverte com o tema. O texto é marinho, e não branco: branco sobre o laranja dá
+   2,4:1 e reprova; marinho dá 7,2:1. O hover vai para o começo do degradê do
+   símbolo (#f96a1e), que com o marinho ainda fica em 5,8:1. */
+.ds-root .btn-primary {
+  background-color: #fa8c3c;
+  color: #021d36;
+}
+.ds-root .btn-primary:hover {
+  background-color: #f96a1e;
+}
+
+.ds-root .btn-ghost {
+  background-color: transparent;
+  color: #021d36;
+}
+.ds-root .btn-ghost:hover {
+  background-color: rgba(2, 29, 54, 0.06);
+}
+.ds-root .on-dark .btn-ghost {
+  color: #ffffff;
+}
+.ds-root .on-dark .btn-ghost:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+/* ---------- Placeholder de imagem (até entrarem as fotos) ---------- */
+.ds-root .media-ph {
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 1rem;
+  border: 1px solid rgba(2, 29, 54, 0.18);
+  background-color: #e6ecf2;
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(2, 29, 54, 0.05) 0 1px,
+    transparent 1px 12px
+  );
+}
+.ds-root .on-dark .media-ph {
+  border-color: rgba(255, 255, 255, 0.18);
+  background-color: rgba(255, 255, 255, 0.06);
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.07) 0 1px,
+    transparent 1px 12px
+  );
+}
+
+/* ----------------------------------------------------------
+   ILHA CLARA dentro de uma seção escura.
+
+   O tema do DS era de mão única: o claro é o padrão e `.on-dark` reescreve as
+   classes semânticas para todos os descendentes. Um card branco DENTRO de uma
+   seção ink — o formulário do login — não tinha como existir: `text-ink` ali
+   continuaria resolvendo para branco, ou seja, texto branco sobre card branco.
+
+   `.on-light` desfaz isso na sua subárvore. Repete os valores do tema claro em
+   vez de "desligar" o `.on-dark`, porque CSS não cancela regra de ancestral —
+   só sobrescreve.
+
+   A POSIÇÃO NO ARQUIVO É A REGRA: `.ds-root .on-dark .x` e `.ds-root .on-light
+   .x` têm a mesma especificidade, então quem vem depois ganha. Este bloco fica
+   abaixo de TODAS as regras `.on-dark` (texto, bordas, superfície, botões e
+   placeholder) de propósito. Subir o bloco quebra o card, e sem erro nenhum.
+
+   Dentro de `.on-light` use `text-ink`, nunca `text-white`: essa última é
+   remapeada para o branco da marca com `!important` na camada de brand e
+   continuaria branco aqui.
+
+   CADA REGRA VEM EM DOIS SELETORES: `.on-light .x` (descendente) e `.on-light.x`
+   (mesmo elemento). O jeito natural de escrever o card é
+   `class="on-light surface border-soft"` — as duas classes no MESMO elemento —, e
+   aí o seletor descendente não casa. Quem casava era `.on-dark .surface`, do
+   ancestral: o card saía gelo a 6%, translúcido, com borda clara. Sem o par
+   composto, o `.on-light` funciona nos filhos e falha exatamente no elemento em
+   que foi escrito. O mesmo vale para o `.on-dark` da camada de brand, e é o que
+   já tinha deixado o fundo do login em quase-preto.
+   ---------------------------------------------------------- */
+.ds-root .on-light {
+  color: #021d36;
+}
+.ds-root .on-light .text-ink,
+.ds-root .on-light.text-ink {
+  color: #021d36 !important;
+}
+.ds-root .on-light .text-muted,
+.ds-root .on-light.text-muted {
+  color: #3d5470 !important;
+}
+.ds-root .on-light .text-subtle,
+.ds-root .on-light.text-subtle {
+  color: #5b7189 !important;
+}
+.ds-root .on-light .border-soft,
+.ds-root .on-light.border-soft {
+  border-color: rgba(2, 29, 54, 0.18) !important;
+}
+.ds-root .on-light .rule-soft,
+.ds-root .on-light.rule-soft {
+  background-color: rgba(2, 29, 54, 0.18);
+}
+.ds-root .on-light .surface,
+.ds-root .on-light.surface {
+  background-color: #ffffff;
+}
+.ds-root .on-light .btn-ghost,
+.ds-root .on-light.btn-ghost {
+  color: #021d36;
+}
+.ds-root .on-light .btn-ghost:hover,
+.ds-root .on-light.btn-ghost:hover {
+  background-color: rgba(2, 29, 54, 0.06);
+}
+.ds-root .on-light .media-ph,
+.ds-root .on-light.media-ph {
+  border-color: rgba(2, 29, 54, 0.18);
+  background-color: #e6ecf2;
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(2, 29, 54, 0.05) 0 1px,
+    transparent 1px 12px
+  );
+}
+
+/* Placeholder usado como CAPA de cartão, na página de produtos: o cartão já tem
+   borda e raio próprios, e a moldura do placeholder viraria borda dupla com
+   canto sobrando por dentro do recorte. Sobra a régua de baixo, que separa a
+   capa do texto igual à foto faz.
+
+   Precisa ser classe, e não utilitário no template: `.media-ph` define `border`
+   e `border-radius` sob `.ds-root`, que ganha de `border-0`/`rounded-none`. */
+.ds-root .media-ph--capa {
+  border-radius: 0;
+  border-width: 0 0 1px 0;
+}
+
+/* ---------- Miniaturas da galeria de produto ---------- */
+.ds-root .galeria-miniatura {
+  /* Fundo enquanto a foto não chega: sem ele a miniatura é um vão transparente
+     no cartão, do tamanho exato do que vai aparecer. */
+  background-color: #e6ecf2;
+}
+/* A ativa é marcada por ANEL, não por opacidade: as inativas já vivem a 70%, e
+   diferenciar duas opacidades próximas não se lê. */
+.ds-root .galeria-miniatura--ativa {
+  border-color: #021d36;
+  box-shadow: 0 0 0 1px #021d36;
+}
+
+/* ----------------------------------------------------------
+   Fundo em parallax: a imagem é presa à janela e a diretiva
+   `appParallax` a faz rolar a uma fração da velocidade do conteúdo.
+   O travamento é só o ponto de partida — a diferença de velocidade
+   entre a imagem e o texto é o que dá profundidade.
+
+   Três peças, e cada uma resolve um problema:
+
+   1. `.fundo-fixo` é a moldura do sticky e começa uma janela ACIMA
+      da seção (`top: -100vh`). Sem essa folga o trilho só grudaria
+      quando o topo da seção alcançasse o topo da janela, e a imagem
+      andaria a 1x junto com a página durante toda a entrada.
+   2. `.fundo-fixo__trilho` é sticky com altura zero: não ocupa
+      espaço, percorre a moldura inteira e mantém a imagem presa à
+      janela do primeiro ao último pixel visível da seção. É a
+      velocidade 0 sobre a qual o desvio da diretiva é somado.
+   3. A seção hospedeira precisa de `overflow-clip`, NÃO
+      `overflow-hidden`: `hidden` cria um container de rolagem e o
+      sticky passaria a grudar na seção em vez da janela. `clip`
+      recorta o que vaza sem virar container.
+
+   `position: sticky` em vez de `position: fixed` porque fixed exigiria
+   recorte por `clip-path`, que o Safari aplica de forma inconsistente
+   em descendentes fixos.
+   ---------------------------------------------------------- */
+.ds-root .fundo-fixo {
+  position: absolute;
+  top: -100vh;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.ds-root .fundo-fixo__trilho {
+  position: sticky;
+  top: 0;
+  height: 0;
+}
+
+/* A imagem é mais alta que a janela para ter por onde correr: `--fundo-folga` é
+   o curso de cada lado, e ela nasce deslocada meia folga para cima para que o
+   desvio zero fique centrado.
+
+   Quem calcula a folga é a diretiva, que sabe o curso exato da passagem — o
+   valor aqui é só o padrão até o primeiro frame (e o que vale quando o usuário
+   pede menos movimento e a diretiva não roda). */
+.ds-root .fundo-fixo__img {
+  --fundo-folga: 20vh;
+  display: block;
+  width: 100%;
+  height: calc(100vh + 2 * var(--fundo-folga));
+  margin-top: calc(-1 * var(--fundo-folga));
+  object-fit: cover;
+  will-change: transform;
+}
+
+/* Safari < 16 não conhece `overflow: clip`: sem recorte a imagem
+   invadiria as seções vizinhas. A moldura volta a cobrir só a seção e
+   recorta ela mesma — perde-se o parallax, não o layout. */
+@supports not (overflow: clip) {
+  .ds-root .fundo-fixo {
+    top: 0;
+    overflow: hidden;
+  }
+  .ds-root .fundo-fixo__trilho {
+    position: static;
+  }
+}
+
+/* ----------------------------------------------------------
+   Véu da seção Sobre: fica entre a imagem de fundo (que recebe o
+   parallax via `appParallax`) e o conteúdo, garantindo contraste
+   do texto escuro sobre as linhas do desenho técnico.
+
+   A opacidade é o freio do efeito: o desenho já é claro (gelo com
+   traço azul fino), então acima de ~0.6 a imagem vira papel branco
+   e o parallax se move sem que ninguém veja.
+
+   0.5 é o teto útil na outra direção: sobre o traço mais escuro do
+   desenho (~#8194a8, percentil 0,1 de luminância) esse véu ainda deixa
+   o corpo de texto (`text-neutral-600` → #3d5470) em 4,7:1. Abaixo
+   disso a imagem aparece mais, mas o texto perde o piso de contraste.
+   (`text-subtle`/#5b7189 fica em ~3:1 ali — só para texto grande.)
+
+   O desenho foi recolorido do sépia original para a reta marinho→gelo
+   preservando a luminância de cada pixel, então estas contas valem
+   como valiam no sépia.
+   ---------------------------------------------------------- */
+.ds-root .sobre-veu {
+  background-image: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.44));
+}
+
+/* ---------- Empilhamento (slides do hero no mesmo espaço) ---------- */
+.ds-root .ds-stack {
+  display: grid;
+}
+.ds-root .ds-stack > * {
+  grid-area: 1 / 1;
+}
+
+/* ---------- Hero ---------- */
+/* Ancorada na base e na direita, e não no topo/esquerda: a seção tem 100vh, que
+   não é múltiplo de 96, então ancorar no topo deixaria a última linha da grade
+   sempre cortada justamente na borda inferior — onde ficam a peça, o resumo e as
+   bolinhas. */
+.ds-root .hero-textura {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(circle at 78% 15%, rgba(255, 255, 255, 0.1), transparent 55%),
+    linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size:
+    100% 100%,
+    96px 96px,
+    96px 96px;
+  background-position: right bottom;
+}
+
+/* ----------------------------------------------------------
+   A PEÇA — camada de fundo em escala, não item de coluna.
+
+   Quatro decisões que produzem o impacto, e cada uma resolve uma falta:
+
+   1. ESCALA E SANGRAMENTO. 84vh de altura, ancorada na base, atravessando a
+      borda do container. Na coluna ela tinha ~425px: tamanho de ilustração de
+      apoio, não de protagonista. É o que a referência faz com o painel dela
+      (`w-[115%]` + `translate-x-[3%]`): o texto fica no container, a imagem é
+      camada de sangria.
+
+   2. ANCORAGEM NA BORDA DO CONTAINER, calculada, e não numa porcentagem da
+      janela. Em tela larga o `max-w-6xl` centralizado ocupa uma fração pequena
+      da largura — a 2543px são 1152px —, então `left: 40%` da janela cai DENTRO
+      dele e a peça perde o sangramento. `--borda-container` reproduz a conta do
+      `mx-auto` e a peça se alinha à borda direita real, com `--peca-sangria`
+      de folga para atravessá-la.
+
+   3. FOCO DE LUZ mais duro que o brilho ambiente anterior, para a peça ser a
+      única coisa iluminada da página (ver `.hero-veu` para a vinheta que fecha
+      as bordas).
+
+   4. VARREDURA DE LUZ no aço, recortada pela silhueta. É o substituto honesto
+      do 3D que não temos: brilho que corre pela superfície é a pista que o olho
+      usa para ler metal sólido, e é a única forma de movimento que funciona num
+      recorte plano.
+
+   O aço fica frio de propósito. Tingir com a cor da marca mata o metal; ele ser a única
+   coisa fria da página é o que o torna o foco, e os acentos quentes da ponte
+   (placa AUZA e displays) já vêm dentro do render.
+   ---------------------------------------------------------- */
+.ds-root .hero-peca {
+  /* Mesma conta do `mx-auto max-w-6xl` do conteúdo: distância da borda da seção
+     até a borda do container. */
+  --borda-container: calc((100% - min(100%, 72rem)) / 2);
+  --peca-sangria: 4rem;
+  /* Teto de largura: sem ele uma peça deitada (a dobradeira é 2:1) puxaria
+     ~1500px de largura a partir dos 80vh de altura e cobriria o texto. Com
+     `aspect-ratio`, o limite de largura reduz a altura junto. */
+  --peca-largura-max: 56%;
+
+  position: absolute;
+  max-width: var(--peca-largura-max);
+  /* 3vh de folga: com a base encostada em `bottom: 0` ela lê como cortada pela
+     borda da janela, e não como apoiada. */
+  bottom: 3vh;
+  right: calc(var(--borda-container) - var(--peca-sangria));
+  height: 80vh;
+  pointer-events: none;
+  animation: hero-peca-entra 1.8s ease-out 0.2s backwards;
+}
+
+/* Do outro lado quando o texto troca de lado (ver `espelhado` no componente) */
+.ds-root .hero-peca--espelhada {
+  right: auto;
+  left: calc(var(--borda-container) - var(--peca-sangria));
+}
+
+/* ----------------------------------------------------------
+   A PEÇA NO CELULAR.
+
+   No desktop ela é camada de fundo: 80vh de altura, e o título passa por cima. No
+   celular isso não funciona — a coluna de texto ocupa a largura toda, então a peça
+   ficaria inteira atrás do texto, e texto sobre peça é exatamente o problema de
+   contraste que está em aberto (ver o comentário da película, abaixo).
+
+   A faixa baixa no rodapé foi a primeira tentativa e não deu presença ao
+   equipamento. Agora a peça é METADE DA TELA em largura e 80% do banner em altura,
+   colada na direita — e cortada pela borda de propósito: aparece o suficiente para
+   reconhecer a máquina, e o resto sangra para fora. O texto volta a cruzá-la, como
+   no desktop, e o véu (que escurece o lado do texto) é o que sustenta a leitura
+   até resolvermos o contraste.
+
+   O PONTO TÉCNICO: com uma caixa de 50vw x 80% a proporção deixa de ser a do
+   arquivo, e é aí que a máscara desalinharia. `mask-size: 100% 100%` estica a
+   silhueta para a caixa, enquanto a imagem, sob `object-fit`, é escalada por outra
+   regra — o recorte passaria a cortar no lugar errado, mostrando fundo. A saída é
+   as duas seguirem a MESMA geometria: `cover` + `center` na imagem e na máscara.
+   Por isso o bloco mexe nos três (peça, imagem e varredura) e não só na peça.
+
+   Sempre à direita, mesmo nos banners espelhados: no celular a coluna de texto
+   ocupa a largura toda, então não existe "lado do texto" para alternar. O véu
+   acompanha, escurecendo sempre a esquerda.
+
+   ATENÇÃO À POSIÇÃO: o bloco de regras fica no FIM desta seção, depois de
+   `.hero-peca__img`, da varredura e das regras por peça. Media query não adiciona
+   especificidade — com o bloco antes delas, `object-fit: contain` e
+   `mask-size: 100% 100%` das regras base venciam por ordem e o mobile não mudava
+   nada. (Aconteceu: só apareceu ao ler o CSS compilado.)
+   ---------------------------------------------------------- */
+
+/* A largura sai da proporção do arquivo (regra `.hero-peca--<id>`) sobre a
+   altura em vh. `contain` é rede de segurança: proporção errada vira barra
+   preta, não estica.
+
+   A peça é estática. Tentamos seguir o ponteiro — translação, rotação no plano e
+   depois `perspective` + `rotateY` — e nenhuma versão convenceu, por um motivo
+   que nenhum CSS resolve: a silhueta de um recorte plano não muda de forma e os
+   brilhos do aço não correm pela superfície. Girar de verdade exige geometria
+   (.glb) ou um render por ângulo (turntable).
+
+   A máscara recorta a imagem na silhueta. Nas fotos ela é obrigatória: a cor vem
+   em JPEG, que não tem alpha. No render do Agro, cuja PNG já tem alpha, a
+   máscara é a própria imagem e não muda nada. */
+.ds-root .hero-peca__img {
+  position: relative;
+  z-index: 1;
+  display: block;
+  height: 100%;
+  width: 100%;
+  object-fit: contain;
+  -webkit-mask-image: var(--peca-mascara);
+  mask-image: var(--peca-mascara);
+  /* `contain` + centro, a MESMA geometria do `object-fit: contain` da imagem.
+     Com `100% 100%` a máscara esticava na caixa inteira enquanto a foto ficava
+     centrada com folga: quando o teto de largura (--peca-largura-max) corta a
+     largura, a caixa perde a proporção do arquivo, imagem e máscara desalinham e
+     o fundo do estúdio vaza (apareceu na dobradeira, 1400×682 numa caixa 806×720). */
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+
+/* Foco de luz atrás da peça: núcleo fechado sobre halo largo, deslocado para
+   cima como luz vinda de cima. */
+.ds-root .hero-peca::before {
+  content: '';
+  position: absolute;
+  inset: -14% -16% -4%;
+  background:
+    radial-gradient(42% 38% at 50% 36%, rgba(255, 255, 255, 0.3), transparent 66%),
+    radial-gradient(72% 66% at 50% 46%, rgba(255, 255, 255, 0.12), transparent 72%);
+}
+
+/* PENDENTE — legibilidade do texto sobre a peça.
+
+   O branco do título sobre o aço claro das peças mede pouco contraste: Agro e
+   Têxtil 1,05:1, Caldeiras e Comunicação Visual ~1,39:1 (medido no percentil 95
+   de luminância de cada uma). Uma película escura mascarada resolvia o número —
+   0,6 de ink dava 4,5:1 —, mas apagava o objeto, e o objeto é o ponto do banner.
+   Removida. A solução vai por outro caminho, ainda a definir: sombra/contorno no
+   texto, gradiente só atrás da coluna de texto, ou peça deslocada para fora dela. */
+
+/* Varredura: uma faixa clara inclinada atravessa a peça uma única vez, no início
+   do banner. `overflow: hidden` + máscara da silhueta mantêm a luz sobre o metal
+   e fora do ink em volta. Anima só `transform`, então é composta na GPU.
+
+   Sem `fill-mode`: ao terminar, a faixa volta para fora do recorte e desaparece
+   — não fica um brilho parado por cima do aço. Roda de novo a cada volta à
+   categoria, porque o elemento é recriado. */
+.ds-root .hero-peca__varredura {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  overflow: hidden;
+  -webkit-mask-image: var(--peca-mascara);
+  mask-image: var(--peca-mascara);
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+.ds-root .hero-peca__varredura::before {
+  content: '';
+  position: absolute;
+  top: -25%;
+  bottom: -25%;
+  left: 0;
+  width: 36%;
+  background: linear-gradient(
+    100deg,
+    transparent,
+    rgba(255, 255, 255, 0.42) 44%,
+    rgba(255, 255, 255, 0.6) 52%,
+    rgba(255, 255, 255, 0.32) 60%,
+    transparent
+  );
+  transform: translateX(-170%) skewX(-14deg);
+  animation: hero-varredura 2.1s cubic-bezier(0.36, 0, 0.2, 1) 1s;
+}
+
+@keyframes hero-varredura {
+  to {
+    transform: translateX(340%) skewX(-14deg);
+  }
+}
+
+/* Uma regra por peça: a proporção do recorte (que define a largura a partir da
+   altura em vh) e a máscara da silhueta, usada tanto para recortar a imagem
+   quanto a varredura de luz. Trocar o asset é trocar estas linhas.
+
+   O Agro é render em PNG com alpha, então imagem e máscara são o mesmo arquivo.
+   As fotos vêm em par: `.jpg` para a cor, `.png` só para o alpha. */
+.ds-root .hero-peca--agro {
+  --peca-mascara: url('/img/agro-escaldeira.png');
+  aspect-ratio: 1166 / 1200;
+}
+.ds-root .hero-peca--caldeiras {
+  --peca-mascara: url('/img/pecas/caldeiras.png');
+  aspect-ratio: 1100 / 1383;
+}
+.ds-root .hero-peca--comunicacao-visual {
+  --peca-mascara: url('/img/pecas/comunicacao-visual.png');
+  aspect-ratio: 1400 / 682;
+}
+/* Têxtil: fundo branco de estúdio removido por flood fill a partir das bordas.
+   Virou recorte de verdade e saiu do tratamento de foto emoldurada. */
+.ds-root .hero-peca--textil {
+  --peca-mascara: url('/img/pecas/textil-mesa.png');
+  aspect-ratio: 1017 / 1170;
+}
+
+/* Impressão 3D: secadora de filamento recortada, como as outras peças. Um WebP
+   só, com alpha, faz de imagem e de máscara (como o PNG do Agro): o fundo
+   branco saiu por flood fill a partir das bordas, e o branco visto ATRAVÉS da
+   tampa de acrílico virou transparência parcial — sem isso a tampa ficaria uma
+   mancha branca sobre o marinho. O corpo preto segue opaco.
+
+   Teto de largura próprio (46% em vez de 56%): deitada e maciça, no teto
+   comum ela saía com ~800px a 1440 e cobria o título; a 46% fica com o peso
+   das outras peças (o Agro ocupa ~640px). */
+.ds-root .hero-peca--impressao-3d {
+  --peca-mascara: url('/img/pecas/secadora-recorte.webp');
+  --peca-largura-max: 46%;
+  aspect-ratio: 1099 / 943;
+}
+
+/* ----------------------------------------------------------
+   FOTO EMOLDURADA — o outro tratamento.
+
+   Sem uso hoje (a Impressão 3D, que usava, passou a ter recorte). Fica para a
+   próxima imagem que for CENA (máquina num ambiente) e não produto sobre fundo
+   neutro: recortar ali jogaria fora o que a imagem tem de bom.
+
+   A foto entra como o que é: fotografia sobre a folha. Moldura fina na linguagem
+   do DS, `cover` para preencher, e véu por cima — sem ele a luz quente da cena
+   estoura no ink e rouba o foco do título.
+
+   Nenhuma delas define `--peca-mascara`. Isso não é esquecimento: `mask-image:
+   var(--peca-mascara)` sem fallback fica inválido e cai para `none`, então a
+   imagem e a varredura de luz deixam de ser recortadas sozinhas — e a varredura
+   passa a correr dentro da moldura, que é o que se quer numa foto.
+   ---------------------------------------------------------- */
+.ds-root .hero-peca--moldura {
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+.ds-root .hero-peca--moldura .hero-peca__img {
+  object-fit: cover;
+}
+.ds-root .hero-peca--moldura::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  background: linear-gradient(to top, rgba(1, 15, 30, 0.62), rgba(1, 15, 30, 0.14));
+}
+
+/* ---------- A PEÇA NO CELULAR (ver o comentário longo acima) ---------- */
+/* Aqui, e não junto do posicionamento: precisa vir DEPOIS de `.hero-peca__img`,
+   da varredura e das regras por peça, porque media query não vence por
+   especificidade — só por ordem. */
+@media (max-width: 1023.98px) {
+  .ds-root .hero-peca {
+    /* A caixa manda; a proporção do arquivo deixa de mandar. */
+    aspect-ratio: auto;
+    max-width: none;
+    width: 50vw;
+    height: 80%;
+    top: 10%;
+    bottom: auto;
+    right: 0;
+  }
+  .ds-root .hero-peca--espelhada {
+    right: 0;
+    left: auto;
+  }
+
+  /* Imagem e máscara na MESMA geometria: sem isto o recorte corta no lugar
+     errado e aparece fundo.
+
+     Âncora na ESQUERDA, não no centro: centrado, o corte tira metade de cada lado
+     e sobra uma fatia do meio da máquina, que não se reconhece. Ancorada à
+     esquerda, a máquina começa na borda esquerda da caixa e o corte come só o lado
+     DIREITO — ela sangra para fora da tela, como a peça faz no desktop. */
+  .ds-root .hero-peca__img {
+    object-fit: cover;
+    object-position: left center;
+  }
+  .ds-root .hero-peca__img,
+  .ds-root .hero-peca__varredura {
+    -webkit-mask-size: cover;
+    mask-size: cover;
+    -webkit-mask-position: left center;
+    mask-position: left center;
+  }
+
+  /* O véu não pode inverter no celular: a peça está sempre à direita, então
+     escurecer a direita apagaria justamente ela e clarearia o lado do texto. */
+  .ds-root .hero-veu--espelhado {
+    --veu-dir: to right;
+  }
+}
+
+/* ----------------------------------------------------------
+   Véu do hero: fica ENTRE a peça e o conteúdo, e faz dois trabalhos.
+
+   1. Escurece o lado do texto, o que sustenta a sobreposição: sem ele o título
+      em branco cruzando o aço claro ficaria ilegível — e é justamente o
+      cruzamento que dá profundidade à composição.
+   2. Vinheta radial fechando as bordas da seção, para o olho ir ao centro em vez
+      de se espalhar por uma superfície de brilho uniforme.
+
+   A direção do primeiro gradiente vem de `--veu-dir` para acompanhar o
+   espelhamento do texto, em vez de duplicar a regra inteira.
+   ---------------------------------------------------------- */
+.ds-root .hero-veu {
+  --veu-dir: to right;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      var(--veu-dir),
+      rgba(1, 15, 30, 0.94) 0%,
+      rgba(1, 15, 30, 0.74) 28%,
+      rgba(1, 15, 30, 0.16) 56%,
+      transparent 70%
+    ),
+    radial-gradient(118% 96% at 50% 54%, transparent 38%, rgba(0, 8, 18, 0.62) 100%);
+}
+.ds-root .hero-veu--espelhado {
+  --veu-dir: to left;
+}
+
+@keyframes hero-peca-entra {
+  from {
+    opacity: 0;
+    filter: blur(16px);
+    transform: translateY(calc(3rem * var(--movimento, 1)));
+  }
+  30% {
+    opacity: 1;
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(0);
+  }
+}
+
+/* ----------------------------------------------------------
+   Entrada dos textos do hero: cada elemento sobe saindo do desfoque e termina
+   focado, um depois do outro.
+
+   Estrutura tirada do `animationIn` da referência (aex.aura.build) — subida +
+   blur + `ease-out` + `both`, com duração e atraso vindo do próprio elemento.
+   Três medidas fogem das dela, e por um motivo:
+
+   1. `opacity` fecha em 25%, não no fim. Com `ease-out` o deslocamento se gasta
+      quase todo nos primeiros 30% do tempo; se a opacidade só chegasse em 1 no
+      fim, o texto ficaria visível já parado e o efeito viraria um fade. Fechando
+      cedo, mais da metade da subida acontece com o texto à vista — é o que faz
+      a subida ser vista em vez de deduzida.
+   2. Subida de 2.5rem (4.5rem no display) contra os 30px de lá: no nosso corpo
+      de texto 30px passava batido.
+   3. Tempos ~40% mais longos.
+
+   `both` mantém o primeiro quadro durante o atraso — sem isso não há cascata: o
+   elemento ficaria nítido e no lugar até a sua vez chegar, e então saltaria para
+   o início da animação.
+
+   O gatilho é a classe do slide ativo, não um estado inicial da página: por
+   isso a animação roda na carga E a cada troca de categoria (a classe sai de
+   um slide e entra no outro, o que reinicia a animação).
+   ---------------------------------------------------------- */
+@keyframes hero-surge {
+  from {
+    opacity: 0;
+    filter: blur(10px);
+    transform: translateY(calc(var(--surge-subida, 2.5rem) * var(--movimento, 1)));
+  }
+  25% {
+    opacity: 1;
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(0);
+  }
+}
+
+.ds-root .hero-slide--ativo .hero-surge {
+  animation: hero-surge var(--surge-duracao, 1.1s) ease-out var(--surge-atraso, 0s) both;
+}
+
+/* ----------------------------------------------------------
+   Entrada do slide inteiro, por cima da cascata dos filhos: a caixa nasce 50px
+   encolhida por baixo e desfocada, e assenta em 1s. Os dois desfoques se
+   compõem, então no primeiro instante o texto está mais fundo que os 10px dele.
+
+   Animação e não transição: a classe entra junto com o slide (no primeiro
+   render ela já está lá), e transição não dispara sem mudança de valor — o
+   primeiro banner não animaria. Sem `fill-mode` de propósito: não há atraso a
+   preencher, e o estado final é igual ao natural, então não vale deixar um
+   `blur(0)` permanente rasterizando o slide todo.
+
+   `margin-bottom` recalcula layout a cada frame (as bolinhas abaixo acompanham).
+   É o custo de a caixa assentar junto com o conteúdo em vez de só o conteúdo
+   se mover.
+   ---------------------------------------------------------- */
+@keyframes hero-slide-surge {
+  from {
+    margin-bottom: calc(-50px * var(--movimento, 1));
+    filter: blur(5px);
+  }
+  to {
+    margin-bottom: 0;
+    filter: blur(0);
+  }
+}
+
+.ds-root .hero-slide--ativo {
+  animation: hero-slide-surge 1s ease-out;
+}
+
+/* ---------- Campos de formulário sobre a superfície ink ---------- */
+/* O DS não tinha input em superfície escura: o `surface` de `.on-dark` é gelo a
+   6%, que sobre ink não separa o campo do fundo. Aqui o campo é um pouco mais
+   claro que a folha e ganha borda, para a caixa de digitação ser visível antes
+   do foco — sem isso o usuário não sabe onde clicar.
+
+   SEM USO HOJE: o formulário do login, único consumidor, passou a viver num card
+   branco (`.on-light`) e usa o `ds-input` do tema claro. Fica de pé porque é a
+   única peça de formulário que o DS tem para digitar direto sobre o ink — se
+   nenhuma tela voltar a precisar, é remoção segura. */
+.ds-root .login-campo {
+  width: 100%;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background-color: rgba(255, 255, 255, 0.07);
+  padding: 0.75rem 1rem;
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  color: #ffffff;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease;
+}
+.ds-root .login-campo::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+.ds-root .login-campo:focus {
+  outline: 2px solid rgba(255, 255, 255, 0.55);
+  outline-offset: 2px;
+  border-color: rgba(255, 255, 255, 0.45);
+  background-color: rgba(255, 255, 255, 0.1);
+}
+.ds-root .login-campo:disabled {
+  opacity: 0.6;
+}
+.ds-root .login-campo--erro {
+  border-color: rgba(248, 113, 113, 0.6);
+}
+
+.ds-root .hero-dot {
+  width: 0.6rem;
+  height: 0.6rem;
+  padding: 0;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  background: transparent;
+  cursor: pointer;
+  transition:
+    width 0.3s ease,
+    background-color 0.3s ease,
+    border-color 0.3s ease;
+}
+.ds-root .hero-dot:hover {
+  background-color: rgba(255, 255, 255, 0.45);
+}
+/* Laranja sobre o marinho: 7,2:1, e é a cor de destaque da marca. */
+.ds-root .hero-dot--ativo {
+  width: 1.75rem;
+  background-color: #fa8c3c;
+  border-color: #fa8c3c;
+}
+
+/* ---------- Abas do painel ---------- */
+/* Aba, e não botão: a navegação é por rota, então tem de ser link — com URL que
+   dá para copiar, abrir em outra aba e voltar pelo histórico. A ativa é marcada
+   por `routerLinkActive`, e o traço fica na borda de baixo para encostar na régua
+   do cabeçalho. */
+.ds-root .painel-aba {
+  padding: 0.75rem 0.25rem;
+  border-bottom: 2px solid transparent;
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #5b7189;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+.ds-root .painel-aba:hover {
+  color: #021d36;
+}
+/* Texto marinho e traço laranja: o laranja sobre claro não serve para texto
+   (2,4:1), mas como fio de destaque é o uso que a marca prevê. A aba ativa
+   continua legível pela cor do texto, que muda de cinza para marinho. */
+.ds-root .painel-aba--ativa {
+  color: #021d36;
+  border-bottom-color: #fa8c3c;
+}
+
+/* ---------- Esqueleto de carregamento ---------- */
+/* Bloco cinza pulsando no lugar do conteúdo que está vindo. Existe por causa do
+   plano free do Render: a primeira chamada leva ~22s para acordar o serviço, e
+   sem sinal nenhum a página parece quebrada, não lenta.
+
+   Forma do conteúdo real, e não um spinner no meio da tela: quem espera já vê
+   onde as coisas vão aparecer, e a página não salta quando elas chegam. */
+.ds-root .ds-esqueleto {
+  background-color: rgba(2, 29, 54, 0.09);
+  border-radius: 0.5rem;
+  animation: ds-pulsar 1.4s ease-in-out infinite;
+}
+.ds-root .on-dark .ds-esqueleto,
+.ds-root .on-dark.ds-esqueleto {
+  background-color: rgba(255, 255, 255, 0.12);
+}
+
+@keyframes ds-pulsar {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
+
+/* ---------- Bolinhas do revezamento das seções ---------- */
+/* Mesma linguagem das bolinhas do hero, no tema claro: a ativa alonga em vez de
+   só mudar de cor, porque em tom de marca a diferença de cor sozinha é fraca. */
+.ds-root .destaque-dot {
+  width: 0.375rem;
+  height: 0.375rem;
+  border-radius: 999px;
+  background-color: rgba(2, 29, 54, 0.25);
+  transition:
+    width 0.4s ease,
+    background-color 0.4s ease;
+}
+.ds-root .destaque-dot--ativo {
+  width: 1.125rem;
+  background-color: #021d36;
+}
+
+/* ---------- Atalho do painel (cartão-menu) ---------- */
+/* Levanta e ganha sombra no hover, para o cartão inteiro se anunciar como alvo
+   clicável — não só o texto do link dentro dele.
+
+   É classe, e não utilitário: a sombra tem de ser escura o suficiente para
+   aparecer sob um cartão ink, e o `focus-visible` precisa de anel próprio (o
+   contorno padrão do browser desaparece contra o ink). */
+.ds-root .painel-atalho {
+  transition:
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+.ds-root .painel-atalho:hover {
+  box-shadow: 0 16px 36px -20px rgba(2, 29, 54, 0.65);
+  transform: translateY(-2px);
+}
+.ds-root .painel-atalho:focus-visible {
+  outline: 2px solid #021d36;
+  outline-offset: 3px;
+}
+
+/* ---------- Selo de status do produto (painel) ---------- */
+/* Visível é o estado bom e usa o verde de sucesso do formulário de contato;
+   oculto fica em tom de marca esmaecido, e não em vermelho: produto oculto não é
+   erro, é rascunho. */
+.ds-root .produto-status {
+  display: inline-block;
+  border-radius: 999px;
+  border: 1px solid #bbf7d0;
+  background-color: #f0fdf4;
+  padding: 0.125rem 0.625rem;
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  white-space: nowrap;
+  color: #15803d;
+}
+.ds-root .produto-status--oculto {
+  border-color: rgba(2, 29, 54, 0.18);
+  background-color: rgba(2, 29, 54, 0.06);
+  color: #3d5470;
+}
+
+/* ---------- Trilho da vitrine ---------- */
+/* Esmaece as duas bordas: os cards entram e saem da seção em vez de aparecerem
+   e desaparecerem num corte reto. A máscara vive no palco, que não rola, e não
+   no trilho — mascarar a camada que rola custa repintura a cada quadro, e a
+   deriva do trilho é contínua.
+
+   O `mask` horizontal é uniforme na vertical, então a sombra de hover dos cards
+   continua inteira em cima e embaixo. */
+.ds-root .vitrine-palco {
+  --vitrine-fade: 2.5rem;
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 var(--vitrine-fade),
+    #000 calc(100% - var(--vitrine-fade)),
+    transparent
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 var(--vitrine-fade),
+    #000 calc(100% - var(--vitrine-fade)),
+    transparent
+  );
+}
+
+/* Sem `scroll-snap`: a deriva escreve `scrollLeft` a cada quadro, e com snap
+   mandatório o browser puxa o trilho de volta para o card mais próximo a cada
+   parada — a deriva viraria um cabo de guerra. As setas andam um card exato,
+   então o alinhamento não dependia do snap. */
+.ds-root .vitrine-trilho {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.ds-root .vitrine-trilho::-webkit-scrollbar {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ds-root .hero-dot,
+  .ds-root .media-ph {
+    transition: none;
+  }
+  /* Corta o movimento e preserva desfoque e fade: quem pede menos movimento
+     não está pedindo menos transição. Antes isto era `animation: none` nas duas
+     regras do hero, e como vem depois no arquivo com a mesma especificidade,
+     anulava a entrada inteira — nem o desfoque sobrava.
+
+     O interruptor é `--movimento`, herdado da raiz, e não um override de
+     `--surge-subida`: cada elemento define a própria subida inline, e custom
+     property inline vence folha de estilo. Multiplicar por 0 zera qualquer uma
+     delas sem disputar. */
+  .ds-root {
+    --movimento: 0;
+  }
+}

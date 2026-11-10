@@ -1,0 +1,28 @@
+{
+  "//": [
+    "Repasse do dev server para a API hospedada.",
+    "",
+    "Existe porque a API em https://auza-api-xynb.onrender.com nao devolve o header",
+    "Access-Control-Allow-Origin: chamada direta do browser e bloqueada por CORS,",
+    "para QUALQUER origem (medido com curl em 4 origens diferentes). Aqui quem fala",
+    "com a API e o dev server, servidor-a-servidor, onde CORS nao se aplica.",
+    "",
+    "changeOrigin: true e obrigatorio — sem reescrever o Host, o Render nao resolve",
+    "o servico e responde 404.",
+    "",
+    "/uploads entra junto porque imageUrl vem como /uploads/products/<uuid>.png,",
+    "servido na raiz da API e nao sob /api/v1.",
+    "",
+    "Quando o backend liberar CORS, isto pode sair — e o front passa a falar direto."
+  ],
+  "/api/v1": {
+    "target": "https://auza-api-xynb.onrender.com",
+    "secure": true,
+    "changeOrigin": true
+  },
+  "/uploads": {
+    "target": "https://auza-api-xynb.onrender.com",
+    "secure": true,
+    "changeOrigin": true
+  }
+}

@@ -1,0 +1,193 @@
+<!-- Seção ESCURA (marinho #021d36) — abre a alternância claro/escuro da página -->
+<section
+  id="inicio"
+  class="on-dark corte-base corte-base--fio relative overflow-hidden bg-neutral-900"
+  aria-roledescription="carrossel"
+  aria-label="Categorias de produtos AUZA"
+  (mouseenter)="pausar()"
+  (mouseleave)="retomar()"
+>
+  <div class="hero-textura" aria-hidden="true"></div>
+
+  <!--
+    A peça da categoria ativa, quando existe. Camada de fundo em escala: vem
+    depois da grade (passa por cima dela) e antes do véu e do conteúdo, que é o
+    que permite o título cruzá-la. Recriada a cada troca de categoria, e é isso
+    que faz a varredura de luz rodar de novo.
+    Decorativa: quem lê a tela recebe a mesma informação pelo texto do banner.
+
+    Aparece em TODA largura de tela. Antes era `hidden lg:block`, e no celular o
+    banner ficava só com texto: o equipamento, que é o assunto, não aparecia.
+    Abaixo de `lg` ela vira faixa no rodapé — ver o bloco mobile em
+    _ds-surfaces.scss —, e não camada atrás do texto.
+  -->
+  @if (categoriaAtual().imagem; as peca) {
+    <div class="hero-peca" [class]="modificadoresPeca()" aria-hidden="true">
+      <img class="hero-peca__img" [src]="peca" alt="" decoding="async" />
+      <span class="hero-peca__varredura"></span>
+    </div>
+  }
+
+  <!-- Véu: escurece o lado do texto (é o que sustenta a sobreposição) e fecha as
+       bordas com vinheta. Acompanha o espelhamento do texto. -->
+  <div class="hero-veu" [class.hero-veu--espelhado]="espelhadoAtual()" aria-hidden="true"></div>
+
+  <!--
+    Altura da janela: `min-h-screen` e não `h-screen` — em tela baixa (celular
+    deitado) o conteúdo passaria de 100vh e a seção, que é `overflow-hidden`,
+    cortaria o título. Com `min-`, 100vh é piso, e a centralização vale para a
+    altura que a seção tiver.
+  -->
+  <!--
+    Sem reserva de rodapé no celular: a peça não é mais faixa embaixo, é a metade
+    direita da tela (ver o bloco mobile em _ds-surfaces.scss). O texto volta a
+    cruzá-la, como no desktop.
+  -->
+  <div
+    class="relative z-10 mx-auto flex min-h-screen max-w-6xl flex-col px-6 pb-24 pt-10 sm:px-8 min-[1336px]:pb-16"
+  >
+    <!-- Topo: a navbar fixa só entra ao rolar, então a marca vive aqui na abertura -->
+    <div class="flex items-center justify-between gap-6">
+      <a href="#inicio" aria-label="AUZA — ir para o início">
+        <app-logo variante="escuro" class="w-[150px] sm:w-[190px]" />
+      </a>
+      <nav
+        class="hidden gap-8 font-geist-mono text-xs font-medium uppercase tracking-wide text-muted sm:flex"
+      >
+        <a class="transition-colors hover:text-ink" href="#sobre">Sobre</a>
+        <a class="transition-colors hover:text-ink" href="#solucoes">Soluções</a>
+        <a class="transition-colors hover:text-ink" href="#produtos">Produtos</a>
+        <a class="transition-colors hover:text-ink" href="#contato">Contato</a>
+      </nav>
+    </div>
+
+    <!-- Ocupa toda a sobra entre o topo e as bolinhas: é essa altura que o
+         título centraliza e o resumo encosta por baixo. -->
+    <div class="flex min-h-0 flex-1 flex-col">
+      <div class="ds-stack min-h-0 flex-1">
+        @for (cat of categorias; track cat.id; let i = $index) {
+          <!--
+            `hero-slide--ativo` é o gatilho da entrada escalonada: os elementos
+            marcados com `hero-surge` sobem saindo do desfoque, cada um com seu
+            `--surge-atraso`. Ver src/styles/_ds-surfaces.scss.
+          -->
+          <!--
+            Dois blocos numa grade de 12 colunas e 2 linhas: título (linha 1,
+            centrado na altura) e resumo (linha 2, no rodapé), os dois na mesma
+            coluna. As outras cinco colunas ficam livres para a peça, que é
+            camada de fundo e não item desta grade.
+
+            `lg:grid-rows-[1fr_auto]` é o que sustenta o arranjo: a primeira
+            linha come toda a sobra de altura — e é dentro dela que
+            `self-center` centraliza o título —, enquanto a segunda tem a altura
+            do resumo e fica colada embaixo. No mobile são duas linhas
+            empilhadas, e aí `content-center` agrupa o conjunto no meio.
+          -->
+          <div
+            class="hero-slide grid h-full grid-cols-1 content-center gap-10 transition-opacity duration-700 ease-out lg:grid-cols-12 lg:grid-rows-[1fr_auto] lg:gap-x-12 lg:gap-y-8"
+            [class.hero-slide--ativo]="i === atual()"
+            [class.opacity-0]="i !== atual()"
+            [class.pointer-events-none]="i !== atual()"
+            [attr.aria-hidden]="i !== atual()"
+          >
+            <!-- Título no centro da altura. O eyebrow viaja com ele: é o rótulo
+                 do título, e separá-los por meia tela quebraria a relação. -->
+            <div class="self-center lg:col-span-7 lg:row-start-1" [class]="colunaTexto(i)">
+              <!-- eyebrow: 12px bold mono tracking-widest (DS · Bold S) -->
+              <div class="hero-surge mb-6 flex items-center gap-3" style="--surge-atraso: 0.3s">
+                <span class="eyebrow font-geist-mono text-xs font-bold uppercase tracking-widest text-white"
+                  >0{{ i + 1 }}</span
+                >
+                <span class="rule-soft h-px w-10"></span>
+                <span
+                  class="font-geist-mono text-xs font-bold uppercase tracking-widest text-muted"
+                  >{{ cat.nome }}</span
+                >
+              </div>
+
+              <!--
+                Escala de display da referência (que usa 152–168px) em vez dos
+                96px do `text-8xl`: é o que dá presença de hero.
+
+                O `min(10vw, 14vh)` é o que impede o hero de estourar 100vh: numa
+                janela larga e baixa, 10vw dá um título alto demais e o rodapé do
+                banner — resumo, botão e bolinhas — cai abaixo da dobra. Amarrar
+                também à ALTURA faz o título encolher junto com a janela.
+                O display é o protagonista: sobe mais alto e mais devagar que o
+                resto, como as linhas de título da referência.
+
+                O tamanho em si vem de `tamanhoTitulo`: a janela não é a única
+                coisa que decide a altura do título — o número de linhas também
+                —, e só o texto sabe quantas linhas serão. Ver hero-section.ts.
+              -->
+              <h1
+                class="hero-surge font-semibold leading-[0.82] tracking-tighter text-white"
+                [class]="tamanhoTitulo(cat.nome)"
+                style="--surge-atraso: 0.6s; --surge-duracao: 1.6s; --surge-subida: 4.5rem"
+              >
+                {{ cat.nome }}
+              </h1>
+              <ul
+                class="hero-surge mt-6 flex flex-wrap gap-2"
+                [class]="alinhamentoTags(i)"
+                style="--surge-atraso: 1.1s"
+              >
+                @for (produto of cat.produtos; track produto) {
+                  <li
+                    class="surface border border-soft rounded-full px-3 py-1 font-geist-mono text-xs uppercase tracking-wide text-white"
+                  >
+                    {{ produto }}
+                  </li>
+                }
+              </ul>
+            </div>
+
+            <!-- Texto explicativo: mesma coluna do título, encostado no rodapé
+                 da altura. `ml-auto` no espelhado para o bloco acompanhar o
+                 alinhamento à direita, já que ele é mais estreito que a coluna. -->
+            <div
+              class="max-w-md space-y-8 lg:col-span-7 lg:row-start-2"
+              [class]="colunaTexto(i)"
+              [class.lg:ml-auto]="espelhado(i)"
+            >
+              <p
+                class="hero-surge font-geist-mono text-sm leading-relaxed text-muted"
+                style="--surge-atraso: 1.4s"
+              >
+                {{ cat.resumo }}
+              </p>
+              <!-- Botão primário invertido: superfície da marca sobre o ink -->
+              <a
+                class="hero-surge btn-primary inline-flex items-center gap-2 rounded-lg px-6 py-3 font-geist-mono text-sm font-medium transition-colors"
+                style="--surge-atraso: 1.7s"
+                [href]="'#solucao-' + cat.id"
+              >
+                Ver {{ cat.nome }}
+                <app-icon name="arrow-right" class="h-4 w-4" />
+              </a>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!--
+        Centralizadas e fixas. Cheguei a alinhá-las com a coluna de texto para
+        fugir do aço claro, mas aí elas trocavam de lado a cada categoria, junto
+        com o espelhamento — controle de navegação não pode mudar de lugar
+        sozinho. Posição estável vale mais que o contraste ideal.
+      -->
+      <div class="mt-10 flex items-center justify-center gap-3">
+        @for (cat of categorias; track cat.id; let i = $index) {
+          <button
+            type="button"
+            class="hero-dot"
+            [class.hero-dot--ativo]="i === atual()"
+            [attr.aria-current]="i === atual()"
+            [attr.aria-label]="'Ir para ' + cat.nome"
+            (click)="ir(i)"
+          ></button>
+        }
+      </div>
+    </div>
+  </div>
+</section>

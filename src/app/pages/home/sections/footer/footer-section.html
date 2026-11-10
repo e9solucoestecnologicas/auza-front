@@ -1,0 +1,83 @@
+<!-- Seção ESCURA (marinho #021d36) -->
+<footer class="on-dark corte-topo com-marca-dagua bg-neutral-900 px-6 sm:px-8">
+  <!-- pb extra no mobile: a barra de navegação fica fixa sobre o rodapé -->
+  <div class="mx-auto max-w-6xl pb-28 pt-16 md:pt-20 min-[1336px]:pb-20">
+    <div class="grid grid-cols-1 gap-12 md:grid-cols-12">
+      <div class="md:col-span-5">
+        <app-logo variante="escuro" [lazy]="true" class="mb-5 w-[170px]" />
+        <p class="max-w-sm font-geist-mono text-sm leading-relaxed text-muted">
+          A AUZA Engenharia e Automação desenvolve soluções de máquinas e automação que unem
+          tecnologia, qualidade e eficiência para o seu negócio, seja ele qual for. Entre em
+          contato!
+        </p>
+      </div>
+
+      <div class="md:col-span-4">
+        <div class="mb-4 font-geist-mono text-xs font-bold uppercase tracking-widest text-subtle">
+          Segmentos
+        </div>
+        <ul class="space-y-2">
+          @for (cat of categorias; track cat.id) {
+            <li>
+              <a
+                class="font-geist-mono text-sm text-muted transition-colors hover:text-ink"
+                [href]="'#solucao-' + cat.id"
+                >{{ cat.nome }}</a
+              >
+            </li>
+          }
+        </ul>
+      </div>
+
+      <div class="md:col-span-3">
+        <div class="mb-4 font-geist-mono text-xs font-bold uppercase tracking-widest text-subtle">
+          Navegação
+        </div>
+        <ul class="space-y-2">
+          @for (item of institucional; track item.href) {
+            <li>
+              <a
+                class="font-geist-mono text-sm text-muted transition-colors hover:text-ink"
+                [href]="item.href"
+                >{{ item.rotulo }}</a
+              >
+            </li>
+          }
+        </ul>
+      </div>
+    </div>
+
+    <!-- `items-start` e não `items-center`: os dados cadastrais ocupam duas ou três
+         linhas em tela estreita, e centralizar deixaria o copyright flutuando no
+         meio delas. -->
+    <div
+      class="mt-14 flex flex-col gap-4 border-t border-soft pt-8 font-geist-mono text-xs text-subtle sm:flex-row sm:items-start sm:justify-between sm:gap-8"
+    >
+      <div class="space-y-2">
+        <p>© {{ ano }} AUZA. Todos os direitos reservados.</p>
+        <p>
+          Desenvolvido por
+          <a
+            class="text-muted underline decoration-[rgba(255, 255, 255,0.35)] underline-offset-4 transition-colors hover:text-ink hover:decoration-[rgba(255, 255, 255,0.8)]"
+            href="https://www.e9solucoes.com.br/"
+            target="_blank"
+            rel="noopener"
+            >e9solucoes</a
+          >
+        </p>
+      </div>
+
+      <!--
+        Dados cadastrais, à direita. `leading-relaxed` e largura limitada porque a
+        linha inteira tem ~88 caracteres: sem quebra ela empurraria o copyright.
+
+        A razão social vai como foi informada, em caixa alta e sem acento em
+        INDUSTRIA e COMERCIO — é nome registrado, não texto de tela, e "corrigir"
+        aqui divergiria do cartão CNPJ.
+      -->
+      <p class="leading-relaxed sm:max-w-sm sm:text-right">
+        AUZA AUTOMAÇÃO INDUSTRIA E COMERCIO ltda. / CNPJ: 28.810.863/0001-43 / IE: 118.608.650.118
+      </p>
+    </div>
+  </div>
+</footer>

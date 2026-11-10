@@ -1,0 +1,125 @@
+<!-- Seção CLARA (gelo #eef2f6) — o inventário de equipamentos -->
+<section id="produtos" class="scroll-mt-16 bg-neutral-50 px-6 sm:px-8">
+  <div class="mx-auto max-w-6xl py-24">
+    <div class="mb-10 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+      <div>
+        <div class="mb-6 flex items-center gap-3">
+          <span class="eyebrow font-geist-mono text-xs font-bold uppercase tracking-widest text-subtle"
+            >Vitrine de produtos</span
+          >
+        </div>
+        <!-- Título em dois tons, como o "HARDWARE INVENTORY" da referência. O
+             segundo tom é o marinho dessaturado (#5b7189, 4,9:1): laranja sobre
+             claro não passa em contraste nem em texto grande. -->
+        <h2 class="v2-titulo-inventario mb-4 text-4xl md:text-6xl">
+          Linha <span class="text-subtle">completa</span>
+        </h2>
+        <p class="max-w-xl font-geist-mono text-base leading-relaxed text-muted">
+          Explore nossas soluções em tecnologia e engenharia para o agronegócio, setor têxtil,
+          comunicação visual, impressão 3D e máquinas industriais.
+        </p>
+      </div>
+      <a
+        class="btn-ghost inline-flex shrink-0 items-center gap-2 self-start rounded-none border border-soft px-5 py-3 font-geist-mono text-xs font-semibold uppercase tracking-widest transition-colors md:self-auto"
+        routerLink="/produtos"
+      >
+        Ver catálogo completo
+        <app-icon name="arrow-right" class="h-4 w-4" />
+      </a>
+    </div>
+
+    <div class="mb-10 flex flex-wrap items-center justify-between gap-4">
+      <div class="flex flex-wrap gap-2" role="group" aria-label="Filtrar por categoria">
+        <button
+          type="button"
+          class="v2-filtro"
+          [class.v2-filtro--ativo]="filtro() === 'todos'"
+          [attr.aria-pressed]="filtro() === 'todos'"
+          (click)="filtrar('todos')"
+        >
+          Todos
+        </button>
+        @for (cat of categorias; track cat.id) {
+          <button
+            type="button"
+            class="v2-filtro"
+            [class.v2-filtro--ativo]="filtro() === cat.codigo"
+            [attr.aria-pressed]="filtro() === cat.codigo"
+            (click)="filtrar(cat.codigo)"
+          >
+            {{ cat.nome }}
+          </button>
+        }
+      </div>
+      <div class="flex shrink-0 gap-2">
+        <button type="button" class="v2-seta" aria-label="Produtos anteriores" (click)="voltar()">
+          <app-icon name="chevron-left" class="h-4 w-4" />
+        </button>
+        <button type="button" class="v2-seta" aria-label="Próximos produtos" (click)="avancar()">
+          <app-icon name="chevron-right" class="h-4 w-4" />
+        </button>
+      </div>
+    </div>
+
+    <div class="vitrine-palco">
+      <div
+        #trilho
+        class="vitrine-trilho flex gap-5 pb-4"
+        (mouseenter)="pausar()"
+        (mouseleave)="retomar()"
+        (focusin)="pausar()"
+        (focusout)="retomar()"
+      >
+        @if (carregando()) {
+          @for (vazio of [1, 2, 3, 4]; track vazio) {
+            <article class="v2-item" aria-hidden="true">
+              <div class="ds-esqueleto aspect-[4/5] w-full rounded-none"></div>
+              <div class="p-5">
+                <div class="ds-esqueleto mb-3 h-6 w-3/4"></div>
+                <div class="ds-esqueleto h-4 w-1/2"></div>
+              </div>
+            </article>
+          }
+        }
+
+        @for (produto of cards(); track $index; let i = $index) {
+          <article class="v2-item group" [attr.aria-hidden]="i >= produtos().length ? 'true' : null">
+            <div class="v2-item__foto">
+              <span class="v2-item__selo">{{ produto.categoryLabel }}</span>
+              @if (imagem(produto); as src) {
+                <img
+                  [src]="src"
+                  [alt]="produto.name"
+                  class="h-full w-full object-contain transition-transform duration-500 group-hover:scale-[1.04]"
+                  loading="lazy"
+                  decoding="async"
+                />
+              } @else {
+                <app-icon [name]="iconeCategoria(produto.category)" class="h-10 w-10 text-subtle" />
+              }
+            </div>
+            <div class="flex flex-1 flex-col p-5">
+              <h3 class="v2-item__nome">{{ produto.name }}</h3>
+              <p class="mb-5 line-clamp-3 font-geist-mono text-sm leading-relaxed text-muted">
+                {{ produto.description }}
+              </p>
+              <!-- Mesma regra da vitrine atual: o clique conta no banco e a
+                   navegação é do próprio href. -->
+              <a
+                class="v2-item__acao mt-auto"
+                [href]="produto.link"
+                target="_blank"
+                rel="noopener"
+                [attr.tabindex]="i >= produtos().length ? -1 : null"
+                (click)="registrarClique(produto)"
+              >
+                Compre agora
+                <app-icon name="arrow-right" class="h-4 w-4" />
+              </a>
+            </div>
+          </article>
+        }
+      </div>
+    </div>
+  </div>
+</section>

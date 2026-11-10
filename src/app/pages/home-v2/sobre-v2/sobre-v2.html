@@ -1,0 +1,83 @@
+<!-- Seção CLARA (gelo #f3f6f9) — desenho técnico em azul, em parallax. Clara de
+     propósito: entre o hero e as Soluções, ambos marinho, é ela que dá o respiro.
+     `overflow-clip` (e não `overflow-hidden`) é requisito do `.fundo-fixo`:
+     ver a explicação em src/styles/_ds-surfaces.scss.
+     `pt-28`: o corte do hero sobrepõe esta seção em até 5rem (ver _ds-marca.scss). -->
+<section id="sobre" class="on-light relative overflow-clip scroll-mt-16 bg-neutral-50 px-6 sm:px-8">
+  <div class="fundo-fixo" aria-hidden="true">
+    <div class="fundo-fixo__trilho">
+      <img
+        appParallax
+        class="fundo-fixo__img"
+        src="/img/auza-fundo.jpg"
+        alt=""
+        decoding="async"
+      />
+    </div>
+  </div>
+  <div class="v2-sobre-veu pointer-events-none absolute inset-0 z-0"></div>
+
+  <div class="relative z-10 mx-auto max-w-6xl pb-20 pt-28 md:pb-24 md:pt-36">
+    <div class="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
+      <div class="lg:col-span-7">
+        <div class="mb-6 flex items-center gap-3">
+          <span class="eyebrow font-geist-mono text-xs font-bold uppercase tracking-widest text-subtle"
+            >Sobre nós</span
+          >
+          <span class="rule-soft h-px w-16"></span>
+        </div>
+        <h2 class="mb-8 text-4xl font-semibold leading-[1.05] tracking-tight text-ink md:text-6xl">
+          Máquinas que resolvem processos <span class="v2-destaque">reais</span>
+        </h2>
+        <p class="mb-6 max-w-2xl font-geist-mono text-lg leading-relaxed text-muted">
+          A AUZA Engenharia e Automação é uma empresa brasileira especializada no desenvolvimento e
+          fabricação de máquinas, sistemas mecânicos e soluções de automação industrial. Com uma
+          equipe própria de engenheiros e profissionais qualificados, integramos as áreas mecânica,
+          elétrica e de automação para oferecer soluções completas, confiáveis e personalizadas.
+        </p>
+        <p class="max-w-2xl font-geist-mono text-sm leading-relaxed text-muted">
+          Nossos produtos são 100% desenvolvidos e produzidos internamente, garantindo alto padrão
+          de qualidade, eficiência e compromisso com nossos clientes. Nossa missão é proporcionar
+          soluções acessíveis e inovadoras, alinhadas às melhores práticas mundiais em engenharia e
+          automação industrial.
+        </p>
+      </div>
+
+      <!-- Citação: a frase-assinatura da marca, com a lâmina do símbolo como aspas -->
+      <figure class="v2-citacao self-end lg:col-span-5">
+        <blockquote class="text-2xl font-medium leading-snug text-ink md:text-3xl">
+          Soluções em engenharia e automação industrial, desenvolvidas com tecnologia, qualidade e
+          confiabilidade para transformar os desafios da sua empresa em resultados.
+        </blockquote>
+        <a
+          class="v2-link mt-8 inline-flex items-center gap-2 font-geist-mono text-sm font-semibold uppercase tracking-widest"
+          href="#contato"
+        >
+          Falar com a AUZA
+          <app-icon name="arrow-right" class="h-4 w-4" />
+        </a>
+      </figure>
+    </div>
+
+    <!-- Disciplinas: os "Phase cards" da referência, um por área integrada -->
+    <ol class="mt-20 grid grid-cols-1 gap-4 md:grid-cols-3">
+      @for (d of disciplinas; track d.nome; let i = $index) {
+        <li class="v2-disciplina">
+          <div class="mb-8 flex items-start justify-between">
+            <app-icon
+              [name]="d.icone"
+              [strokeWidth]="1.25"
+              class="v2-disciplina__icone h-14 w-14 md:h-16 md:w-16"
+              aria-hidden="true"
+            />
+            <span class="font-geist-mono text-xs font-semibold tracking-widest text-subtle"
+              >0{{ i + 1 }}</span
+            >
+          </div>
+          <h3 class="mb-3 text-xl font-semibold text-ink">{{ d.nome }}</h3>
+          <p class="font-geist-mono text-sm leading-relaxed text-muted">{{ d.texto }}</p>
+        </li>
+      }
+    </ol>
+  </div>
+</section>

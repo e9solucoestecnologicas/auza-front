@@ -7,13 +7,14 @@ import {
   signal,
   ViewEncapsulation,
 } from '@angular/core';
+import { DsAssets } from '../../core/ds-assets';
 
 /**
  * Design System da AUZA — portado do protótipo HTML (base visual: faux.moni).
  * Mantém layout, cores e animações originais. Usa ViewEncapsulation.None com
  * todos os estilos escopados sob `.ds-root` para não vazar para o resto do app.
- * Os assets (runtime do Tailwind, fontes, three.js, Lucide) vivem em /ds-assets
- * e são injetados sob demanda apenas quando esta rota é aberta.
+ * three.js e Lucide vivem em /ds-assets e são carregados sob demanda só quando
+ * esta rota abre; Tailwind e fontes já vêm do build.
  */
 @Component({
   selector: 'app-design-system',
@@ -23,6 +24,7 @@ import {
 })
 export class DesignSystem implements AfterViewInit {
   private readonly host = inject(ElementRef) as ElementRef<HTMLElement>;
+  private readonly assets = inject(DsAssets);
 
   /** Controla a navbar fixa do topo: escondida no início, aparece ao rolar. */
   readonly showTopNav = signal(false);
@@ -33,22 +35,11 @@ export class DesignSystem implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    // Fontes (Geist / Geist Mono / Inter)
-    this.injectCss('/ds-assets/css2_19fd9cc6b396.css', 'ds-font-1');
-    this.injectCss('/ds-assets/css2_62759cd015bd.css', 'ds-font-2');
-    this.injectCss('/ds-assets/css2_86e10c4bcbd4.css', 'ds-font-3');
-
-    // Runtime do Tailwind (gera as classes utilitárias em runtime)
-    this.injectScript('/ds-assets/tailwind-runtime.js', 'ds-tailwind');
-
     // three.js -> inicializa o fundo 3D do hero
-    this.injectScript('/ds-assets/three.lib.js', 'ds-three').then(() => this.initThree());
+    this.assets.loadThree().then(() => this.initThree());
 
     // Lucide -> renderiza os ícones
-    this.injectScript('/ds-assets/lucide.lib.js', 'ds-lucide').then(() => {
-      const lucide = (window as unknown as { lucide?: { createIcons: () => void } }).lucide;
-      lucide?.createIcons();
-    });
+    this.assets.loadLucide();
   }
 
   scrollToId(id: string): void {
@@ -77,40 +68,6 @@ export class DesignSystem implements AfterViewInit {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  private injectCss(href: string, id: string): void {
-    if (document.getElementById(id)) {
-      return;
-    }
-    const link = document.createElement('link');
-    link.id = id;
-    link.rel = 'stylesheet';
-    link.href = href;
-    document.head.appendChild(link);
-  }
-
-  private injectScript(src: string, id: string): Promise<void> {
-    return new Promise((resolve) => {
-      const existing = document.getElementById(id) as (HTMLScriptElement & { dataset: DOMStringMap }) | null;
-      if (existing) {
-        if (existing.dataset['loaded']) {
-          resolve();
-        } else {
-          existing.addEventListener('load', () => resolve());
-        }
-        return;
-      }
-      const script = document.createElement('script');
-      script.id = id;
-      script.src = src;
-      script.addEventListener('load', () => {
-        script.dataset['loaded'] = '1';
-        resolve();
-      });
-      script.addEventListener('error', () => resolve());
-      document.body.appendChild(script);
-    });
-  }
-
   /** Fundo 3D do hero — mesmo comportamento do protótipo original. */
   private initThree(): void {
     const THREE = (window as unknown as { THREE?: any }).THREE;
@@ -120,7 +77,7 @@ export class DesignSystem implements AfterViewInit {
     }
 
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0xfff8ea, 0.002);
+    scene.fog = new THREE.FogExp2(0xf3f6f9, 0.002);
 
     let width = container.clientWidth;
     let height = container.clientHeight;
@@ -131,12 +88,12 @@ export class DesignSystem implements AfterViewInit {
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.setClearColor(0xfff8ea, 1);
+    renderer.setClearColor(0xf3f6f9, 1);
     container.appendChild(renderer.domElement);
 
     const geometry = new THREE.TorusKnotGeometry(9, 2.5, 120, 16);
     const material = new THREE.MeshPhysicalMaterial({
-      color: 0x4a1d06,
+      color: 0x021d36,
       emissive: 0x000000,
       metalness: 0.5,
       roughness: 0.1,
@@ -150,7 +107,7 @@ export class DesignSystem implements AfterViewInit {
     const sparkCount = 100;
     const sparkGeo = new THREE.CircleGeometry(0.15, 3);
     const sparkMat = new THREE.MeshBasicMaterial({
-      color: 0x4a1d06,
+      color: 0x021d36,
       side: THREE.DoubleSide,
       blending: THREE.NormalBlending,
       transparent: true,
@@ -201,7 +158,7 @@ export class DesignSystem implements AfterViewInit {
 
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
     scene.add(ambientLight);
-    const pLight1 = new THREE.PointLight(0x4a1d06, 1, 50);
+    const pLight1 = new THREE.PointLight(0xfa8c3c, 1, 50);
     pLight1.position.set(10, 10, 10);
     scene.add(pLight1);
 

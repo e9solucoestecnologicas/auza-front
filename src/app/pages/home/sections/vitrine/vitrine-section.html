@@ -1,0 +1,182 @@
+<!-- Seção CLARA (gelo #eef2f6) -->
+<section id="produtos" class="scroll-mt-16 border-t border-neutral-200 bg-neutral-50 px-6 sm:px-8">
+  <div class="mx-auto max-w-6xl py-24">
+    <div class="mb-6 flex items-center gap-3">
+      <span class="eyebrow font-geist-mono text-xs font-bold uppercase tracking-widest text-subtle"
+        >Vitrine de produtos</span
+      >
+      <div class="h-px flex-1 bg-neutral-200"></div>
+    </div>
+
+    <div class="mb-10 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+      <div>
+        <h2 class="mb-3 text-3xl font-semibold tracking-tight text-neutral-900 md:text-4xl">
+          Linha completa
+        </h2>
+        <p class="max-w-xl font-geist-mono text-lg text-neutral-500">
+          Explore nossas soluções em tecnologia e engenharia para o agronegócio, setor têxtil,
+          comunicação visual, impressão 3D e máquinas industriais.
+        </p>
+      </div>
+
+      <!-- Setas: a lista é longa, então navegação manual nos dois sentidos -->
+      <div class="flex shrink-0 gap-3">
+        <button
+          type="button"
+          class="grid h-11 w-11 place-items-center rounded-full border border-neutral-200 bg-white text-neutral-900 shadow-sm transition-all hover:bg-neutral-100 hover:shadow-md"
+          aria-label="Produtos anteriores"
+          (click)="voltar()"
+        >
+          <app-icon name="chevron-left" class="h-4 w-4" />
+        </button>
+        <button
+          type="button"
+          class="grid h-11 w-11 place-items-center rounded-full border border-neutral-200 bg-white text-neutral-900 shadow-sm transition-all hover:bg-neutral-100 hover:shadow-md"
+          aria-label="Próximos produtos"
+          (click)="avancar()"
+        >
+          <app-icon name="chevron-right" class="h-4 w-4" />
+        </button>
+      </div>
+    </div>
+
+    <!-- Tags de filtro -->
+    <div class="mb-10 flex flex-wrap gap-2" role="group" aria-label="Filtrar por categoria">
+      <button
+        type="button"
+        class="rounded-full border px-3 py-1 font-geist-mono text-xs transition-colors"
+        [class]="
+          filtro() === 'todos'
+            ? 'bg-neutral-900 text-white border-neutral-900'
+            : 'bg-neutral-100 text-neutral-600 border-neutral-200 hover:bg-neutral-200'
+        "
+        [attr.aria-pressed]="filtro() === 'todos'"
+        (click)="filtrar('todos')"
+      >
+        Todos
+      </button>
+      <!-- O filtro carrega o CÓDIGO da API (AGRO, TEXTIL…), não o slug local: é
+           por ele que o produto do catálogo é comparado. -->
+      @for (cat of categorias; track cat.id) {
+        <button
+          type="button"
+          class="rounded-full border px-3 py-1 font-geist-mono text-xs transition-colors"
+          [class]="
+            filtro() === cat.codigo
+              ? 'bg-neutral-900 text-white border-neutral-900'
+              : 'bg-neutral-100 text-neutral-600 border-neutral-200 hover:bg-neutral-200'
+          "
+          [attr.aria-pressed]="filtro() === cat.codigo"
+          (click)="filtrar(cat.codigo)"
+        >
+          {{ cat.nome }}
+        </button>
+      }
+    </div>
+
+    <!--
+      Palco: só existe para o esmaecimento das duas bordas. Sem ele o card é
+      cortado a seco na borda do container, e o trilho lê como uma lista
+      truncada em vez de cards atravessando a seção. A máscara fica no palco, e
+      não no trilho, para não pesar na camada que rola.
+    -->
+    <div class="vitrine-palco">
+      <!--
+        Trilho. `track $index` e não `produto.nome`: em loop a mesma lista é
+        renderizada duas vezes, e o nome deixaria de ser chave única.
+      -->
+      <div
+        #trilho
+        class="vitrine-trilho flex gap-6 pb-4"
+        (mouseenter)="pausar()"
+        (mouseleave)="retomar()"
+        (focusin)="pausar()"
+        (focusout)="retomar()"
+      >
+        <!-- Esqueleto: mesma largura e forma do Service Card, para o trilho não
+             saltar quando o catálogo chegar. -->
+        @if (carregando()) {
+          @for (vazio of [1, 2, 3, 4, 5]; track vazio) {
+            <article
+              class="w-[280px] shrink-0 rounded-2xl border border-neutral-200 bg-white p-6 sm:w-[320px]"
+              aria-hidden="true"
+            >
+              <div class="ds-esqueleto mb-6 h-48 w-full rounded-xl"></div>
+              <div class="ds-esqueleto mb-4 h-6 w-32 rounded-full"></div>
+              <div class="ds-esqueleto mb-3 h-7 w-3/4"></div>
+              <div class="ds-esqueleto mb-2 h-4 w-full"></div>
+              <div class="ds-esqueleto h-4 w-2/3"></div>
+            </article>
+          }
+        }
+
+        @for (produto of cards(); track $index; let i = $index) {
+          <!-- Service Card do DS -->
+          <article
+            class="group w-[280px] shrink-0 rounded-2xl border border-neutral-200 bg-white p-6 transition-all duration-300 hover:shadow-xl sm:w-[320px]"
+            [attr.aria-hidden]="i >= produtos().length ? 'true' : null"
+          >
+            <div
+              class="mb-6 grid h-48 place-items-center overflow-hidden rounded-xl border border-neutral-100 bg-neutral-100"
+            >
+              @if (imagem(produto); as src) {
+                <img
+                  [src]="src"
+                  [alt]="produto.name"
+                  class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+                  loading="lazy"
+                  decoding="async"
+                />
+              } @else {
+                <!-- Produto sem foto é estado normal no contrato. -->
+                <app-icon
+                  [name]="iconeCategoria(produto.category)"
+                  class="h-10 w-10 text-neutral-400"
+                />
+              }
+            </div>
+            <!-- `categoryLabel` vem pronto e acentuado da API: nada de de-para aqui. -->
+            <div
+              class="mb-4 inline-flex rounded-full border border-neutral-200 bg-neutral-100 px-3 py-1 font-geist-mono text-xs text-neutral-600"
+            >
+              {{ produto.categoryLabel }}
+            </div>
+            <h3 class="mb-3 text-xl font-semibold text-neutral-900">{{ produto.name }}</h3>
+            <p class="mb-5 line-clamp-4 font-geist-mono text-sm leading-relaxed text-neutral-500">
+              {{ produto.description }}
+            </p>
+            <!--
+              O clique conta no banco e a navegação é do próprio `href`: contar no
+              JS e navegar depois cairia no bloqueador de pop-up. `tabindex="-1"`
+              na segunda volta do trilho para o mesmo produto não aparecer duas
+              vezes na navegação por teclado.
+            -->
+            <a
+              class="inline-flex items-center gap-2 font-geist-mono text-sm text-neutral-900 underline decoration-neutral-300 underline-offset-4 transition-colors hover:decoration-neutral-900"
+              [href]="produto.link"
+              target="_blank"
+              rel="noopener"
+              [attr.tabindex]="i >= produtos().length ? -1 : null"
+              (click)="registrarClique(produto)"
+            >
+              COMPRE AGORA
+              <app-icon name="arrow-right" class="h-4 w-4" />
+            </a>
+          </article>
+        }
+      </div>
+    </div>
+
+    <!-- Sai da home: a página /produtos abre o descritivo de operação e as fotos
+         de cada equipamento, que não caberiam no cartão do trilho. -->
+    <div class="mt-10 flex justify-center">
+      <a
+        class="inline-flex items-center gap-2 rounded-full border border-neutral-200 bg-white px-8 py-4 font-geist-mono text-sm text-neutral-900 shadow-sm transition-all hover:bg-neutral-50 hover:shadow-md"
+        routerLink="/produtos"
+      >
+        Ver todos os produtos
+        <app-icon name="plus" class="h-4 w-4" />
+      </a>
+    </div>
+  </div>
+</section>

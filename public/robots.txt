@@ -1,0 +1,19 @@
+# AUZA — regras de rastreamento.
+#
+# O DOMÍNIO abaixo precisa bater com o publicado (ver o aviso em src/index.html).
+
+User-agent: *
+Allow: /
+
+# Área autenticada e login não têm o que indexar, e um resultado de busca caindo
+# na tela de login é resultado ruim para quem procurou a empresa.
+Disallow: /painel
+Disallow: /login
+
+# Referência interna da marca, não é página para o visitante.
+Disallow: /design-system
+
+# Protótipo da nova home (plano C do rebrand), em validação.
+Disallow: /home-v2
+
+Sitemap: https://www.auza.com.br/sitemap.xml

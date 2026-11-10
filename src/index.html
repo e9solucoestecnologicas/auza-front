@@ -1,11 +1,133 @@
 <!doctype html>
-<html lang="en">
+<html lang="pt-BR">
   <head>
     <meta charset="utf-8" />
-    <title>AuzaFront</title>
     <base href="/" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+
+    <!-- Montserrat (latin) já na primeira requisição: sem isso o título do hero
+         aparece na fonte de sistema e troca depois, mexendo o layout. -->
+    <link rel="preload" href="/fonts/montserrat-latin.woff2" as="font" type="font/woff2" crossorigin />
+
+    <!--
+      ============================================================
+      DOMÍNIO — CONFIRMAR
+
+      Todo endereço absoluto abaixo (canonical, og:url, og:image, o JSON-LD e o
+      sitemap.xml/robots.txt em public/) usa https://www.auza.com.br, deduzido do
+      e-mail contato@auza.com.br. Não havia domínio configurado em nenhum lugar do
+      projeto.
+
+      Se o endereço publicado for outro, troque aqui e nos dois arquivos de
+      public/ — são 8 ocorrências no total. Canonical apontando para domínio
+      errado é pior que canonical nenhum: o Google passa a indexar o outro
+      endereço.
+      ============================================================
+    -->
+
+    <!--
+      Título: marca PRIMEIRO. Quem busca "auza" precisa reconhecer o resultado na
+      primeira palavra; o que a empresa faz vem depois, para as buscas por
+      categoria. O Google corta perto de 60 caracteres — este tem 58.
+    -->
+    <title>AUZA Engenharia e Automação — Máquinas industriais</title>
+
+    <!--
+      Descrição: é o texto que aparece embaixo do link no resultado. Não pesa no
+      ranqueamento, pesa no clique. ~155 caracteres, com os segmentos que as
+      pessoas de fato buscam.
+    -->
+    <meta
+      name="description"
+      content="AUZA Engenharia e Automação: máquinas sob medida para agro, comunicação visual, impressão 3D, têxtil e caldeiras. Projeto e fabricação próprios."
+    />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <link rel="canonical" href="https://www.auza.com.br/" />
+
+    <!-- Open Graph: como o link aparece no WhatsApp, LinkedIn e Facebook. Sem
+         isto o compartilhamento mostra um cartão sem imagem nem texto. -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="AUZA Engenharia e Automação" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:title" content="AUZA Engenharia e Automação — Máquinas industriais" />
+    <meta
+      property="og:description"
+      content="Máquinas sob medida para agro, comunicação visual, impressão 3D, têxtil e caldeiras. Projeto e fabricação próprios."
+    />
+    <meta property="og:url" content="https://www.auza.com.br/" />
+    <!-- 1200x630 é o corte que WhatsApp, LinkedIn e Twitter usam sem cortar a
+         marca; abaixo de 1200 de largura o LinkedIn rebaixa para cartão pequeno. -->
+    <meta property="og:image" content="https://www.auza.com.br/og-auza.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="AUZA Engenharia e Automação" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="AUZA Engenharia e Automação — Máquinas industriais" />
+    <meta
+      name="twitter:description"
+      content="Máquinas sob medida para agro, comunicação visual, impressão 3D, têxtil e caldeiras."
+    />
+    <meta name="twitter:image" content="https://www.auza.com.br/og-auza.jpg" />
+
+    <!--
+      Favicon: o símbolo da marca (public/img/marca/simbolo.svg) sobre o marinho.
+
+      O `?v=3` existe porque browser guarda favicon com cache agressivo, e sem
+      trocar a URL o ícone antigo fica na aba mesmo depois do deploy.
+
+      Nos tamanhos do .ico (16, 32 e 48px) o símbolo ocupa quase o quadro todo:
+      com a folga dos ícones grandes, a 16px ele vira um borrão laranja.
+    -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico?v=3" sizes="16x16 32x32 48x48" />
+    <link rel="icon" type="image/png" href="icon-192.png?v=3" sizes="192x192" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png?v=3" sizes="180x180" />
+
+    <!-- Cor da barra do browser no mobile: o marinho da marca, como o hero. -->
+    <meta name="theme-color" content="#021d36" />
+
+    <!--
+      Dados estruturados (schema.org). É o que alimenta o painel de conhecimento à
+      direita do resultado e o que faz o Google entender que "AUZA" é esta empresa,
+      e não outra coisa — é a parte que mais ajuda na busca pela marca.
+
+      Só fatos verificados entram: razão social, CNPJ e telefones vêm do material
+      que a AUZA enviou. NÃO há `address` porque o endereço nunca chegou (segue
+      placeholder na seção de contato); inventar endereço em dado estruturado é
+      pedir para o Google mostrar informação errada da empresa.
+    -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "AUZA Engenharia e Automação",
+        "alternateName": "AUZA",
+        "legalName": "AUZA AUTOMAÇÃO INDUSTRIA E COMERCIO ltda.",
+        "taxID": "28.810.863/0001-43",
+        "url": "https://www.auza.com.br/",
+        "logo": "https://www.auza.com.br/img/marca/logo-auza.png",
+        "image": "https://www.auza.com.br/og-auza.jpg",
+        "description": "Projeto e fabricação de máquinas e soluções de automação para agro, comunicação visual, impressão 3D, têxtil e caldeiras.",
+        "email": "contato@auza.com.br",
+        "telephone": "+55-11-2532-3679",
+        "contactPoint": [
+          {
+            "@type": "ContactPoint",
+            "telephone": "+55-11-2532-3679",
+            "contactType": "customer service",
+            "areaServed": "BR",
+            "availableLanguage": "Portuguese"
+          },
+          {
+            "@type": "ContactPoint",
+            "telephone": "+55-11-96124-4335",
+            "contactType": "sales",
+            "areaServed": "BR",
+            "availableLanguage": "Portuguese"
+          }
+        ]
+      }
+    </script>
   </head>
   <body>
     <app-root></app-root>

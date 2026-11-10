@@ -1,0 +1,168 @@
+<!--
+  A superfície ink fica num elemento DENTRO do `.ds-root`, e não no próprio, como
+  na home. Não é preferência de marcação: o remap da paleta é escrito como
+  `.ds-root .bg-neutral-900` — seletor DESCENDENTE. Com as duas classes no mesmo
+  elemento ele não casa, e o que valia era o `bg-neutral-900` cru do Tailwind:
+  #171717, um quase-preto, no lugar do #021d36 da marca.
+-->
+<div class="ds-root antialiased">
+  <!-- Superfície ink, como o hero: entrar na área restrita é continuação da marca,
+       não uma tela de sistema à parte. -->
+  <div class="on-dark relative min-h-screen overflow-hidden bg-neutral-900">
+    <div class="hero-textura" aria-hidden="true"></div>
+
+    <div
+      class="relative z-10 mx-auto flex min-h-screen max-w-md flex-col justify-center px-6 py-16"
+    >
+      <!--
+      Card MARFIM sobre a superfície ink, com TODO o login dentro: marca, rótulo,
+      título, apoio e formulário. A página ink virou moldura — o que se lê está
+      no card.
+
+      `on-light` reabre o tema claro aqui dentro (ver _ds-surfaces.scss): sem ele,
+      `text-ink` e `text-muted` continuariam resolvendo para branco, porque a
+      página é `on-dark` — branco sobre branco. Por isso também não existe
+      `text-white` dentro do card: essa classe é remapeada para o branco da marca
+      com `!important` e venceria o `on-light`.
+
+      Com o card claro, o formulário usa as peças de tema claro do DS, as mesmas
+      do formulário de contato: `ds-input`, `ds-error-text` e o `btn-primary` na
+      versão ink. O `login-campo`, campo desenhado para digitar sobre o ink, não
+      serve mais aqui.
+    -->
+      <div class="on-light surface rounded-2xl border border-soft p-6 shadow-lg sm:p-8">
+        <!--
+        Cabeçalho centrado; o formulário abaixo segue alinhado à esquerda, que é
+        onde rótulo e campo têm de começar para serem lidos em sequência.
+
+        A régua do rótulo virou DUAS, uma de cada lado: com uma só, ela puxava o
+        bloco para a esquerda no meio de um cabeçalho centrado.
+      -->
+        <div class="text-center">
+          <!-- Variante `claro` = texto marinho, o que se lê sobre o branco. A
+             `escuro` tem texto branco, que aqui desapareceria no card. -->
+          <a
+            href="/home"
+            aria-label="AUZA — voltar para o início"
+            class="mx-auto mb-10 block w-[150px]"
+          >
+            <app-logo variante="claro" />
+          </a>
+
+          <div class="mb-8 flex items-center gap-3">
+            <span class="rule-soft h-px flex-1"></span>
+            <span class="font-geist-mono text-xs font-bold uppercase tracking-widest text-ink"
+              >Acesso</span
+            >
+            <span class="rule-soft h-px flex-1"></span>
+          </div>
+
+          <h1
+            class="mb-3 text-4xl font-semibold leading-[0.9] tracking-tighter text-ink md:text-5xl"
+          >
+            Área restrita
+          </h1>
+          <p class="mb-10 font-geist-mono text-sm leading-relaxed text-muted">
+            Entre com as credenciais fornecidas pela AUZA.
+          </p>
+        </div>
+
+        <!-- `novalidate`: a validação que vale é a do backend, que já responde em
+           português e com detalhe por campo. Duas validações divergentes confundem. -->
+        <form (ngSubmit)="entrar()" novalidate>
+          <label class="mb-6 block">
+            <span class="mb-2 block font-geist-mono text-xs uppercase tracking-widest text-muted">
+              E-mail
+            </span>
+            <input
+              name="email"
+              type="email"
+              autocomplete="email"
+              required
+              class="ds-input"
+              [class.ds-input--error]="errosDeCampo()['email']"
+              [ngModel]="email()"
+              (ngModelChange)="email.set($event)"
+              [disabled]="enviando()"
+            />
+            @if (errosDeCampo()['email']; as mensagem) {
+              <span class="ds-error-text mt-2 block font-geist-mono text-xs">{{ mensagem }}</span>
+            }
+          </label>
+
+          <!--
+            Senha com o olho de "mostrar". O rótulo é associado por `for`/`id`, e
+            não envolvendo o campo como nos outros: com o botão DENTRO do label,
+            todo clique nele também acionaria o comportamento do label.
+          -->
+          <div class="mb-8">
+            <label
+              class="mb-2 block font-geist-mono text-xs uppercase tracking-widest text-muted"
+              for="senha"
+            >
+              Senha
+            </label>
+            <div class="relative">
+              <input
+                id="senha"
+                name="password"
+                [type]="verSenha() ? 'text' : 'password'"
+                autocomplete="current-password"
+                required
+                class="ds-input ds-input--com-acao"
+                [class.ds-input--error]="errosDeCampo()['password']"
+                [ngModel]="senha()"
+                (ngModelChange)="senha.set($event)"
+                [disabled]="enviando()"
+              />
+              <!--
+                `type="button"` é o que impede o clique de enviar o formulário —
+                dentro de um <form>, botão sem type é submit.
+
+                `aria-pressed` porque isto é um interruptor: quem usa leitor de
+                tela precisa saber o estado, não só a ação. E a senha à mostra é
+                anunciada como texto comum, o que é justamente o que se pediu.
+              -->
+              <button
+                type="button"
+                class="absolute right-2 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-md text-muted transition-colors hover:text-ink"
+                [attr.aria-label]="verSenha() ? 'Ocultar senha' : 'Mostrar senha'"
+                [attr.aria-pressed]="verSenha()"
+                [attr.aria-controls]="'senha'"
+                (click)="alternarSenha()"
+              >
+                <app-icon [name]="verSenha() ? 'eye-off' : 'eye'" class="h-4 w-4" />
+              </button>
+            </div>
+            @if (errosDeCampo()['password']; as mensagem) {
+              <span class="ds-error-text mt-2 block font-geist-mono text-xs">{{ mensagem }}</span>
+            }
+          </div>
+
+          <!-- `role="alert"` para leitor de tela anunciar a falha sem o usuário ter
+             que sair do campo e procurar o texto. Caixa clara, como a de sucesso
+             do formulário de contato — a de antes era translúcida para o ink. -->
+          @if (erro(); as mensagem) {
+            <p
+              role="alert"
+              class="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 font-geist-mono text-sm text-red-700"
+            >
+              {{ mensagem }}
+            </p>
+          }
+
+          <button
+            type="submit"
+            class="btn-primary inline-flex w-full items-center justify-center gap-2 rounded-lg px-6 py-3 font-geist-mono text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+            [disabled]="!podeEnviar()"
+          >
+            {{ enviando() ? 'Entrando…' : 'Entrar' }}
+            @if (!enviando()) {
+              <app-icon name="arrow-right" class="h-4 w-4" />
+            }
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
