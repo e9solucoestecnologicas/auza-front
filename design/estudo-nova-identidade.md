@@ -257,10 +257,15 @@ Vitrine** (hero, contato e rodapé ficam como estão); validação por protótip
 rota nova. Código em `src/app/pages/home-v2/`, estilos em `src/styles/_ds-v2.scss`
 (prefixo `v2-`), rota bloqueada no `robots.txt`.
 
-- [x] **Sobre** (Monolith): marinho, desenho técnico em planta
-  (`auza-fundo-noturno.jpg`, mesmo parallax), título com palavra em laranja,
-  citação com a lâmina como aspas, e cartões das três disciplinas (mecânica,
-  elétrica, automação). **Texto dos cartões é provisório** — validar.
+- [x] **Sobre** (Monolith): título com palavra em destaque, citação com a lâmina
+  como aspas, e cartões das três disciplinas (mecânica, elétrica, automação).
+  **Texto dos cartões é provisório** — validar. Revisão 1 do cliente (`1ebfcf1`,
+  `6e0fba5`): marinho ficou pesado, virou **gelo** com o desenho azul
+  (`auza-fundo.jpg`); destaque e link com traço laranja (laranja não vai como
+  texto no claro); ícones das disciplinas grandes, soltos, em laranja, sem
+  ladrilho ("muito cara de Lovable"). `auza-fundo-noturno.jpg` ficou sem uso.
+- [x] **Rodapé da v2** com a marca-d'água em `background-attachment: fixed`
+  (`.v2-rodape-fixo`), a pedido, para ele avaliar. iOS ignora o `fixed`.
 - [x] **Soluções** (AEX "sectors"): cinco painéis lado a lado a partir de 1280px, o
   ativo abre (hover, clique ou teclado) e os fechados mostram o nome na vertical;
   abaixo disso, acordeão empilhado. Imagem = peça do hero sobre marinho. Régua de
