@@ -111,14 +111,11 @@
   border-color: rgba(250, 140, 60, 0.7);
   box-shadow: 0 18px 40px -24px rgba(2, 29, 54, 0.35);
 }
-/* Ladrilho marinho com o ícone laranja: o laranja só aparece sobre marinho
-   (7,2:1), nunca solto no claro. */
+/* Ícone grande, solto, em laranja e com traço fino, ocupando o canto superior
+   esquerdo. É ornamento (aria-hidden): quem informa a disciplina é o título,
+   então o contraste baixo do laranja sobre branco não tira nada da leitura. */
 .ds-root .v2-disciplina__icone {
-  display: grid;
-  place-items: center;
-  width: 2.75rem;
-  height: 2.75rem;
-  background-color: #021d36;
+  margin-left: -0.25rem;
   color: #fa8c3c;
 }
 

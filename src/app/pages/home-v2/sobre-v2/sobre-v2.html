@@ -63,10 +63,13 @@
     <ol class="mt-20 grid grid-cols-1 gap-4 md:grid-cols-3">
       @for (d of disciplinas; track d.nome; let i = $index) {
         <li class="v2-disciplina">
-          <div class="mb-10 flex items-start justify-between">
-            <span class="v2-disciplina__icone">
-              <app-icon [name]="d.icone" class="h-5 w-5" />
-            </span>
+          <div class="mb-8 flex items-start justify-between">
+            <app-icon
+              [name]="d.icone"
+              [strokeWidth]="1.25"
+              class="v2-disciplina__icone h-14 w-14 md:h-16 md:w-16"
+              aria-hidden="true"
+            />
             <span class="font-geist-mono text-xs font-semibold tracking-widest text-subtle"
               >0{{ i + 1 }}</span
             >
