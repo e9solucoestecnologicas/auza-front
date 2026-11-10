@@ -15,9 +15,10 @@ import { VitrineV2 } from './vitrine-v2/vitrine-v2';
  * Só Sobre, Soluções e Vitrine são novas (referências: Monolith Architecture +
  * AEX, do banco de referências). Hero, Contato e Rodapé são os da home atual.
  *
- * Ritmo de superfícies: hero marinho → sobre marinho (planta técnica) →
+ * Ritmo de superfícies: hero marinho → sobre gelo (desenho técnico azul) →
  * soluções marinho (painéis de setor) → vitrine gelo → contato branco →
- * rodapé marinho. Os estilos novos ficam em src/styles/_ds-v2.scss.
+ * rodapé marinho, com o fundo fixo na janela (`v2-rodape-fixo`). Os estilos
+ * novos ficam em src/styles/_ds-v2.scss.
  */
 @Component({
   selector: 'app-home-v2',
@@ -39,7 +40,7 @@ import { VitrineV2 } from './vitrine-v2/vitrine-v2';
       <app-solucoes-v2 />
       <app-vitrine-v2 />
       <app-contato-section />
-      <app-footer-section />
+      <app-footer-section class="v2-rodape-fixo block" />
       <app-whatsapp-flutuante />
     </div>
   `,

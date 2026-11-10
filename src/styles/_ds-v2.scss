@@ -41,19 +41,41 @@
    SOBRE — planta técnica em parallax, citação e disciplinas
    ---------------------------------------------------------- */
 
-/* Véu sobre a planta: fechado do lado do texto (esquerda), aberto do lado
-   vazio, e fechando de novo embaixo, onde ficam os cartões. O texto corrido
-   (branco a 72%) fica sobre ~90% de marinho: contraste acima de 9:1 mesmo em
-   cima do traço mais claro do desenho. */
+/* Seção CLARA: entre o hero e as Soluções (ambos marinho) ela é o respiro.
+   Véu gelo sobre o desenho azul: fechado do lado do texto (esquerda), aberto
+   do lado vazio, para o desenho aparecer onde não disputa com a leitura. */
 .ds-root .v2-sobre-veu {
   background:
-    linear-gradient(to bottom, transparent 55%, rgba(2, 29, 54, 0.85) 100%),
+    linear-gradient(to bottom, transparent 60%, rgba(243, 246, 249, 0.7) 100%),
     linear-gradient(
       to right,
-      rgba(2, 29, 54, 0.94) 0%,
-      rgba(2, 29, 54, 0.86) 42%,
-      rgba(2, 29, 54, 0.5) 100%
+      rgba(243, 246, 249, 0.86) 0%,
+      rgba(243, 246, 249, 0.74) 45%,
+      rgba(243, 246, 249, 0.25) 100%
     );
+}
+
+/* Sobre claro o laranja não passa como texto (2,4:1), então a palavra em
+   destaque fica marinho e ganha um traço laranja embaixo, inclinado no
+   ângulo da lâmina — ornamento, não informação. */
+.ds-root .on-light .v2-destaque {
+  color: inherit;
+  background-image: linear-gradient(#fa8c3c, #fa8c3c);
+  background-repeat: no-repeat;
+  background-size: 100% 0.14em;
+  background-position: 0 92%;
+}
+
+.ds-root .on-light .v2-link {
+  color: #021d36;
+  text-decoration: underline;
+  text-decoration-color: #fa8c3c;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.4em;
+  transition: text-underline-offset 0.2s ease;
+}
+.ds-root .on-light .v2-link:hover {
+  text-underline-offset: 0.6em;
 }
 
 /* Citação com a lâmina laranja fazendo o papel de aspas. */
@@ -73,27 +95,44 @@
   transform: skewX(-33deg);
 }
 
-/* Os "Phase cards" da Monolith: vidro escuro sobre a planta, borda fina que
-   esquenta no hover. */
+/* Os "Phase cards" da Monolith, na versão clara: vidro branco sobre o
+   desenho, borda fina que esquenta no hover. */
 .ds-root .v2-disciplina {
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background-color: rgba(2, 29, 54, 0.72);
+  border: 1px solid rgba(2, 29, 54, 0.1);
+  background-color: rgba(255, 255, 255, 0.78);
   -webkit-backdrop-filter: blur(6px);
   backdrop-filter: blur(6px);
   padding: 2rem;
-  transition: border-color 0.3s ease;
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
 }
 .ds-root .v2-disciplina:hover {
-  border-color: rgba(250, 140, 60, 0.55);
+  border-color: rgba(250, 140, 60, 0.7);
+  box-shadow: 0 18px 40px -24px rgba(2, 29, 54, 0.35);
 }
+/* Ladrilho marinho com o ícone laranja: o laranja só aparece sobre marinho
+   (7,2:1), nunca solto no claro. */
 .ds-root .v2-disciplina__icone {
   display: grid;
   place-items: center;
   width: 2.75rem;
   height: 2.75rem;
-  border: 1px solid rgba(250, 140, 60, 0.45);
-  background-color: rgba(250, 140, 60, 0.08);
+  background-color: #021d36;
   color: #fa8c3c;
+}
+
+/* ----------------------------------------------------------
+   RODAPÉ — fundo fixo (background-attachment: fixed)
+   A marca-d'água fica parada na janela e só o texto corre por cima.
+   Com `fixed`, tamanho e posição passam a contar a partir da JANELA,
+   não do rodapé, por isso os valores próprios. O iOS ignora `fixed`
+   e cai no comportamento normal, sem quebrar nada.
+   ---------------------------------------------------------- */
+.ds-root .v2-rodape-fixo > footer {
+  background-attachment: fixed;
+  background-size: auto 110vh;
+  background-position: right -18vh center;
 }
 
 /* ----------------------------------------------------------

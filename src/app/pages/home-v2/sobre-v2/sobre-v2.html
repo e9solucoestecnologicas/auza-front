@@ -1,14 +1,15 @@
-<!-- Seção ESCURA (marinho #021d36) — desenho técnico em planta, em parallax.
+<!-- Seção CLARA (gelo #f3f6f9) — desenho técnico em azul, em parallax. Clara de
+     propósito: entre o hero e as Soluções, ambos marinho, é ela que dá o respiro.
      `overflow-clip` (e não `overflow-hidden`) é requisito do `.fundo-fixo`:
      ver a explicação em src/styles/_ds-surfaces.scss.
      `pt-28`: o corte do hero sobrepõe esta seção em até 5rem (ver _ds-marca.scss). -->
-<section id="sobre" class="on-dark relative overflow-clip scroll-mt-16 bg-neutral-900 px-6 sm:px-8">
+<section id="sobre" class="on-light relative overflow-clip scroll-mt-16 bg-neutral-50 px-6 sm:px-8">
   <div class="fundo-fixo" aria-hidden="true">
     <div class="fundo-fixo__trilho">
       <img
         appParallax
         class="fundo-fixo__img"
-        src="/img/auza-fundo-noturno.jpg"
+        src="/img/auza-fundo.jpg"
         alt=""
         decoding="async"
       />
