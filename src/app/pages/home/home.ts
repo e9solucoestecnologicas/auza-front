@@ -12,8 +12,8 @@ import { WhatsappFlutuante } from '../../ui/whatsapp-flutuante/whatsapp-flutuant
  * Landing page da AUZA — versão inicial.
  *
  * Ritmo de superfícies (alterna claro/escuro para não cansar a leitura):
- * hero ink → sobre marfim → destaques (marfim nas cinco categorias)
- * → vitrine areia → contato marfim → rodapé ink.
+ * hero ink → sobre branco → destaques (branco nas cinco categorias)
+ * → vitrine gelo → contato branco → rodapé ink.
  */
 @Component({
   selector: 'app-home',

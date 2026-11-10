@@ -12,8 +12,8 @@ import { VitrineStore } from '../../../../core/produtos/vitrine.store';
 import type { CategoriaProduto, ProdutoPublico } from '../../../../core/produtos/produto.models';
 
 /**
- * Superfície comum às cinco seções: o marfim (#fff8ea) que a Têxtil já usava.
- * Antes elas alternavam ink / areia / marfim e o bloco ficava colorido demais.
+ * Superfície comum às cinco seções: o branco #ffffff que a Têxtil já usava.
+ * Antes elas alternavam ink / gelo / branco e o bloco ficava colorido demais.
  * Sem `on-dark`, as classes semânticas (`text-ink`, `border-soft`,
  * `btn-primary`, `media-ph`) resolvem sozinhas no tema claro.
  */
@@ -107,7 +107,7 @@ export class DestaquesSection {
 
   /**
    * A régua horizontal sobrou só na abertura do bloco, para marcar a fronteira
-   * com a Sobre — que é marfim também e, sem ela, encostaria sem costura.
+   * com a Sobre — que é branco também e, sem ela, encostaria sem costura.
    */
   protected classes(indice: number): string {
     return indice === 0 ? `${SUPERFICIE} border-t border-soft` : SUPERFICIE;

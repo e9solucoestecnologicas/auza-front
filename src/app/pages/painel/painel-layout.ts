@@ -21,7 +21,7 @@ import { AuthService } from '../../core/auth/auth.service';
   template: `
     <div class="ds-root antialiased">
       <!--
-        O marfim do DS fica num filho do .ds-root, e não no mesmo elemento: o
+        O branco do DS fica num filho do .ds-root, e não no mesmo elemento: o
         remap da paleta é ".ds-root .bg-white", seletor descendente, e no mesmo
         elemento ele não casaria — o fundo sairia branco puro. Mesma armadilha que
         deixou o login em quase-preto. (Sem acento grave aqui: em template inline

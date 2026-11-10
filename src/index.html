@@ -5,6 +5,10 @@
     <base href="/" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+    <!-- Montserrat (latin) já na primeira requisição: sem isso o título do hero
+         aparece na fonte de sistema e troca depois, mexendo o layout. -->
+    <link rel="preload" href="/fonts/montserrat-latin.woff2" as="font" type="font/woff2" crossorigin />
+
     <!--
       ============================================================
       DOMÍNIO — CONFIRMAR
@@ -67,21 +71,20 @@
     <meta name="twitter:image" content="https://www.auza.com.br/og-auza.jpg" />
 
     <!--
-      Favicon: o "A" da marca, recortado do próprio logo (public/img/logo-fundo-claro.png).
+      Favicon: o símbolo da marca (public/img/marca/simbolo.svg) sobre o marinho.
 
-      O `?v=2` existe porque browser guarda favicon com cache agressivo, e sem
+      O `?v=3` existe porque browser guarda favicon com cache agressivo, e sem
       trocar a URL o ícone antigo fica na aba mesmo depois do deploy.
 
-      Os tamanhos pequenos do .ico são gerados com recorte na moldura de
-      construção e reforço de contraste: a 16px a moldura vira sujeira cinza e
-      rouba área da letra. Os grandes levam a marca inteira.
+      Nos tamanhos do .ico (16, 32 e 48px) o símbolo ocupa quase o quadro todo:
+      com a folga dos ícones grandes, a 16px ele vira um borrão laranja.
     -->
-    <link rel="icon" type="image/x-icon" href="favicon.ico?v=2" sizes="16x16 32x32 48x48" />
-    <link rel="icon" type="image/png" href="icon-192.png?v=2" sizes="192x192" />
-    <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2" sizes="180x180" />
+    <link rel="icon" type="image/x-icon" href="favicon.ico?v=3" sizes="16x16 32x32 48x48" />
+    <link rel="icon" type="image/png" href="icon-192.png?v=3" sizes="192x192" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png?v=3" sizes="180x180" />
 
-    <!-- Cor da barra do browser no mobile: o ink da marca, como o hero. -->
-    <meta name="theme-color" content="#4a1d06" />
+    <!-- Cor da barra do browser no mobile: o marinho da marca, como o hero. -->
+    <meta name="theme-color" content="#021d36" />
 
     <!--
       Dados estruturados (schema.org). É o que alimenta o painel de conhecimento à
@@ -102,7 +105,7 @@
         "legalName": "AUZA AUTOMAÇÃO INDUSTRIA E COMERCIO ltda.",
         "taxID": "28.810.863/0001-43",
         "url": "https://www.auza.com.br/",
-        "logo": "https://www.auza.com.br/img/logo-fundo-claro.png",
+        "logo": "https://www.auza.com.br/img/marca/logo-auza.png",
         "image": "https://www.auza.com.br/og-auza.jpg",
         "description": "Projeto e fabricação de máquinas e soluções de automação para agro, comunicação visual, impressão 3D, têxtil e caldeiras.",
         "email": "contato@auza.com.br",

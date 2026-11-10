@@ -24,7 +24,7 @@ import { Icon } from '../icon/icon';
  * — o mesmo motivo pelo qual o selo aparece verde no material de contato.
  *
  * O branco do glifo é `#fff` literal, e não `text-white`: dentro de `.ds-root` a
- * classe do Tailwind é remapeada para o marfim da marca (`!important`), e a marca
+ * classe do Tailwind é remapeada para o branco da marca (`!important`), e a marca
  * de outra empresa sobre o verde dela não é lugar de aplicar nossa paleta.
  */
 @Component({

@@ -10,11 +10,7 @@ Allow: /
 Disallow: /painel
 Disallow: /login
 
-# Mockups anteriores da landing, mantidos no projeto para comparação. Ficariam
-# competindo com a home pelas mesmas palavras.
-Disallow: /landing
-Disallow: /landing2
-Disallow: /landing3
+# Referência interna da marca, não é página para o visitante.
 Disallow: /design-system
 
 Sitemap: https://www.auza.com.br/sitemap.xml

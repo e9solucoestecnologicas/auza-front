@@ -10,75 +10,72 @@
 
 /* ---------- Tema claro (padrão) ---------- */
 .ds-root .text-ink {
-  color: #4a1d06 !important;
+  color: #021d36 !important;
 }
 .ds-root .text-muted {
-  color: #6f4a2f !important;
+  color: #3d5470 !important;
 }
 .ds-root .text-subtle {
-  color: #8a6647 !important;
+  color: #5b7189 !important;
 }
 .ds-root .border-soft {
-  border-color: rgba(74, 29, 6, 0.18) !important;
+  border-color: rgba(2, 29, 54, 0.18) !important;
 }
 .ds-root .rule-soft {
-  background-color: rgba(74, 29, 6, 0.18);
+  background-color: rgba(2, 29, 54, 0.18);
 }
 .ds-root .surface {
-  background-color: #fff8ea;
+  background-color: #ffffff;
 }
 
 /* ---------- Tema escuro (superfície ink) ---------- */
 .ds-root .on-dark {
-  color: #feebca;
+  color: #ffffff;
 }
 .ds-root .on-dark .text-ink {
-  color: #feebca !important;
+  color: #ffffff !important;
 }
 .ds-root .on-dark .text-muted {
-  color: rgba(254, 235, 202, 0.72) !important;
+  color: rgba(255, 255, 255, 0.72) !important;
 }
 .ds-root .on-dark .text-subtle {
-  color: rgba(254, 235, 202, 0.55) !important;
+  color: rgba(255, 255, 255, 0.55) !important;
 }
 .ds-root .on-dark .border-soft {
-  border-color: rgba(254, 235, 202, 0.18) !important;
+  border-color: rgba(255, 255, 255, 0.18) !important;
 }
 .ds-root .on-dark .rule-soft {
-  background-color: rgba(254, 235, 202, 0.28);
+  background-color: rgba(255, 255, 255, 0.28);
 }
 .ds-root .on-dark .surface {
-  background-color: rgba(254, 235, 202, 0.06);
+  background-color: rgba(255, 255, 255, 0.06);
 }
 
-/* ---------- Botões que invertem conforme a superfície ---------- */
+/* ---------- Botões ---------- */
+/* O primário é o laranja da marca nas DUAS superfícies — é a cor de ação, e não
+   inverte com o tema. O texto é marinho, e não branco: branco sobre o laranja dá
+   2,4:1 e reprova; marinho dá 7,2:1. O hover vai para o começo do degradê do
+   símbolo (#f96a1e), que com o marinho ainda fica em 5,8:1. */
 .ds-root .btn-primary {
-  background-color: #4a1d06;
-  color: #feebca;
+  background-color: #fa8c3c;
+  color: #021d36;
 }
 .ds-root .btn-primary:hover {
-  background-color: #3a1604;
-}
-.ds-root .on-dark .btn-primary {
-  background-color: #feebca;
-  color: #4a1d06;
-}
-.ds-root .on-dark .btn-primary:hover {
-  background-color: #f0d29a;
+  background-color: #f96a1e;
 }
 
 .ds-root .btn-ghost {
   background-color: transparent;
-  color: #4a1d06;
+  color: #021d36;
 }
 .ds-root .btn-ghost:hover {
-  background-color: rgba(74, 29, 6, 0.06);
+  background-color: rgba(2, 29, 54, 0.06);
 }
 .ds-root .on-dark .btn-ghost {
-  color: #feebca;
+  color: #ffffff;
 }
 .ds-root .on-dark .btn-ghost:hover {
-  background-color: rgba(254, 235, 202, 0.08);
+  background-color: rgba(255, 255, 255, 0.08);
 }
 
 /* ---------- Placeholder de imagem (até entrarem as fotos) ---------- */
@@ -87,20 +84,20 @@
   place-items: center;
   overflow: hidden;
   border-radius: 1rem;
-  border: 1px solid rgba(74, 29, 6, 0.18);
-  background-color: #efd3a0;
+  border: 1px solid rgba(2, 29, 54, 0.18);
+  background-color: #e6ecf2;
   background-image: repeating-linear-gradient(
     45deg,
-    rgba(74, 29, 6, 0.05) 0 1px,
+    rgba(2, 29, 54, 0.05) 0 1px,
     transparent 1px 12px
   );
 }
 .ds-root .on-dark .media-ph {
-  border-color: rgba(254, 235, 202, 0.18);
-  background-color: rgba(254, 235, 202, 0.06);
+  border-color: rgba(255, 255, 255, 0.18);
+  background-color: rgba(255, 255, 255, 0.06);
   background-image: repeating-linear-gradient(
     45deg,
-    rgba(254, 235, 202, 0.07) 0 1px,
+    rgba(255, 255, 255, 0.07) 0 1px,
     transparent 1px 12px
   );
 }
@@ -109,9 +106,9 @@
    ILHA CLARA dentro de uma seção escura.
 
    O tema do DS era de mão única: o claro é o padrão e `.on-dark` reescreve as
-   classes semânticas para todos os descendentes. Um card marfim DENTRO de uma
+   classes semânticas para todos os descendentes. Um card branco DENTRO de uma
    seção ink — o formulário do login — não tinha como existir: `text-ink` ali
-   continuaria resolvendo para marfim, ou seja, texto marfim sobre card marfim.
+   continuaria resolvendo para branco, ou seja, texto branco sobre card branco.
 
    `.on-light` desfaz isso na sua subárvore. Repete os valores do tema claro em
    vez de "desligar" o `.on-dark`, porque CSS não cancela regra de ancestral —
@@ -123,69 +120,60 @@
    placeholder) de propósito. Subir o bloco quebra o card, e sem erro nenhum.
 
    Dentro de `.on-light` use `text-ink`, nunca `text-white`: essa última é
-   remapeada para o marfim da marca com `!important` na camada de brand e
-   continuaria marfim aqui.
+   remapeada para o branco da marca com `!important` na camada de brand e
+   continuaria branco aqui.
 
    CADA REGRA VEM EM DOIS SELETORES: `.on-light .x` (descendente) e `.on-light.x`
    (mesmo elemento). O jeito natural de escrever o card é
    `class="on-light surface border-soft"` — as duas classes no MESMO elemento —, e
    aí o seletor descendente não casa. Quem casava era `.on-dark .surface`, do
-   ancestral: o card saía areia a 6%, translúcido, com borda clara. Sem o par
+   ancestral: o card saía gelo a 6%, translúcido, com borda clara. Sem o par
    composto, o `.on-light` funciona nos filhos e falha exatamente no elemento em
    que foi escrito. O mesmo vale para o `.on-dark` da camada de brand, e é o que
    já tinha deixado o fundo do login em quase-preto.
    ---------------------------------------------------------- */
 .ds-root .on-light {
-  color: #4a1d06;
+  color: #021d36;
 }
 .ds-root .on-light .text-ink,
 .ds-root .on-light.text-ink {
-  color: #4a1d06 !important;
+  color: #021d36 !important;
 }
 .ds-root .on-light .text-muted,
 .ds-root .on-light.text-muted {
-  color: #6f4a2f !important;
+  color: #3d5470 !important;
 }
 .ds-root .on-light .text-subtle,
 .ds-root .on-light.text-subtle {
-  color: #8a6647 !important;
+  color: #5b7189 !important;
 }
 .ds-root .on-light .border-soft,
 .ds-root .on-light.border-soft {
-  border-color: rgba(74, 29, 6, 0.18) !important;
+  border-color: rgba(2, 29, 54, 0.18) !important;
 }
 .ds-root .on-light .rule-soft,
 .ds-root .on-light.rule-soft {
-  background-color: rgba(74, 29, 6, 0.18);
+  background-color: rgba(2, 29, 54, 0.18);
 }
 .ds-root .on-light .surface,
 .ds-root .on-light.surface {
-  background-color: #fff8ea;
-}
-.ds-root .on-light .btn-primary,
-.ds-root .on-light.btn-primary {
-  background-color: #4a1d06;
-  color: #feebca;
-}
-.ds-root .on-light .btn-primary:hover,
-.ds-root .on-light.btn-primary:hover {
-  background-color: #3a1604;
+  background-color: #ffffff;
 }
 .ds-root .on-light .btn-ghost,
 .ds-root .on-light.btn-ghost {
-  color: #4a1d06;
+  color: #021d36;
 }
 .ds-root .on-light .btn-ghost:hover,
 .ds-root .on-light.btn-ghost:hover {
-  background-color: rgba(74, 29, 6, 0.06);
+  background-color: rgba(2, 29, 54, 0.06);
 }
 .ds-root .on-light .media-ph,
 .ds-root .on-light.media-ph {
-  border-color: rgba(74, 29, 6, 0.18);
-  background-color: #efd3a0;
+  border-color: rgba(2, 29, 54, 0.18);
+  background-color: #e6ecf2;
   background-image: repeating-linear-gradient(
     45deg,
-    rgba(74, 29, 6, 0.05) 0 1px,
+    rgba(2, 29, 54, 0.05) 0 1px,
     transparent 1px 12px
   );
 }
@@ -206,13 +194,13 @@
 .ds-root .galeria-miniatura {
   /* Fundo enquanto a foto não chega: sem ele a miniatura é um vão transparente
      no cartão, do tamanho exato do que vai aparecer. */
-  background-color: #efd3a0;
+  background-color: #e6ecf2;
 }
 /* A ativa é marcada por ANEL, não por opacidade: as inativas já vivem a 70%, e
    diferenciar duas opacidades próximas não se lê. */
 .ds-root .galeria-miniatura--ativa {
-  border-color: #4a1d06;
-  box-shadow: 0 0 0 1px #4a1d06;
+  border-color: #021d36;
+  box-shadow: 0 0 0 1px #021d36;
 }
 
 /* ----------------------------------------------------------
@@ -291,17 +279,22 @@
    parallax via `appParallax`) e o conteúdo, garantindo contraste
    do texto escuro sobre as linhas do desenho técnico.
 
-   A opacidade é o freio do efeito: o desenho já é claro (areia com
-   traço marrom fino), então acima de ~0.6 a imagem vira papel branco
+   A opacidade é o freio do efeito: o desenho já é claro (gelo com
+   traço azul fino), então acima de ~0.6 a imagem vira papel branco
    e o parallax se move sem que ninguém veja.
 
    0.5 é o teto útil na outra direção: sobre o traço mais escuro do
-   desenho (~#7d6a67) esse véu ainda deixa o corpo de texto
-   (`text-neutral-600` → #6f3d20) em ~4.5:1. Abaixo disso a imagem
-   aparece mais, mas o texto perde o piso de contraste.
+   desenho (~#8194a8, percentil 0,1 de luminância) esse véu ainda deixa
+   o corpo de texto (`text-neutral-600` → #3d5470) em 4,7:1. Abaixo
+   disso a imagem aparece mais, mas o texto perde o piso de contraste.
+   (`text-subtle`/#5b7189 fica em ~3:1 ali — só para texto grande.)
+
+   O desenho foi recolorido do sépia original para a reta marinho→gelo
+   preservando a luminância de cada pixel, então estas contas valem
+   como valiam no sépia.
    ---------------------------------------------------------- */
 .ds-root .sobre-veu {
-  background-image: linear-gradient(rgba(255, 248, 234, 0.5), rgba(254, 235, 202, 0.44));
+  background-image: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.44));
 }
 
 /* ---------- Empilhamento (slides do hero no mesmo espaço) ---------- */
@@ -322,9 +315,9 @@
   inset: 0;
   pointer-events: none;
   background-image:
-    radial-gradient(circle at 78% 15%, rgba(254, 235, 202, 0.1), transparent 55%),
-    linear-gradient(to right, rgba(254, 235, 202, 0.05) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(254, 235, 202, 0.05) 1px, transparent 1px);
+    radial-gradient(circle at 78% 15%, rgba(255, 255, 255, 0.1), transparent 55%),
+    linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
   background-size:
     100% 100%,
     96px 96px,
@@ -359,7 +352,7 @@
       usa para ler metal sólido, e é a única forma de movimento que funciona num
       recorte plano.
 
-   O aço fica frio de propósito. Tingir de marrom mata o metal; ele ser a única
+   O aço fica frio de propósito. Tingir com a cor da marca mata o metal; ele ser a única
    coisa fria da página é o que o torna o foco, e os acentos quentes da ponte
    (placa AUZA e displays) já vêm dentro do render.
    ---------------------------------------------------------- */
@@ -458,13 +451,13 @@
   position: absolute;
   inset: -14% -16% -4%;
   background:
-    radial-gradient(42% 38% at 50% 36%, rgba(254, 235, 202, 0.3), transparent 66%),
-    radial-gradient(72% 66% at 50% 46%, rgba(254, 235, 202, 0.12), transparent 72%);
+    radial-gradient(42% 38% at 50% 36%, rgba(255, 255, 255, 0.3), transparent 66%),
+    radial-gradient(72% 66% at 50% 46%, rgba(255, 255, 255, 0.12), transparent 72%);
 }
 
 /* PENDENTE — legibilidade do texto sobre a peça.
 
-   O marfim do título sobre o aço claro das peças mede pouco contraste: Agro e
+   O branco do título sobre o aço claro das peças mede pouco contraste: Agro e
    Têxtil 1,05:1, Caldeiras e Comunicação Visual ~1,39:1 (medido no percentil 95
    de luminância de cada uma). Uma película escura mascarada resolvia o número —
    0,6 de ink dava 4,5:1 —, mas apagava o objeto, e o objeto é o ponto do banner.
@@ -500,9 +493,9 @@
   background: linear-gradient(
     100deg,
     transparent,
-    rgba(255, 248, 234, 0.42) 44%,
+    rgba(255, 255, 255, 0.42) 44%,
     rgba(255, 255, 255, 0.6) 52%,
-    rgba(255, 248, 234, 0.32) 60%,
+    rgba(255, 255, 255, 0.32) 60%,
     transparent
   );
   transform: translateX(-170%) skewX(-14deg);
@@ -575,7 +568,7 @@
    ---------------------------------------------------------- */
 .ds-root .hero-peca--moldura {
   overflow: hidden;
-  border: 1px solid rgba(254, 235, 202, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.18);
 }
 .ds-root .hero-peca--moldura .hero-peca__img {
   object-fit: cover;
@@ -585,7 +578,7 @@
   position: absolute;
   inset: 0;
   z-index: 3;
-  background: linear-gradient(to top, rgba(46, 17, 3, 0.62), rgba(46, 17, 3, 0.14));
+  background: linear-gradient(to top, rgba(1, 15, 30, 0.62), rgba(1, 15, 30, 0.14));
 }
 
 /* ---------- A PEÇA NO CELULAR (ver o comentário longo acima) ---------- */
@@ -654,12 +647,12 @@
   background:
     linear-gradient(
       var(--veu-dir),
-      rgba(46, 17, 3, 0.94) 0%,
-      rgba(46, 17, 3, 0.74) 28%,
-      rgba(46, 17, 3, 0.16) 56%,
+      rgba(1, 15, 30, 0.94) 0%,
+      rgba(1, 15, 30, 0.74) 28%,
+      rgba(1, 15, 30, 0.16) 56%,
       transparent 70%
     ),
-    radial-gradient(118% 96% at 50% 54%, transparent 38%, rgba(20, 7, 1, 0.62) 100%);
+    radial-gradient(118% 96% at 50% 54%, transparent 38%, rgba(0, 8, 18, 0.62) 100%);
 }
 .ds-root .hero-veu--espelhado {
   --veu-dir: to left;
@@ -757,36 +750,36 @@
 }
 
 /* ---------- Campos de formulário sobre a superfície ink ---------- */
-/* O DS não tinha input em superfície escura: o `surface` de `.on-dark` é areia a
+/* O DS não tinha input em superfície escura: o `surface` de `.on-dark` é gelo a
    6%, que sobre ink não separa o campo do fundo. Aqui o campo é um pouco mais
    claro que a folha e ganha borda, para a caixa de digitação ser visível antes
    do foco — sem isso o usuário não sabe onde clicar.
 
    SEM USO HOJE: o formulário do login, único consumidor, passou a viver num card
-   marfim (`.on-light`) e usa o `ds-input` do tema claro. Fica de pé porque é a
+   branco (`.on-light`) e usa o `ds-input` do tema claro. Fica de pé porque é a
    única peça de formulário que o DS tem para digitar direto sobre o ink — se
    nenhuma tela voltar a precisar, é remoção segura. */
 .ds-root .login-campo {
   width: 100%;
   border-radius: 0.5rem;
-  border: 1px solid rgba(254, 235, 202, 0.22);
-  background-color: rgba(254, 235, 202, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background-color: rgba(255, 255, 255, 0.07);
   padding: 0.75rem 1rem;
-  font-family: 'Geist Mono', monospace;
+  font-family: var(--font-sans);
   font-size: 0.875rem;
-  color: #feebca;
+  color: #ffffff;
   transition:
     border-color 0.2s ease,
     background-color 0.2s ease;
 }
 .ds-root .login-campo::placeholder {
-  color: rgba(254, 235, 202, 0.4);
+  color: rgba(255, 255, 255, 0.4);
 }
 .ds-root .login-campo:focus {
-  outline: 2px solid rgba(254, 235, 202, 0.55);
+  outline: 2px solid rgba(255, 255, 255, 0.55);
   outline-offset: 2px;
-  border-color: rgba(254, 235, 202, 0.45);
-  background-color: rgba(254, 235, 202, 0.1);
+  border-color: rgba(255, 255, 255, 0.45);
+  background-color: rgba(255, 255, 255, 0.1);
 }
 .ds-root .login-campo:disabled {
   opacity: 0.6;
@@ -800,7 +793,7 @@
   height: 0.6rem;
   padding: 0;
   border-radius: 999px;
-  border: 1px solid rgba(254, 235, 202, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.45);
   background: transparent;
   cursor: pointer;
   transition:
@@ -809,12 +802,13 @@
     border-color 0.3s ease;
 }
 .ds-root .hero-dot:hover {
-  background-color: rgba(254, 235, 202, 0.45);
+  background-color: rgba(255, 255, 255, 0.45);
 }
+/* Laranja sobre o marinho: 7,2:1, e é a cor de destaque da marca. */
 .ds-root .hero-dot--ativo {
   width: 1.75rem;
-  background-color: #feebca;
-  border-color: #feebca;
+  background-color: #fa8c3c;
+  border-color: #fa8c3c;
 }
 
 /* ---------- Abas do painel ---------- */
@@ -825,21 +819,24 @@
 .ds-root .painel-aba {
   padding: 0.75rem 0.25rem;
   border-bottom: 2px solid transparent;
-  font-family: 'Geist Mono', monospace;
+  font-family: var(--font-sans);
   font-size: 0.75rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #8a6647;
+  color: #5b7189;
   transition:
     color 0.2s ease,
     border-color 0.2s ease;
 }
 .ds-root .painel-aba:hover {
-  color: #4a1d06;
+  color: #021d36;
 }
+/* Texto marinho e traço laranja: o laranja sobre claro não serve para texto
+   (2,4:1), mas como fio de destaque é o uso que a marca prevê. A aba ativa
+   continua legível pela cor do texto, que muda de cinza para marinho. */
 .ds-root .painel-aba--ativa {
-  color: #4a1d06;
-  border-bottom-color: #4a1d06;
+  color: #021d36;
+  border-bottom-color: #fa8c3c;
 }
 
 /* ---------- Esqueleto de carregamento ---------- */
@@ -850,13 +847,13 @@
    Forma do conteúdo real, e não um spinner no meio da tela: quem espera já vê
    onde as coisas vão aparecer, e a página não salta quando elas chegam. */
 .ds-root .ds-esqueleto {
-  background-color: rgba(74, 29, 6, 0.09);
+  background-color: rgba(2, 29, 54, 0.09);
   border-radius: 0.5rem;
   animation: ds-pulsar 1.4s ease-in-out infinite;
 }
 .ds-root .on-dark .ds-esqueleto,
 .ds-root .on-dark.ds-esqueleto {
-  background-color: rgba(254, 235, 202, 0.12);
+  background-color: rgba(255, 255, 255, 0.12);
 }
 
 @keyframes ds-pulsar {
@@ -876,14 +873,14 @@
   width: 0.375rem;
   height: 0.375rem;
   border-radius: 999px;
-  background-color: rgba(74, 29, 6, 0.25);
+  background-color: rgba(2, 29, 54, 0.25);
   transition:
     width 0.4s ease,
     background-color 0.4s ease;
 }
 .ds-root .destaque-dot--ativo {
   width: 1.125rem;
-  background-color: #4a1d06;
+  background-color: #021d36;
 }
 
 /* ---------- Atalho do painel (cartão-menu) ---------- */
@@ -899,11 +896,11 @@
     transform 0.2s ease;
 }
 .ds-root .painel-atalho:hover {
-  box-shadow: 0 16px 36px -20px rgba(74, 29, 6, 0.65);
+  box-shadow: 0 16px 36px -20px rgba(2, 29, 54, 0.65);
   transform: translateY(-2px);
 }
 .ds-root .painel-atalho:focus-visible {
-  outline: 2px solid #4a1d06;
+  outline: 2px solid #021d36;
   outline-offset: 3px;
 }
 
@@ -917,15 +914,15 @@
   border: 1px solid #bbf7d0;
   background-color: #f0fdf4;
   padding: 0.125rem 0.625rem;
-  font-family: 'Geist Mono', monospace;
+  font-family: var(--font-sans);
   font-size: 0.75rem;
   white-space: nowrap;
   color: #15803d;
 }
 .ds-root .produto-status--oculto {
-  border-color: rgba(74, 29, 6, 0.18);
-  background-color: rgba(74, 29, 6, 0.06);
-  color: #6f4a2f;
+  border-color: rgba(2, 29, 54, 0.18);
+  background-color: rgba(2, 29, 54, 0.06);
+  color: #3d5470;
 }
 
 /* ---------- Trilho da vitrine ---------- */

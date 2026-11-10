@@ -18,7 +18,7 @@ import { GaleriaProduto } from './galeria/galeria';
  * (o bloco "Como funciona") e a galeria de fotos. Mesmo conteúdo, outro
  * compromisso: lá é vitrine, aqui é consulta.
  *
- * Ritmo de superfícies, seguindo a home: cabeçalho ink → catálogo areia →
+ * Ritmo de superfícies, seguindo a home: cabeçalho ink → catálogo gelo →
  * rodapé ink.
  */
 @Component({

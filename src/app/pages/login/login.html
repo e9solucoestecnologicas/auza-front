@@ -3,7 +3,7 @@
   na home. Não é preferência de marcação: o remap da paleta é escrito como
   `.ds-root .bg-neutral-900` — seletor DESCENDENTE. Com as duas classes no mesmo
   elemento ele não casa, e o que valia era o `bg-neutral-900` cru do Tailwind:
-  #171717, um quase-preto, no lugar do #4a1d06 da marca.
+  #171717, um quase-preto, no lugar do #021d36 da marca.
 -->
 <div class="ds-root antialiased">
   <!-- Superfície ink, como o hero: entrar na área restrita é continuação da marca,
@@ -20,9 +20,9 @@
       no card.
 
       `on-light` reabre o tema claro aqui dentro (ver _ds-surfaces.scss): sem ele,
-      `text-ink` e `text-muted` continuariam resolvendo para marfim, porque a
-      página é `on-dark` — marfim sobre marfim. Por isso também não existe
-      `text-white` dentro do card: essa classe é remapeada para o marfim da marca
+      `text-ink` e `text-muted` continuariam resolvendo para branco, porque a
+      página é `on-dark` — branco sobre branco. Por isso também não existe
+      `text-white` dentro do card: essa classe é remapeada para o branco da marca
       com `!important` e venceria o `on-light`.
 
       Com o card claro, o formulário usa as peças de tema claro do DS, as mesmas
@@ -39,8 +39,8 @@
         bloco para a esquerda no meio de um cabeçalho centrado.
       -->
         <div class="text-center">
-          <!-- Variante `claro` = marca em marrom, a que se lê sobre o marfim. A
-             `escuro` é a marca em marfim, que aqui desapareceria no card. -->
+          <!-- Variante `claro` = texto marinho, o que se lê sobre o branco. A
+             `escuro` tem texto branco, que aqui desapareceria no card. -->
           <a
             href="/home"
             aria-label="AUZA — voltar para o início"

@@ -123,7 +123,7 @@ describe('Home', () => {
     }
   });
 
-  it('usa a variante escura da logo nas superfícies ink', async () => {
+  it('usa a variante escura da logo nas superfícies marinho', async () => {
     const fixture = TestBed.createComponent(Home);
     await fixture.whenStable();
     const root = fixture.nativeElement as HTMLElement;
@@ -131,8 +131,8 @@ describe('Home', () => {
     const src = (seletor: string): string | null =>
       root.querySelector(seletor)?.querySelector('img')?.getAttribute('src') ?? null;
 
-    expect(src('#inicio app-logo')).toContain('logo-fundo-escuro');
-    expect(src('footer app-logo')).toContain('logo-fundo-escuro');
+    expect(src('#inicio app-logo')).toContain('logo-horizontal-escuro');
+    expect(src('footer app-logo')).toContain('logo-horizontal-escuro');
   });
 
   it('traz os dados cadastrais e o crédito de desenvolvimento no rodapé', async () => {
@@ -194,7 +194,7 @@ describe('Home', () => {
     expect(primeira.classList.contains('px-6')).toBe(true);
     expect(primeira.classList.contains('bg-white')).toBe(true);
 
-    // As cinco categorias dividem a mesma superfície (a da Têxtil, marfim) e
+    // As cinco categorias dividem a mesma superfície (a da Têxtil, branco) e
     // correm sem régua entre elas: a borda existe só na abertura do bloco.
     CATEGORIAS.forEach((cat, i) => {
       const secao = root.querySelector(`#solucao-${cat.id}`) as HTMLElement;
@@ -220,7 +220,7 @@ describe('Home', () => {
     );
 
     // Só o hero e o rodapé usam a superfície escura: as categorias saíram do
-    // revezamento quando o bloco de Produtos foi unificado no marfim.
+    // revezamento quando o bloco de Produtos foi unificado no branco.
     expect(root.querySelectorAll('.on-dark').length).toBe(2);
   });
 

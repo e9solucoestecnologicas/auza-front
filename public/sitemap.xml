@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Só as duas páginas públicas. Login, painel e os mockups de landing ficam fora
+  Só as duas páginas públicas. Login e painel ficam fora
   (ver robots.txt).
 
   `lastmod` é data fixa, e não gerada no build: sitemap que muda de data a cada

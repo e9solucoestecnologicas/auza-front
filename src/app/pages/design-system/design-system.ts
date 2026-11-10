@@ -77,7 +77,7 @@ export class DesignSystem implements AfterViewInit {
     }
 
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0xfff8ea, 0.002);
+    scene.fog = new THREE.FogExp2(0xf3f6f9, 0.002);
 
     let width = container.clientWidth;
     let height = container.clientHeight;
@@ -88,12 +88,12 @@ export class DesignSystem implements AfterViewInit {
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.setClearColor(0xfff8ea, 1);
+    renderer.setClearColor(0xf3f6f9, 1);
     container.appendChild(renderer.domElement);
 
     const geometry = new THREE.TorusKnotGeometry(9, 2.5, 120, 16);
     const material = new THREE.MeshPhysicalMaterial({
-      color: 0x4a1d06,
+      color: 0x021d36,
       emissive: 0x000000,
       metalness: 0.5,
       roughness: 0.1,
@@ -107,7 +107,7 @@ export class DesignSystem implements AfterViewInit {
     const sparkCount = 100;
     const sparkGeo = new THREE.CircleGeometry(0.15, 3);
     const sparkMat = new THREE.MeshBasicMaterial({
-      color: 0x4a1d06,
+      color: 0x021d36,
       side: THREE.DoubleSide,
       blending: THREE.NormalBlending,
       transparent: true,
@@ -158,7 +158,7 @@ export class DesignSystem implements AfterViewInit {
 
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
     scene.add(ambientLight);
-    const pLight1 = new THREE.PointLight(0x4a1d06, 1, 50);
+    const pLight1 = new THREE.PointLight(0xfa8c3c, 1, 50);
     pLight1.position.set(10, 10, 10);
     scene.add(pLight1);
 

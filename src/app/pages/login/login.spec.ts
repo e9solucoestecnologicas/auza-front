@@ -6,9 +6,9 @@ import { Login } from './login';
 
 /**
  * O que estes testes protegem é o CONTRASTE, não a aparência: o card do
- * formulário é marfim e vive dentro de uma página `on-dark`, onde as classes
- * semânticas do DS resolvem para marfim. Um `on-light` esquecido, ou um
- * `text-white` que volte para dentro do card, produz marfim sobre marfim — texto
+ * formulário é branco e vive dentro de uma página `on-dark`, onde as classes
+ * semânticas do DS resolvem para branco. Um `on-light` esquecido, ou um
+ * `text-white` que volte para dentro do card, produz branco sobre branco — texto
  * invisível numa tela de login, que é onde ninguém pode ficar sem enxergar.
  */
 describe('Login', () => {
@@ -19,14 +19,14 @@ describe('Login', () => {
     }).compileComponents();
   });
 
-  it('põe TODO o conteúdo do login dentro do card marfim', async () => {
+  it('põe TODO o conteúdo do login dentro do card branco', async () => {
     const fixture = TestBed.createComponent(Login);
     await fixture.whenStable();
     const root = fixture.nativeElement as HTMLElement;
 
     const card = root.querySelector('.on-light')!;
     expect(card).toBeTruthy();
-    // Marfim vem do `surface` do tema claro, que o `.on-light` reabre.
+    // Branco vem do `surface` do tema claro, que o `.on-light` reabre.
     expect(card.classList.contains('surface')).toBe(true);
 
     // Marca, título e formulário: nada do login mora fora do card.
@@ -47,7 +47,7 @@ describe('Login', () => {
 
     // O remap da paleta é `.ds-root .bg-neutral-900`, seletor descendente: com as
     // duas classes no mesmo elemento ele não casa e o fundo vira o neutral-900
-    // cru do Tailwind (#171717) em vez do #4a1d06 da marca. jsdom não aplica a
+    // cru do Tailwind (#171717) em vez do #021d36 da marca. jsdom não aplica a
     // folha global, então o que se testa é a estrutura que a torna válida.
     const dsRoot = root.querySelector('.ds-root')!;
     const ink = root.querySelector('.bg-neutral-900')!;
@@ -69,14 +69,14 @@ describe('Login', () => {
     expect(cabecalho.querySelector('form')).toBeFalsy();
   });
 
-  it('usa a marca em marrom, a que se lê sobre o marfim', async () => {
+  it('usa a marca com texto marinho, a que se lê sobre o branco', async () => {
     const fixture = TestBed.createComponent(Login);
     await fixture.whenStable();
     const card = (fixture.nativeElement as HTMLElement).querySelector('.on-light')!;
 
-    // A variante `escuro` é a marca em marfim: no card ela desapareceria.
+    // A variante `escuro` tem o texto branco: no card ela desapareceria.
     const logo = card.querySelector<HTMLImageElement>('app-logo img')!;
-    expect(logo.getAttribute('src')).toBe('/img/logo-fundo-claro.png');
+    expect(logo.getAttribute('src')).toBe('/img/marca/logo-horizontal-claro.svg');
   });
 
   it('não deixa nenhuma cor de texto claro na tela', async () => {
@@ -84,7 +84,7 @@ describe('Login', () => {
     await fixture.whenStable();
     const root = fixture.nativeElement as HTMLElement;
 
-    // `text-white` é remapeada para o marfim da marca com !important: dentro do
+    // `text-white` é remapeada para o branco da marca com !important: dentro do
     // card ela venceria o `.on-light` e sumiria no fundo. Com tudo dentro do
     // card, não sobrou lugar legítimo para ela nesta tela.
     expect(root.querySelectorAll('.text-white').length).toBe(0);
