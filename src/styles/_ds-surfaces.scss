@@ -438,8 +438,15 @@
   object-fit: contain;
   -webkit-mask-image: var(--peca-mascara);
   mask-image: var(--peca-mascara);
-  -webkit-mask-size: 100% 100%;
-  mask-size: 100% 100%;
+  /* `contain` + centro, a MESMA geometria do `object-fit: contain` da imagem.
+     Com `100% 100%` a máscara esticava na caixa inteira enquanto a foto ficava
+     centrada com folga: quando o teto de largura (--peca-largura-max) corta a
+     largura, a caixa perde a proporção do arquivo, imagem e máscara desalinham e
+     o fundo do estúdio vaza (apareceu na dobradeira, 1400×682 numa caixa 806×720). */
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-position: center;
+  mask-position: center;
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
 }
@@ -478,8 +485,10 @@
   overflow: hidden;
   -webkit-mask-image: var(--peca-mascara);
   mask-image: var(--peca-mascara);
-  -webkit-mask-size: 100% 100%;
-  mask-size: 100% 100%;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-position: center;
+  mask-position: center;
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
 }
