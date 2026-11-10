@@ -65,9 +65,9 @@ export class SolucoesV2 {
     if (cat.fotoEmoldurada) {
       return { src, mascara: null };
     }
-    // Agro é PNG com alpha (imagem e máscara no mesmo arquivo); as outras vêm em
-    // par .jpg (cor) + .png (alpha), como no hero.
-    return { src, mascara: src.endsWith('.png') ? src : src.replace(/\.jpg$/, '.png') };
+    // Fotos em .jpg vêm em par com um .png só de alpha, como no hero. PNG ou
+    // WebP com alpha (Agro, secadora) são imagem e máscara no mesmo arquivo.
+    return { src, mascara: src.endsWith('.jpg') ? src.replace(/\.jpg$/, '.png') : src };
   }
 
   protected estiloMascara(m: Midia): string | null {

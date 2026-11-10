@@ -201,8 +201,7 @@ export const CATEGORIAS: readonly Categoria[] = [
     descricao:
       'Oferecemos tecnologia de ponta para elevar o patamar produtivo no setor de fabricação digital. Unindo engenharia e precisão, disponibilizamos impressoras 3D estruturadas para garantir agilidade, otimização de insumos e acabamentos superiores em múltiplos materiais.',
     icone: 'box',
-    imagem: '/img/pecas/secadora.webp',
-    fotoEmoldurada: true,
+    imagem: '/img/pecas/secadora-recorte.webp',
   },
   {
     id: 'textil',

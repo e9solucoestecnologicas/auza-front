@@ -542,29 +542,27 @@
   aspect-ratio: 1017 / 1170;
 }
 
-/* Impressão 3D: cena gerada por IA — a máquina na bancada, oficina ao fundo. Não
-   é recorte e nem deveria ser: o valor dela está no ambiente. Entra pelo caminho
-   de FOTO EMOLDURADA (abaixo), sem `--peca-mascara`.
+/* Impressão 3D: secadora de filamento recortada, como as outras peças. Um WebP
+   só, com alpha, faz de imagem e de máscara (como o PNG do Agro): o fundo
+   branco saiu por flood fill a partir das bordas, e o branco visto ATRAVÉS da
+   tampa de acrílico virou transparência parcial — sem isso a tampa ficaria uma
+   mancha branca sobre o marinho. O corpo preto segue opaco.
 
-   16/9 é a caixa que esta seção já tinha: com a proporção do arquivo (1/1) a peça
-   ficava alta e estreita e passava por cima do texto do banner.
-
-   O arquivo é quadrado, então o `cover` corta 448px de altura. `object-position`
-   em 62% é medido, não estimado: a 50% o corte pega teto e prateleira e come a
-   bancada; a 62% a janela cai em y 278..854, onde a máquina está inteira. */
+   Teto de largura próprio (46% em vez de 56%): deitada e maciça, no teto
+   comum ela saía com ~800px a 1440 e cobria o título; a 46% fica com o peso
+   das outras peças (o Agro ocupa ~640px). */
 .ds-root .hero-peca--impressao-3d {
-  aspect-ratio: 16 / 9;
-}
-.ds-root .hero-peca--impressao-3d .hero-peca__img {
-  object-position: center 62%;
+  --peca-mascara: url('/img/pecas/secadora-recorte.webp');
+  --peca-largura-max: 46%;
+  aspect-ratio: 1099 / 943;
 }
 
 /* ----------------------------------------------------------
    FOTO EMOLDURADA — o outro tratamento.
 
-   Em uso pela Impressão 3D, cuja imagem é uma CENA (a máquina na bancada, oficina
-   ao fundo) e não um produto sobre fundo neutro. Recortar ali jogaria fora
-   justamente o que a imagem tem de bom, e o fundo não é separável de todo jeito.
+   Sem uso hoje (a Impressão 3D, que usava, passou a ter recorte). Fica para a
+   próxima imagem que for CENA (máquina num ambiente) e não produto sobre fundo
+   neutro: recortar ali jogaria fora o que a imagem tem de bom.
 
    A foto entra como o que é: fotografia sobre a folha. Moldura fina na linguagem
    do DS, `cover` para preencher, e véu por cima — sem ele a luz quente da cena
