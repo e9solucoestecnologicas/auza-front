@@ -1,0 +1,115 @@
+<!-- Seção ESCURA (marinho #021d36) — os cinco segmentos como painéis de setor -->
+<section id="solucoes" class="on-dark scroll-mt-16 bg-neutral-900">
+  <div class="mx-auto max-w-6xl px-6 pb-12 pt-24 sm:px-8">
+    <div class="mb-6 flex items-center gap-3">
+      <span class="eyebrow font-geist-mono text-xs font-bold uppercase tracking-widest text-subtle"
+        >Soluções</span
+      >
+      <span class="rule-soft h-px flex-1"></span>
+    </div>
+    <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+      <h2 class="text-4xl font-semibold leading-[1.05] tracking-tight text-ink md:text-5xl">
+        Engenharia para <span class="v2-destaque">cada setor</span>
+      </h2>
+      <p class="max-w-md font-geist-mono text-sm leading-relaxed text-muted">
+        Cinco linhas de equipamentos, projetadas e fabricadas pela mesma equipe. Escolha um setor
+        para ver o que a AUZA faz nele.
+      </p>
+    </div>
+  </div>
+
+  <!--
+    Acordeão de lâminas. Cada painel tem UM gatilho (o título), que é botão de
+    verdade: abre por clique, toque e teclado. No desktop o hover também abre,
+    e o gatilho dos painéis fechados se estica sobre o painel inteiro
+    (`::after`), então clicar em qualquer ponto da lâmina funciona.
+    O conteúdo dos fechados fica `visibility: hidden`: não aparece nem entra
+    na ordem de tabulação.
+  -->
+  <div class="v2-setores">
+    @for (cat of categorias; track cat.id; let i = $index) {
+      <article
+        class="v2-setor"
+        [class.v2-setor--ativo]="ativo() === i"
+        [id]="'solucao-' + cat.id"
+        (mouseenter)="ativar(i)"
+      >
+        @if (midia(cat); as m) {
+          <div class="v2-setor__midia" [class.v2-setor__midia--cena]="!m.mascara" aria-hidden="true">
+            <img [src]="m.src" alt="" [attr.style]="estiloMascara(m)" loading="lazy" decoding="async" />
+          </div>
+        }
+
+        <h3 class="v2-setor__titulo">
+          <button
+            type="button"
+            class="v2-setor__gatilho"
+            [attr.aria-expanded]="ativo() === i"
+            [attr.aria-controls]="'setor-' + cat.id"
+            (click)="ativar(i)"
+          >
+            <span class="v2-setor__num">0{{ i + 1 }}</span>
+            <span class="v2-setor__nome">{{ cat.nome }}</span>
+            <app-icon name="chevron-right" class="v2-setor__seta h-5 w-5" />
+          </button>
+        </h3>
+
+        <div class="v2-setor__conteudo" [id]="'setor-' + cat.id">
+          <p class="mb-6 font-geist-mono text-sm leading-relaxed text-muted">{{ cat.descricao }}</p>
+
+          <ul class="mb-8 space-y-2">
+            @if (produtos(cat.codigo); as lista) {
+              @if (lista.length > 0) {
+                @for (produto of lista; track produto.id) {
+                  <li class="flex items-center gap-3 font-geist-mono text-sm text-ink">
+                    <span class="v2-marcador" aria-hidden="true"></span>{{ produto.name }}
+                  </li>
+                }
+              } @else if (carregando()) {
+                @for (vazio of [1, 2, 3]; track vazio) {
+                  <li class="ds-esqueleto h-4 w-44" aria-hidden="true"></li>
+                }
+              } @else {
+                @for (produto of cat.produtos; track produto) {
+                  <li class="flex items-center gap-3 font-geist-mono text-sm text-ink">
+                    <span class="v2-marcador" aria-hidden="true"></span>{{ produto }}
+                  </li>
+                }
+              }
+            }
+          </ul>
+
+          <div class="flex flex-wrap items-center gap-3">
+            <a
+              class="btn-primary inline-flex items-center gap-2 px-5 py-3 font-geist-mono text-sm font-medium transition-colors"
+              href="#produtos"
+            >
+              Ver produtos
+              <app-icon name="arrow-right" class="h-4 w-4" />
+            </a>
+            <a
+              class="btn-ghost inline-flex items-center gap-2 rounded-lg border border-soft px-5 py-3 font-geist-mono text-sm font-medium transition-colors"
+              href="#contato"
+            >
+              Solicitar orçamento
+            </a>
+          </div>
+        </div>
+      </article>
+    }
+  </div>
+
+  <!-- Faixa de números: a régua de especificações do AEX ("28K mm", "-25 °C"…) -->
+  <dl class="v2-numeros">
+    @for (item of indicadores; track item.rotulo) {
+      <div class="v2-numeros__item">
+        <dt class="order-2 mt-3 font-geist-mono text-xs font-semibold uppercase tracking-widest text-subtle">
+          {{ item.rotulo }}
+        </dt>
+        <dd class="order-1 text-5xl font-bold tracking-tight text-ink md:text-6xl">
+          {{ item.valor }}<span class="v2-destaque">{{ item.sufixo }}</span>
+        </dd>
+      </div>
+    }
+  </dl>
+</section>

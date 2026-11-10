@@ -251,7 +251,29 @@ do símbolo, ~57° da horizontal.
 
 ### 8.3 Plano C — redesenho de layout
 
-Só com referência visual ou mockup aprovado. Antes de codar:
+**Protótipo em 2026-11-10, rota `/home-v2`** (a `/home` segue intacta). Decisões do
+cliente: referência **Monolith Architecture + AEX**; escopo **Soluções, Sobre e
+Vitrine** (hero, contato e rodapé ficam como estão); validação por protótipo numa
+rota nova. Código em `src/app/pages/home-v2/`, estilos em `src/styles/_ds-v2.scss`
+(prefixo `v2-`), rota bloqueada no `robots.txt`.
+
+- [x] **Sobre** (Monolith): marinho, desenho técnico em planta
+  (`auza-fundo-noturno.jpg`, mesmo parallax), título com palavra em laranja,
+  citação com a lâmina como aspas, e cartões das três disciplinas (mecânica,
+  elétrica, automação). **Texto dos cartões é provisório** — validar.
+- [x] **Soluções** (AEX "sectors"): cinco painéis lado a lado a partir de 1280px, o
+  ativo abre (hover, clique ou teclado) e os fechados mostram o nome na vertical;
+  abaixo disso, acordeão empilhado. Imagem = peça do hero sobre marinho. Régua de
+  números embaixo (5 segmentos · 15+ equipamentos · 100% · 3 disciplinas).
+  Com reduced-motion a largura troca sem animar (só o texto entra por opacidade).
+- [x] **Vitrine** (AEX "inventory"): título em dois tons, filtros e setas
+  quadrados, cartões com selo de categoria e régua laranja no nome. Comportamento
+  herdado da vitrine atual (`VitrineV2 extends VitrineSection`).
+- [ ] Revisão do cliente no protótipo.
+- [ ] Aprovado: trocar as seções em `/home`, mover os estilos `v2-` para os
+  arquivos definitivos, apagar `/home-v2` e a regra do robots.
+
+Antes de codar mudanças novas:
 - consultar o banco de referências local (ver memória `banco-de-referencias`);
 - definir com o cliente quais seções mudam de composição (hero, sobre, destaques,
   vitrine, contato, rodapé, painel);

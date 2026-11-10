@@ -56,6 +56,12 @@ export const routes: Routes = [
     title: 'AUZA Engenharia e Automação — Máquinas industriais',
     loadComponent: () => import('./pages/home/home').then((m) => m.Home),
   },
+  /** Protótipo do plano C do rebrand (ver src/app/pages/home-v2). Fora do sitemap. */
+  {
+    path: 'home-v2',
+    title: 'AUZA — Protótipo da nova home',
+    loadComponent: () => import('./pages/home-v2/home-v2').then((m) => m.HomeV2),
+  },
   {
     path: 'produtos',
     title: 'AUZA — Catálogo de máquinas e equipamentos',

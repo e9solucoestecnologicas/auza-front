@@ -13,4 +13,7 @@ Disallow: /login
 # Referência interna da marca, não é página para o visitante.
 Disallow: /design-system
 
+# Protótipo da nova home (plano C do rebrand), em validação.
+Disallow: /home-v2
+
 Sitemap: https://www.auza.com.br/sitemap.xml
