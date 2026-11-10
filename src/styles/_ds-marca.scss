@@ -1,0 +1,176 @@
+/* ============================================================
+   AUZA DS — linguagem gráfica da marca (plano B do rebrand).
+
+   Tudo aqui sai da geometria do símbolo: duas lâminas paralelas que
+   formam um "A". As pernas sobem a ~57° da horizontal — medido no
+   Símbolo.png, perna esquerda de (262,718) a (497,360) —, então o
+   ângulo que se repete pelo site é esse (inclinação de 33° em relação
+   à vertical).
+
+   Cada motivo é uma classe independente: apagar o bloco desliga o
+   motivo, sem mexer em cor, fonte ou layout do plano A. Este arquivo
+   é emitido DEPOIS de _ds-surfaces.scss (ver src/styles.scss) e
+   sobrescreve algumas regras de lá — está dito em cada bloco.
+   ============================================================ */
+
+.ds-root {
+  /* Altura do corte diagonal entre seções. 5vw dá ~2,9° de inclinação em
+     qualquer largura — o corte é paralelo em toda tela, só cresce com ela. */
+  --corte: clamp(1.5rem, 5vw, 5rem);
+  /* Canto chanfrado dos botões. */
+  --chanfro: 0.625rem;
+}
+
+/* ----------------------------------------------------------
+   1. RÓTULO (eyebrow) — o traço do "ENGENHARIA E AUTOMAÇÃO" do logo:
+   caixa alta, peso médio, espaçamento largo. Uma lâmina laranja antes
+   do texto, inclinada no ângulo do símbolo.
+
+   A lâmina é ornamento: laranja sobre claro (2,4:1) não serve para
+   texto, mas aqui não carrega informação. A cor do TEXTO continua vindo
+   da classe de cor do template (`text-subtle`, `text-white`…).
+
+   Vence `font-bold` e `tracking-widest` por especificidade (0,2,0 contra
+   0,1,0), sem `!important`.
+   ---------------------------------------------------------- */
+.ds-root .eyebrow {
+  display: inline-flex;
+  align-items: center;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+}
+.ds-root .eyebrow::before {
+  content: '';
+  flex: none;
+  width: 0.4em;
+  height: 1.15em;
+  margin-right: 0.85em;
+  background-color: #fa8c3c;
+  /* skewX negativo inclina para "/", como a perna esquerda do símbolo */
+  transform: skewX(-33deg);
+}
+
+/* ----------------------------------------------------------
+   2. CORTE DIAGONAL entre seções — a base do hero e o topo do rodapé,
+   paralelos, subindo para a direita como a perna esquerda do "A".
+
+   Como funciona: a seção cortada sobrepõe a vizinha em `--corte`
+   (margem negativa) e fica por cima dela (`z-index: 1`). O `clip-path`
+   recorta o triângulo, e por ele aparece a vizinha DE VERDADE — no
+   caso do hero, o desenho técnico em parallax do Sobre, e não uma
+   cor chapada imitando o fundo dela.
+
+   A sobreposição come o respiro da vizinha, não o conteúdo: o Sobre e o
+   Contato têm `py-24` (6rem), maior que o teto de `--corte` (5rem). Quem
+   for ganhar o corte precisa ter pelo menos isso de padding do lado da
+   vizinha.
+   ---------------------------------------------------------- */
+.ds-root .corte-base {
+  position: relative;
+  z-index: 1;
+  margin-bottom: calc(-1 * var(--corte));
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - var(--corte)), 0 100%);
+}
+
+/* Fio laranja acompanhando o corte do hero: a "faixa inclinada" da marca.
+   É um elemento da largura da seção e da altura do corte, recortado numa
+   tira de 3px rente à borda. */
+.ds-root .corte-base--fio::after {
+  content: '';
+  position: absolute;
+  z-index: 20;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: calc(var(--corte) + 3px);
+  pointer-events: none;
+  background-color: #fa8c3c;
+  clip-path: polygon(0 calc(100% - 3px), 100% 0, 100% 3px, 0 100%);
+}
+
+/* Topo cortado: o rodapé sobe sobre o fim do Contato. O padding extra
+   devolve ao conteúdo a altura que a sobreposição tirou — sem ele, o logo
+   do rodapé ficaria embaixo do triângulo recortado à esquerda.
+   A borda de cima do rodapé deixa de existir: seria cortada em diagonal. */
+.ds-root .corte-topo {
+  position: relative;
+  z-index: 1;
+  margin-top: calc(-1 * var(--corte));
+  padding-top: var(--corte);
+  border-top-width: 0 !important;
+  clip-path: polygon(0 var(--corte), 100% 0, 100% 100%, 0 100%);
+}
+
+/* ----------------------------------------------------------
+   3. BOTÃO CHANFRADO — os cantos superior direito e inferior esquerdo
+   cortados em diagonal, como as pontas das lâminas do símbolo.
+
+   Só no primário, que é chapado. Num botão com borda (`btn-ghost`) o
+   recorte levaria a borda junto e o canto ficaria aberto.
+
+   O `clip-path` também recortaria o anel de foco por fora, então o foco
+   vira um anel INTERNO marinho (7,2:1 sobre o laranja).
+   ---------------------------------------------------------- */
+.ds-root .btn-primary {
+  border-radius: 0;
+  clip-path: polygon(
+    0 0,
+    calc(100% - var(--chanfro)) 0,
+    100% var(--chanfro),
+    100% 100%,
+    var(--chanfro) 100%,
+    0 calc(100% - var(--chanfro))
+  );
+}
+.ds-root .btn-primary:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 2px #021d36;
+}
+
+/* ----------------------------------------------------------
+   4. SÍMBOLO COMO MARCA D'ÁGUA nas superfícies marinho.
+
+   Hero, login e cabeçalho do catálogo já têm a `.hero-textura` (grade +
+   foco de luz); aqui ela ganha uma camada a mais, o símbolo em branco a
+   4,5% (public/img/marca/simbolo-marca-dagua.svg), grande e sangrando
+   pela borda esquerda. Sobrescreve o `background-*` de _ds-surfaces.scss
+   repetindo as três camadas de lá.
+
+   Atrás do texto branco: o fundo clareia de L=0,012 para ~0,03, e o
+   branco segue acima de 13:1.
+   ---------------------------------------------------------- */
+.ds-root .hero-textura {
+  background-image:
+    url('/img/marca/simbolo-marca-dagua.svg'),
+    radial-gradient(circle at 78% 15%, rgba(255, 255, 255, 0.1), transparent 55%),
+    linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-repeat: no-repeat, no-repeat, repeat, repeat;
+  background-size:
+    auto 92%,
+    100% 100%,
+    96px 96px,
+    96px 96px;
+  background-position:
+    -14% 130%,
+    right bottom,
+    right bottom,
+    right bottom;
+}
+
+/* O rodapé não tem `.hero-textura`: a marca d'água vai no próprio
+   elemento, à direita, que é onde ele tem espaço vazio. */
+.ds-root .com-marca-dagua {
+  background-image: url('/img/marca/simbolo-marca-dagua.svg');
+  background-repeat: no-repeat;
+  background-size: auto 115%;
+  background-position: 112% 40%;
+}
+
+/* ----------------------------------------------------------
+   5. MARCADOR LARANJA — ícones de lista (o ✓ das soluções). Ornamento,
+   como a lâmina do rótulo: o texto ao lado é que carrega a informação.
+   ---------------------------------------------------------- */
+.ds-root .text-accent {
+  color: #fa8c3c !important;
+}

@@ -1,7 +1,7 @@
 <!-- Seção ESCURA (marinho #021d36) — abre a alternância claro/escuro da página -->
 <section
   id="inicio"
-  class="on-dark relative overflow-hidden bg-neutral-900"
+  class="on-dark corte-base corte-base--fio relative overflow-hidden bg-neutral-900"
   aria-roledescription="carrossel"
   aria-label="Categorias de produtos AUZA"
   (mouseenter)="pausar()"
@@ -95,7 +95,7 @@
             <div class="self-center lg:col-span-7 lg:row-start-1" [class]="colunaTexto(i)">
               <!-- eyebrow: 12px bold mono tracking-widest (DS · Bold S) -->
               <div class="hero-surge mb-6 flex items-center gap-3" style="--surge-atraso: 0.3s">
-                <span class="font-geist-mono text-xs font-bold uppercase tracking-widest text-white"
+                <span class="eyebrow font-geist-mono text-xs font-bold uppercase tracking-widest text-white"
                   >0{{ i + 1 }}</span
                 >
                 <span class="rule-soft h-px w-10"></span>
