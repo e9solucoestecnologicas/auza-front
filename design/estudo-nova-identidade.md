@@ -205,19 +205,20 @@ Nada abaixo começa sem o cliente pedir. A ordem sugerida é a da lista.
 
 ### 8.1 Pendências do plano A (pequenas)
 
-- [x] **Commit do plano A** (, 2026-11-10).   fica fora de todos os commits: aparece modificado, mas não é deste trabalho.
+- [x] **Commit do plano A** (`f8efef0`, 2026-11-10). `.claude/settings.local.json`
+  fica fora de todos os commits: aparece modificado, mas não é deste trabalho.
 - [x] **Painel conferido** (2026-11-10) com sessão simulada no navegador de teste
-  (tokens falsos no  + respostas falsas para ; produtos da
+  (tokens falsos no `localStorage` + respostas falsas para `/auth/*`; produtos da
   rota pública real). Resumo, lista e formulário corretos na marca.
   Sugestão em aberto: o "Sair" ficou laranja, com o mesmo peso do "Cadastrar
   produto" — rebaixar para botão de contorno?
-- [x] **Bug achado e corrigido**: a peça de Comunicação Visual do hero vazava o
-  fundo marrom do estúdio (máscara esticada  contra imagem em
-  ). Commit próprio.
-- [ ] **Revisão do cliente** nas telas: home, login, , celular, painel.
-- [ ] Teste  já falhava antes do rebrand (e há 8
-  erros de rota soltos no ). Não é do rebrand; corrigir à parte se
-  ele quiser.
+- [x] **Bug achado e corrigido** (`40b4fec`): a peça de Comunicação Visual do hero
+  vazava o fundo marrom do estúdio (máscara esticada em `100% 100%` contra imagem
+  em `object-fit: contain`).
+- [ ] **Revisão do cliente** nas telas: home, login, `/produtos`, celular, painel.
+- [ ] Teste `app.spec.ts` ("should render title") já falhava antes do rebrand (e há
+  8 erros de rota soltos no `produto-form.spec`). Não é do rebrand; corrigir à parte
+  se ele quiser.
 - [ ] Opcional: SVGs do logo têm ~14 KB cada (traço do potrace). Dá para enxugar
   com SVGO, se pesar.
 - [ ] Opcional: pedir ao designer os SVGs originais. Os nossos são vetorização do
@@ -225,28 +226,27 @@ Nada abaixo começa sem o cliente pedir. A ordem sugerida é a da lista.
 
 ### 8.2 Plano B — linguagem gráfica da marca
 
-**Feito em 2026-11-10**, tudo em  (um bloco por motivo;
-apagar o bloco desliga o motivo). O ângulo que se repete é o das pernas do
-símbolo, ~57° da horizontal.
+**Feito em 2026-11-10** (`5f558cd`), tudo em `src/styles/_ds-marca.scss` (um bloco
+por motivo; apagar o bloco desliga o motivo). O ângulo que se repete é o das pernas
+do símbolo, ~57° da horizontal.
 
-- [x] **Rótulos** (): caixa alta espaçada (0.24em) com uma lâmina
-  laranja inclinada antes do texto. Aplicado nos rótulos de seção da home, do
-  catálogo e do painel; os cinzas  (2,8:1) viraram
-   (4,9:1).
-- [x] **Corte diagonal** (, ): base do hero e do cabeçalho
+- [x] **Rótulos** (`.eyebrow`): caixa alta espaçada (0.24em) com uma lâmina laranja
+  inclinada antes do texto. Aplicado nos rótulos de seção da home, do catálogo e do
+  painel; os cinzas `text-neutral-400` (2,8:1) viraram `text-subtle` (4,9:1).
+- [x] **Corte diagonal** (`.corte-base`, `.corte-topo`): base do hero e do cabeçalho
   do catálogo, topo do rodapé, paralelos. A seção cortada sobrepõe a vizinha e o
   triângulo mostra a vizinha de verdade (o parallax do Sobre continua intacto).
-  Exige que a vizinha tenha ≥ 5rem de padding do lado do corte — por isso o topo
-  do catálogo foi para .
-- [x] **Fio laranja** acompanhando o corte () no hero e no catálogo.
-  O rodapé ficou sem fio, de propósito; dá para pôr se ele quiser.
-- [x] **Botão chanfrado**: só o  (o de contorno perderia a borda no
-  canto). Foco virou anel interno marinho, porque o  cortaria o externo.
-- [x] **Marca d'água** do símbolo (, branco a 4,5%) no hero,
-  login e catálogo (via ) e no rodapé ().
-- [x] **Marcadores** de lista das soluções em laranja (). O  ficou;
+  Exige que a vizinha tenha ≥ 5rem de padding do lado do corte — por isso o topo do
+  catálogo foi para `pt-24 sm:pt-28`.
+- [x] **Fio laranja** acompanhando o corte (`.corte-base--fio`) no hero e no
+  catálogo. O rodapé ficou sem fio, de propósito; dá para pôr se ele quiser.
+- [x] **Botão chanfrado**: só o `btn-primary` (o de contorno perderia a borda no
+  canto). O foco virou anel interno marinho, porque o `clip-path` cortaria o externo.
+- [x] **Marca d'água** do símbolo (`simbolo-marca-dagua.svg`, branco a 4,5%) no
+  hero, login e catálogo (via `.hero-textura`) e no rodapé (`.com-marca-dagua`).
+- [x] **Marcadores** de lista das soluções em laranja (`.text-accent`). O ✓ ficou;
   trocar por um chevron inclinado ainda é opção.
-- [ ] Documentar os motivos na página .
+- [ ] Documentar os motivos na página `/design-system`.
 - [ ] Revisão do cliente; ajustar o que ele pedir.
 
 ### 8.3 Plano C — redesenho de layout
